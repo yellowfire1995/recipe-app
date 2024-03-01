@@ -8,8 +8,8 @@ export default function Ingredients() {
   const [ingredients, setIngredients] = useState([]);
   const [activeModal, setActiveModal] = useState();
 
-
   const handleSearch = async (e) => {
+    //console.log test
     e.preventDefault();
     try {
       const listIngredients = await axios.post(
