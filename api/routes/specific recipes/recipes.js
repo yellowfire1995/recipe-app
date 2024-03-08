@@ -1,6 +1,41 @@
 import express from "express";
 const router = express.Router();
 import db from "../../database/db.js";
+import axios from "axios";
+
+async function checkAuth(req, res, next) {
+  try {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/userinfo/`,
+      headers: {
+        Accept: "application/json",
+        Authorization: `${req.headers.authorization}`,
+      },
+    };
+
+    const activeUser = await axios.request(config);
+
+    const query = {
+      text: `SELECT author FROM RECIPES where recipe_id = $1`,
+      values: [req.params.recipeId],
+    };
+
+    const client = await db.connect();
+    let data = await db.query(query);
+    client.release();
+
+    if (data.rows[0].author == activeUser.data.sub) {
+      next();
+    } else {
+      res.status(401).send("Unauthorized");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status;
+  }
+}
 
 router.get("/:recipeId", async (req, res) => {
   let data;
@@ -92,7 +127,7 @@ router.get("/:recipeId", async (req, res) => {
   }
 });
 
-router.delete("/:recipeId/delete", async (req, res) => {
+router.delete("/:recipeId/delete", checkAuth, async (req, res) => {
   try {
     const client = await db.connect();
     const query = {

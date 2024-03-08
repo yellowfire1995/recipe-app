@@ -3,6 +3,7 @@ import Container from "react-bootstrap/esm/Container";
 import { useEffect, useState } from "react";
 import InputGroup from "react-bootstrap/InputGroup";
 import _ from "lodash";
+import axios from "axios";
 import AddPricePopup from "../Components/priceaddpopup.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -94,9 +95,6 @@ export default function IngredientsList(props) {
                 <AttachMoneyIcon
                   type="button"
                   onClick={() => setActiveModal(ingredient.id)}
-                  style={{
-                    color: `${ingredient.package_cost ? "black" : "red"}`,
-                  }}
                 />
                 <DeleteIcon
                   id={ingredient.id}

@@ -18,6 +18,7 @@ import CuisineSelector from "../Components/cuisineselector";
 import CategorySelector from "../Components/categoryselector";
 import DeleteButton from "../Components/deleterecipe";
 import { editRecipe } from "../../db/queries";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export async function loader({ params, request }) {
   const activeRecipe = await getRecipeById(params.recipeId);
@@ -36,6 +37,7 @@ export default function Edit() {
   const navigate = useNavigate();
   const [updatedRecipe, setUpdatedRecipe] = useState(recipe);
   const [servings, setServings] = useState(recipe.servings);
+  const { user, isAuthenticated } = useAuth0();
 
   function ingredientCallBack(childdata) {
     setUpdatedRecipe({ ...updatedRecipe, ingredients: childdata });
@@ -53,120 +55,124 @@ export default function Edit() {
     setUpdatedRecipe({ ...updatedRecipe, category: childdata });
   }
 
-  return (
-    <>
-      <Container style={{ width: "100%" }} className="border shadow ">
-        <Row>
-          <Button
-            variant="outline-primary"
-            onClick={() => {
-              navigate(-1);
+  if (user.sub == recipe.author && isAuthenticated) {
+    return (
+      <>
+        <Container style={{ width: "100%" }} className="border shadow ">
+          <Row>
+            <Button
+              variant="outline-primary"
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              {`< Back`}
+            </Button>
+          </Row>
+          <ReactForm
+            onSubmit={async (e) => {
+              await editRecipe(e, updatedRecipe),
+                navigate(`/recipes/${updatedRecipe.recipe_id}`);
             }}
           >
-            {`< Back`}
-          </Button>
-        </Row>
-        <ReactForm
-          onSubmit={async (e) => {
-            await editRecipe(e, updatedRecipe),
-              navigate(`/recipes/${updatedRecipe.recipe_id}`);
-          }}
-        >
-          <Row>
-            {" "}
-            <CardImg
-              src={updatedRecipe.img_url}
-              style={{ width: "100%", height: "200px" }}
-              className="object-fit-cover"
-            />
-            <input
-              type="text"
-              // name="name"
-              value={updatedRecipe.img_url}
-              placeholder="Enter img url..."
-              onChange={(e) =>
-                setUpdatedRecipe({
-                  ...updatedRecipe,
-                  img_url: e.target.value,
-                })
-              }
-            />
-            <input
-              type="text"
-              // name="name"
-              value={updatedRecipe.url}
-              placeholder="Enter img url..."
-              onChange={(e) =>
-                setUpdatedRecipe({
-                  ...updatedRecipe,
-                  url: e.target.value,
-                })
-              }
-            />
-          </Row>
-          <Row className="d-inline">
-            <Container>
-              <h2>
-                <input
-                  type="text"
-                  // name="name"
-                  value={updatedRecipe.name}
-                  onChange={(e) =>
-                    setUpdatedRecipe({
-                      ...updatedRecipe,
-                      name: e.target.value,
-                    })
-                  }
-                />
-
-                <Button type="submit" className="p-1">
-                  Save Recipe
-                </Button>
-                <DeleteButton recipeId={recipeId} />
-              </h2>
-
-              <label id="servings">Default Servings </label>
+            <Row>
+              {" "}
+              <CardImg
+                src={updatedRecipe.img_url}
+                style={{ width: "100%", height: "200px" }}
+                className="object-fit-cover"
+              />
               <input
-                type="number"
-                id="servings"
-                min="0"
-                value={updatedRecipe.servings}
+                type="text"
+                // name="name"
+                value={updatedRecipe.img_url}
+                placeholder="Enter img url..."
                 onChange={(e) =>
                   setUpdatedRecipe({
                     ...updatedRecipe,
-                    servings: e.target.value,
+                    img_url: e.target.value,
                   })
                 }
-                style={{ width: "3rem" }}
-                className="me-2"
-                // name="servings"
               />
-            </Container>
-          </Row>
-          <Row>
-            <Col className="">
-              <IngredientsList
-                recipe={recipe}
-                handleCallBack={ingredientCallBack}
+              <input
+                type="text"
+                // name="name"
+                value={updatedRecipe.url}
+                placeholder="Enter img url..."
+                onChange={(e) =>
+                  setUpdatedRecipe({
+                    ...updatedRecipe,
+                    url: e.target.value,
+                  })
+                }
               />
-            </Col>
-            <Col>
-              <CategorySelector
-                recipe={recipe}
-                handleCallBack={categoryCallBack}
-              />{" "}
-              <CuisineSelector
-                recipe={recipe}
-                handleCallBack={cuisineCallBack}
-              />
-              <DirectionsList
-                recipe={recipe}
-                handleCallBack={directionCallBack}
-              />
-            </Col>
-          </Row>
-        </ReactForm>
-      </Container>
-    </>
-  );
+            </Row>
+            <Row className="d-inline">
+              <Container>
+                <h2>
+                  <input
+                    type="text"
+                    // name="name"
+                    value={updatedRecipe.name}
+                    onChange={(e) =>
+                      setUpdatedRecipe({
+                        ...updatedRecipe,
+                        name: e.target.value,
+                      })
+                    }
+                  />
+
+                  <Button type="submit" className="p-1">
+                    Save Recipe
+                  </Button>
+                  <DeleteButton recipeId={recipeId} />
+                </h2>
+
+                <label id="servings">Default Servings </label>
+                <input
+                  type="number"
+                  id="servings"
+                  min="0"
+                  value={updatedRecipe.servings}
+                  onChange={(e) =>
+                    setUpdatedRecipe({
+                      ...updatedRecipe,
+                      servings: e.target.value,
+                    })
+                  }
+                  style={{ width: "3rem" }}
+                  className="me-2"
+                  // name="servings"
+                />
+              </Container>
+            </Row>
+            <Row>
+              <Col className="">
+                <IngredientsList
+                  recipe={recipe}
+                  handleCallBack={ingredientCallBack}
+                />
+              </Col>
+              <Col>
+                <CategorySelector
+                  recipe={recipe}
+                  handleCallBack={categoryCallBack}
+                />{" "}
+                <CuisineSelector
+                  recipe={recipe}
+                  handleCallBack={cuisineCallBack}
+                />
+                <DirectionsList
+                  recipe={recipe}
+                  handleCallBack={directionCallBack}
+                />
+              </Col>
+            </Row>
+          </ReactForm>
+        </Container>
+      </>
+    );
+  } else {
+    <div> Unauthorized</div>;
+  }
 }

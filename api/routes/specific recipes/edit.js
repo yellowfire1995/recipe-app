@@ -1,9 +1,44 @@
 import express from "express";
 const router = express.Router();
 import db from "../../database/db.js";
+import { auth } from "express-oauth2-jwt-bearer";
+import axios from "axios";
 
-router.post("/", async (req, res) => {
-  let data;
+async function checkAuth(req, res, next) {
+  try {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/userinfo/`,
+      headers: {
+        Accept: "application/json",
+        Authorization: `${req.headers.authorization}`,
+      },
+    };
+
+    const activeUser = await axios.request(config);
+
+    const query = {
+      text: `SELECT author FROM RECIPES where recipe_id = $1`,
+      values: [req.body.recipe_id],
+    };
+
+    const client = await db.connect();
+    let data = await db.query(query);
+    client.release();
+
+    if (data.rows[0].author == activeUser.data.sub) {
+      next();
+    } else {
+      res.status(401).send("Unauthorized");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status;
+  }
+}
+
+router.post("/", checkAuth, async (req, res) => {
   const recipe = req.body;
   const query = {
     text: `WITH r AS
@@ -64,7 +99,7 @@ router.post("/", async (req, res) => {
   };
   try {
     const client = await db.connect();
-    data = await db.query(query);
+    let data = await db.query(query);
     client.release();
   } catch (error) {
     console.error(error);

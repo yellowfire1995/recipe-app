@@ -12,8 +12,27 @@ import DirectionsList from "../Components/directionslist";
 import CuisineSelector from "../Components/cuisineselector";
 import CategorySelector from "../Components/categoryselector";
 import { newRecipe } from "../../db/queries";
+import httpClient from "../../db/axiosConfig";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function NewRecipe() {
+  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
+  const [userData, setUserData] = useState();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let response = await httpClient.get(
+          `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/api/v2/users/${user.sub}`
+        );
+        setUserData(response.data);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [getAccessTokenSilently]);
+
   const recipe = {
     name: "",
     img_url: "",
@@ -28,7 +47,7 @@ export default function NewRecipe() {
 
   async function handleSubmit() {
     try {
-      const recipeId = await newRecipe(updatedRecipe);
+      const recipeId = await newRecipe(updatedRecipe, userData);
       navigate(`/recipes/${recipeId}`);
     } catch (err) {
       console.error(1, err);

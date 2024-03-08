@@ -1,11 +1,11 @@
-import axios from "axios";
+import httpClient from "./axiosConfig";
 
 const server = import.meta.env.VITE_SERVER_HOST;
 
 //Get category list for new recipe page
 export async function getCategories() {
   try {
-    const categoryList = await axios.get(`${server}/categories`);
+    const categoryList = await httpClient.get(`${server}/categories`);
     return categoryList.data[0].categories;
   } catch (error) {
     console.log(error);
@@ -15,7 +15,7 @@ export async function getCategories() {
 //Get cuisine list for new recipe page
 export async function getCuisines() {
   try {
-    const cuisineList = await axios.get(`${server}/cuisines`);
+    const cuisineList = await httpClient.get(`${server}/cuisines`);
     return cuisineList.data[0].cuisines;
   } catch (error) {
     console.log(error);
@@ -25,7 +25,7 @@ export async function getCuisines() {
 //Delete recipe from recipe page
 export async function deleteRecipe(recipeId) {
   try {
-    const deletedRecipe = await axios.delete(
+    const deletedRecipe = await httpClient.delete(
       `${server}/recipes/${recipeId}/delete`
     );
 
@@ -39,24 +39,24 @@ export async function deleteRecipe(recipeId) {
 export async function editRecipe(e, updatedRecipe) {
   e.preventDefault();
   try {
-    const response = await axios.post(`${server}/edit`, updatedRecipe, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await httpClient.post(`${server}/edit`, updatedRecipe);
   } catch (err) {
     console.error(1, err);
   }
 }
 
 //Create new recipe and return recipe ID created
-export async function newRecipe(updatedRecipe) {
+export async function newRecipe(updatedRecipe, userData) {
   try {
-    const response = await axios.post(`${server}/newrecipe`, updatedRecipe, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await httpClient.post(
+      `${server}/newrecipe`,
+      { updatedRecipe, userData },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data.recipe_id;
   } catch (err) {
     console.error(1, err);
@@ -66,7 +66,7 @@ export async function newRecipe(updatedRecipe) {
 //Save price info from popup modal on recipe page
 export async function savePrice(pkgGrms, pkgCost, url, fdc_id) {
   try {
-    const result = await axios.post(`${server}/ingredients/price`, {
+    const result = await httpClient.post(`${server}/ingredients/price`, {
       pkgGrms: pkgGrms,
       pkgCost: pkgCost,
       url: url,
@@ -81,7 +81,7 @@ export async function savePrice(pkgGrms, pkgCost, url, fdc_id) {
 export async function ingredientSearch(e, search) {
   e.preventDefault();
   try {
-    const listIngredients = await axios.post(
+    const listIngredients = await httpClient.post(
       `${server}/ingredients/search`,
       { ingredient: search },
       {
@@ -90,7 +90,7 @@ export async function ingredientSearch(e, search) {
         },
       }
     );
-
+    console.log(listIngredients.data);
     return listIngredients.data;
   } catch (error) {
     console.error(error);
@@ -100,7 +100,7 @@ export async function ingredientSearch(e, search) {
 //Import page get directions as array
 export async function parseDirections(directions) {
   try {
-    const directionsArray = await axios.post(
+    const directionsArray = await httpClient.post(
       `${server}/import/directions`,
       { directions: directions },
       {
@@ -119,7 +119,7 @@ export async function parseDirections(directions) {
 //Import page get ingredients as array
 export async function parseIngredients(ingredients) {
   try {
-    const ingredientsArray = await axios.post(
+    const ingredientsArray = await httpClient.post(
       `${server}/import/ingredients`,
       { ingredients: ingredients },
       {
@@ -128,7 +128,6 @@ export async function parseIngredients(ingredients) {
         },
       }
     );
-
     return ingredientsArray.data;
   } catch (error) {
     console.error(error);
@@ -138,7 +137,7 @@ export async function parseIngredients(ingredients) {
 //Get recipe by id using URL parameter
 export async function getRecipeById(recipeId) {
   try {
-    const recipe = await axios.get(`${server}/recipes/${recipeId}`);
+    const recipe = await httpClient.get(`${server}/recipes/${recipeId}`);
     return recipe.data;
   } catch (error) {
     console.error(error);
@@ -148,7 +147,19 @@ export async function getRecipeById(recipeId) {
 //Get all recipes for recipe cards on home page
 export async function getRecipeCards() {
   try {
-    const recipeCards = await axios.get(`${server}/recipecards`);
+    const recipeCards = await httpClient.get(`${server}/recipecards`);
+
+    return recipeCards.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//Get all recipes for recipe cards on home page
+export async function getMyRecipeCards() {
+  try {
+    const recipeCards = await httpClient.get(`${server}/myrecipes`);
+
     return recipeCards.data;
   } catch (error) {
     console.error(error);
@@ -158,8 +169,23 @@ export async function getRecipeCards() {
 //Get all cuisines for sidebar filter list
 export async function getSidebarCuisines() {
   try {
-    const sidebarCuisines = await axios.get(`${server}/sidebarcuisines`);
+    const sidebarCuisines = await httpClient.get(`${server}/sidebarcuisines`);
+
     return sidebarCuisines.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//Get nutrition info for recipes page
+
+export async function getNutritionInfo(recipeId) {
+  try {
+    const nutritionInfo = await httpClient.get(
+      `${server}/nutrition/${recipeId}`
+    );
+
+    return nutritionInfo.data[0];
   } catch (error) {
     console.error(error);
   }

@@ -5,8 +5,9 @@ import { matchIngredients } from "../../tools/matchIngredients.js";
 
 router.post("/ingredients", async (req, res) => {
   try {
-    const ingredientArray = parseIngredients(req.body.ingredients);
-    res.json(await matchIngredients(ingredientArray));
+    const origIngredientsList = parseIngredients(req.body.ingredients);
+    const ingredientArray = await matchIngredients(origIngredientsList);
+    res.json(ingredientArray);
   } catch (error) {
     console.error(error);
     res.json(["An error occured, please try again."]);

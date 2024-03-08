@@ -9,7 +9,7 @@ export default function RecipeCardData(props) {
     <Container className="d-flex flex-wrap justify-content-center col">
       {recipes.map((recipe) => {
         return (
-          <Link to={`recipes/${recipe.recipe_id}`} key={recipe.recipe_id}>
+          <Link to={`/recipes/${recipe.recipe_id}`} key={recipe.recipe_id}>
             <Card
               className={`card text-center mx-2 border-0 `}
               style={{ width: "18rem" }}

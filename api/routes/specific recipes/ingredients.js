@@ -1,36 +1,18 @@
 import express from "express";
 const router = express.Router();
 import db from "../../database/db.js";
-import axios from "axios";
 import "dotenv/config";
+import { getUserId } from "../../tools/getUserId.js";
+import { searchSolr } from "../../tools/searchSolr.js";
 
 router.post("/search", async (req, res) => {
-  let data;
-
   try {
-    const searchResult = await axios.post(
-      `${process.env.SOLR_HOST}/solr/allIngredients/select`,
-      {
-        query: `${req.body.ingredient}~`,
-        params: {
-          defType: "edismax",
-          indent: "true",
-          qf: "desc1^5 desc2^3 desc3^3 description^1",
-          "q.op": "OR",
-          lowercaseOperators: "true",
-          stopwords: "false",
-        },
-      },
-      { "content-type": "application/x-www-form-urlencoded" }
-    );
-    let ingredientFdcIdArray = [];
-    await searchResult.data.response.docs.map((doc) =>
-      ingredientFdcIdArray.push(doc.fdc_id)
-    );
-    console.log(ingredientFdcIdArray);
-    const client = await db.connect();
-    const query = {
-      text: `SELECT description,
+    const searchResult = await searchSolr(req.body.ingredient);
+    const ingredients = await Promise.all(
+      searchResult.map(async (doc) => {
+        const client = await db.connect();
+        const query = {
+          text: `SELECT description,
       food.fdc_id,
       coalesce(package_grams, 0) as package_grams,
       coalesce(package_cost, 0) as package_cost,
@@ -51,15 +33,19 @@ router.post("/search", async (req, res) => {
               left     join lateral (select fdc_id, package_grams, package_cost, url, max(date) from food_prices fps where fps.fdc_id = food.fdc_id group by package_grams, fdc_id, package_cost, url limit 1  ) as fps on fps.fdc_id = food.fdc_id
    
               where
-          food.fdc_id in ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+          food.fdc_id in ($1)
         ;
   
         `,
-      values: ingredientFdcIdArray,
-    };
-    data = await db.query(query);
-    client.release();
-    res.json(data.rows);
+          values: [doc.fdc_id],
+        };
+        const data = await db.query(query);
+        client.release();
+        return data.rows[0];
+      })
+    );
+    console.log(ingredients);
+    res.json(ingredients);
   } catch (error) {
     res.send(error);
     console.log(error);
@@ -70,21 +56,8 @@ router.post("/import", async (req, res) => {
   let data;
 
   try {
-    const searchResult = await axios.post(
-      `${process.env.SOLR_HOST}/solr/allIngredients/select`,
-      {
-        query: `${req.body.ingredient}~`,
-        params: {
-          defType: "edismax",
-          indent: "true",
-          qf: "desc1^5 desc2^3 desc3^3 description^1",
-          "q.op": "OR",
-          lowercaseOperators: "true",
-          stopwords: "false",
-        },
-      },
-      { "content-type": "application/x-www-form-urlencoded" }
-    );
+    const searchResult = await searchSolr(req.body.ingredient);
+    console.log(searchResult);
 
     const client = await db.connect();
     const query = {
@@ -105,7 +78,7 @@ router.post("/import", async (req, res) => {
         ;
   
         `,
-      values: [searchResult.data.response.docs[0].fdc_id],
+      values: [searchResult[0].fdc_id],
     };
     data = await db.query(query);
     client.release();
@@ -116,19 +89,19 @@ router.post("/import", async (req, res) => {
   }
 });
 
-router.post("/price", async (req, res) => {
+router.post("/price", getUserId, async (req, res) => {
   let data;
   const i = req.body;
 
   try {
     const client = await db.connect();
     const query = {
-      text: `insert into food_prices (fdc_id, package_grams, package_cost, url) 
-      values ( $1, $2, $3, $4 )
+      text: `insert into food_prices (fdc_id, package_grams, package_cost, url, user_id) 
+      values ( $1, $2, $3, $4, $5 )
         ;
   
         `,
-      values: [i.fdc_id, i.pkgGrms, i.pkgCost, i.url],
+      values: [i.fdc_id, i.pkgGrms, i.pkgCost, i.url, req.user],
     };
     data = await db.query(query);
     client.release();

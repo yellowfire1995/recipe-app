@@ -16,24 +16,19 @@ import importIngredientsRoute from "./routes/import/ingredients.js";
 import passport from "passport";
 import session from "express-session";
 import "dotenv/config";
+import { auth } from "express-oauth2-jwt-bearer";
+import helmet from "helmet";
+import auth0Route from "./routes/auth/auth0.js";
+import myRecipesRoute from "./routes/specific recipes/myrecipes.js";
+import getPriceRoute from "./routes/specific recipes/getprice.js";
 
 const _ = process.env;
 const app = express();
 const port = _.SERVER_PORT;
 
 app.use(cors());
-
+app.use(helmet());
 app.use(bodyParser.json());
-
-app.use(
-  session({
-    secret: _.SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 60 * 60 * 24 * 1000 }, //1 day
-  })
-);
-app.use(passport.authenticate("session"));
 
 app.use("/nutrition", nutritionRoute);
 app.use("/newrecipe", newRecipeRoute);
@@ -47,6 +42,9 @@ app.use("/sidebarcuisines", sidebarCuisinesRoute);
 app.use("/", authRoute);
 app.use("/import", importDirectionsRoute);
 app.use("/import", importIngredientsRoute);
+app.use("/profile", auth0Route);
+app.use("/myrecipes", myRecipesRoute);
+app.use("/getPrice", getPriceRoute);
 
 app.listen(port, _.SERVER_HOST, () => {
   console.log(`Server is running on port ${port}`);

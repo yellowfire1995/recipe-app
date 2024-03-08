@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { savePrice } from "../../db/queries";
+import StoreButtons from "../Components/storesearchbuttons";
 
 export default function AddPricePopup(props) {
   const i = props.ingredient;
@@ -58,6 +59,7 @@ export default function AddPricePopup(props) {
             style={{ width: "100%" }}
           />
         </form>
+        Search: <StoreButtons ingredient={i.ingredient} />
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={() => handleSave()}>Save</Button>

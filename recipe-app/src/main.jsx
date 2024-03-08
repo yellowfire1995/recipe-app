@@ -26,73 +26,80 @@ import ImportRecipe from "./routes/import.jsx";
 import Login from "./routes/login.jsx";
 import SignUp from "./routes/signup.jsx";
 import PrivateRoutes from "./utils/PrivateRoutes.jsx";
-import { AuthProvider } from "./utils/useAuth.jsx";
+import { Auth0Provider } from "@auth0/auth0-react";
+import Profile from "./routes/profile.jsx";
+import MyRecipes, { loader as myRecipesLoader } from "./routes/myrecipes.jsx";
 
 export const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
-    element: <AuthProvider />,
+    element: <PrivateRoutes />,
     children: [
       {
-        element: <PrivateRoutes />,
+        path: "/",
+        element: <Root />,
+        errorElement: <ErrorPage />,
+        action: filterAction,
         children: [
           {
-            path: "/",
-            element: <Root />,
+            index: true,
+            element: <RecipeCards />,
+            loader: recipeCardsLoader,
             errorElement: <ErrorPage />,
-            action: filterAction,
-            children: [
-              {
-                index: true,
-                element: <RecipeCards />,
-                loader: recipeCardsLoader,
-                errorElement: <ErrorPage />,
-                action: recipeCardsAction,
-              },
-              {
-                element: <Recipe />,
-                path: "recipes/:recipeId",
-                loader: RecipeLoader,
-                errorElement: <ErrorPage />,
-              },
-              {
-                element: <Edit />,
-                path: "/recipes/:recipeId/edit",
-                errorElement: <ErrorPage />,
-                loader: editLoader,
-                action: editAction,
-              },
-              {
-                element: <Ingredients />,
-                path: "/ingredients",
-                errorElement: <ErrorPage />,
-              },
-              {
-                element: <NewRecipe />,
-                path: "/newrecipe",
-                errorElement: <ErrorPage />,
-              },
-              {
-                element: <ImportRecipe />,
-                path: "/importrecipe",
-                errorElement: <ErrorPage />,
-              },
-            ],
+            action: recipeCardsAction,
+          },
+          {
+            element: <RecipeCards />,
+            path: "myrecipes",
+            loader: myRecipesLoader,
+          },
+          {
+            element: <Recipe />,
+            path: "recipes/:recipeId",
+            loader: RecipeLoader,
+            errorElement: <ErrorPage />,
+          },
+          {
+            element: <Edit />,
+            path: "/recipes/:recipeId/edit",
+            errorElement: <ErrorPage />,
+            loader: editLoader,
+            action: editAction,
+          },
+          {
+            element: <Ingredients />,
+            path: "/ingredients",
+            errorElement: <ErrorPage />,
+          },
+          {
+            element: <NewRecipe />,
+            path: "/newrecipe",
+            errorElement: <ErrorPage />,
+          },
+          {
+            element: <ImportRecipe />,
+            path: "/importrecipe",
+            errorElement: <ErrorPage />,
+          },
+          {
+            element: <Profile />,
+            path: "/profile",
+            errorElement: <ErrorPage />,
           },
         ],
       },
-      {
-        element: <Login />,
-        path: "/login",
-        errorElement: <ErrorPage />,
-      },
-      {
-        element: <SignUp />,
-        path: "/signup",
-        errorElement: <ErrorPage />,
-      },
     ],
+  },
+  {
+    element: <Login />,
+    path: "/login",
+    errorElement: <ErrorPage />,
+  },
+  {
+    element: <SignUp />,
+    path: "/signup",
+    errorElement: <ErrorPage />,
   },
 ]);
 
@@ -100,7 +107,19 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <div>
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <Auth0Provider
+          domain="dev-8oxkv6xzy7mdml3z.us.auth0.com"
+          clientId="NltLfppnAwfww6tNWfaG6akUHKO5gCrk"
+          audience="recipeauth"
+          cacheLocation={"localstorage"}
+          authorizationParams={{
+            redirect_uri: "http://localhost:5173/",
+            audience: "https://dev-8oxkv6xzy7mdml3z.us.auth0.com/api/v2/",
+            scope: "read:current_user update:current_user_metadata",
+          }}
+        >
+          <RouterProvider router={router} />
+        </Auth0Provider>
       </QueryClientProvider>
     </React.StrictMode>
   </div>

@@ -1,9 +1,9 @@
 import { Form as ReactForm, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Col from "react-bootstrap/esm/Col";
-import IngredientsList from "../Components/ingredientslist";
+import IngredientsList from "../Components/importIngredientList";
 import DirectionsList from "../Components/directionslist";
 import CuisineSelector from "../Components/cuisineselector";
 import CategorySelector from "../Components/categoryselector";
@@ -13,8 +13,26 @@ import { parseDirections } from "../../db/queries";
 import { parseIngredients } from "../../db/queries";
 import Container from "react-bootstrap/esm/Container";
 import { newRecipe } from "../../db/queries";
+import httpClient from "../../db/axiosConfig";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function ImportRecipe() {
+  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
+  const [userData, setUserData] = useState();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let response = await httpClient.get(
+          `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/api/v2/users/${user.sub}`
+        );
+        setUserData(response.data);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [getAccessTokenSilently]);
   const recipe = {
     name: "",
     img_url: "",
@@ -27,14 +45,14 @@ export default function ImportRecipe() {
   const [ingredients, setIngredients] = useState("");
   const [directions, setDirections] = useState("");
   const [directionList, setDirectionList] = useState(recipe);
-  const [ingredientList, setIngredientList] = useState(recipe);
+  const [ingredientList, setIngredientList] = useState([]);
   const [updatedRecipe, setUpdatedRecipe] = useState(recipe);
 
   const navigate = useNavigate();
 
   async function handleSubmit() {
     try {
-      const recipeId = await newRecipe(updatedRecipe);
+      const recipeId = await newRecipe(updatedRecipe, userData);
       navigate(`/recipes/${recipeId}`);
     } catch (err) {
       console.error(1, err);
@@ -55,6 +73,7 @@ export default function ImportRecipe() {
 
   function ingredientCallBack(childData) {
     setUpdatedRecipe({ ...updatedRecipe, ingredients: childData });
+    console.log(updatedRecipe);
   }
 
   return (
@@ -154,17 +173,15 @@ export default function ImportRecipe() {
               <Button
                 variant="primary"
                 onClick={async () => {
-                  setIngredientList({
-                    ...recipe,
-                    ingredients: await parseIngredients(ingredients),
-                  });
+                  setIngredientList(await parseIngredients(ingredients));
                 }}
               >
                 Import Ingredients
               </Button>
             </Form.Group>
             <IngredientsList
-              recipe={ingredientList}
+              ingredientsChoices={ingredientList}
+              recipe={recipe}
               handleCallBack={ingredientCallBack}
             />
           </Col>

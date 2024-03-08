@@ -10,17 +10,15 @@ router.get("/:recipeId", async (req, res) => {
 
 async function getNutrition(recipeId) {
   const query = {
-    text: `with nutrition_data as (select * from crosstab(format('select 
-  i.recipe_id,
-  nutrient_id,
-  ROUND(SUM(amount*i.amt/100/r.servings)::numeric,1) as amount
-    from nutrient
-      join food_nutrient fn on nutrient.id  = nutrient_id
-      join ingredients i on i.fdc_id = fn.fdc_id 
-      join recipes r on i.recipe_id = r.recipe_id
-        where i.recipe_id = %s
-        and nutrient_id in (1110, 1004, 2000, 1093, 1003, 1089, 1079, 1008, 1253, 1005, 1087, 1326, 1162)
-          group by nutrient.name, nutrient_id, unit_name, i.recipe_id', $1::int),
+    text: `with nutrition_data as (select * from crosstab(format('		select 
+		i.recipe_id,
+		fn.nutrient_id,
+		ROUND(SUM(fn.amount*i.amt/100/r.servings)::numeric,1) as amount
+		from ingredients i
+		left join lateral (select nutrient_id, amount  from food_nutrient fn where i.fdc_id = fn.fdc_id and i.recipe_id = %s) as fn on true
+		join recipes r on i.recipe_id = r.recipe_id 
+		where nutrient_id in (1110, 1004, 2000, 1093, 1003, 1089, 1079, 1008, 1253, 1005, 1087, 1326, 1162)	
+		group by fn.nutrient_id, i.recipe_id', $1::int),
   'values (1110), (1004), (2000), (1093), (1003), (1089), (1079), (1008), (1253), (1005), (1087), (1326), (1162)') 
   as (id int,
   vit_d real,

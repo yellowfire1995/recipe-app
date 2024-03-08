@@ -9,12 +9,11 @@ export default function Ingredients() {
   const [activeModal, setActiveModal] = useState();
 
   const handleSearch = async (e) => {
-    //console.log test
     e.preventDefault();
     try {
       const listIngredients = await axios.post(
-        `http://192.168.68.74:3000/ingredients/search`,
-        { ingredient: search },
+        `http://192.168.68.74:3000/getPrice`,
+        { url: search },
         {
           headers: {
             "Content-Type": "application/json",

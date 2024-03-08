@@ -4,12 +4,13 @@ import db from "../../database/db.js";
 
 router.post("/", async (req, res) => {
   let data;
-  const recipe = req.body;
+  const recipe = req.body.updatedRecipe;
+  const userData = req.body.userData;
 
   const query = {
     text: `WITH r AS
       (
-        INSERT INTO recipes (name, servings, img_url, url) VALUES ($1, $2, $3, $4) RETURNING recipe_id
+        INSERT INTO recipes (name, servings, img_url, url, author, nickname) VALUES ($1, $2, $3, $4, $9, $10 ) RETURNING recipe_id
       ),
        c AS 
       (
@@ -45,6 +46,8 @@ router.post("/", async (req, res) => {
       JSON.stringify(recipe.directions),
       JSON.stringify(recipe.ingredients),
       JSON.stringify(recipe.category),
+      userData.user_id,
+      userData.nickname,
     ],
   };
 
