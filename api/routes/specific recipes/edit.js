@@ -1,7 +1,6 @@
 import express from "express";
 const router = express.Router();
 import db from "../../database/db.js";
-import { auth } from "express-oauth2-jwt-bearer";
 import axios from "axios";
 
 async function checkAuth(req, res, next) {

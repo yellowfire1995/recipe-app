@@ -1,6 +1,8 @@
+import helmet from "helmet";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+
 import nutritionRoute from "./routes/specific recipes/nutrition.js";
 import newRecipeRoute from "./routes/specific recipes/newrecipe.js";
 import ingredientsRoute from "./routes/specific recipes/ingredients.js";
@@ -10,10 +12,8 @@ import recipesRoute from "./routes/specific recipes/recipes.js";
 import cuisineRouter from "./routes/all recipes/cuisines.js";
 import categoryRouter from "./routes/all recipes/categories.js";
 import sidebarCuisinesRoute from "./routes/all recipes/sidebarcuisines.js";
-import authRoute from "./routes/auth/auth.js";
 import importDirectionsRoute from "./routes/import/directions.js";
 import importIngredientsRoute from "./routes/import/ingredients.js";
-import helmet from "helmet";
 import auth0Route from "./routes/auth/auth0.js";
 import myRecipesRoute from "./routes/specific recipes/myrecipes.js";
 import getPriceRoute from "./routes/specific recipes/getprice.js";
@@ -46,7 +46,6 @@ app.use("/recipes", recipesRoute);
 app.use("/categories", categoryRouter);
 app.use("/cuisines", cuisineRouter);
 app.use("/sidebarcuisines", sidebarCuisinesRoute);
-app.use("/", authRoute);
 app.use("/import", importDirectionsRoute);
 app.use("/import", importIngredientsRoute);
 app.use("/profile", auth0Route);
