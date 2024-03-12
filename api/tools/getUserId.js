@@ -5,7 +5,7 @@ export async function getUserId(req, res, next) {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/userinfo/`,
+      url: process.env.AUTH0_VERIFY,
       headers: {
         Accept: "application/json",
         Authorization: `${req.headers.authorization}`,
