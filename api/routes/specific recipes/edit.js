@@ -9,7 +9,7 @@ async function checkAuth(req, res, next) {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/userinfo/`,
+      url: process.env.AUTH0_VERIFY,
       headers: {
         Accept: "application/json",
         Authorization: `${req.headers.authorization}`,
@@ -23,9 +23,7 @@ async function checkAuth(req, res, next) {
       values: [req.body.recipe_id],
     };
 
-    const client = await db.connect();
     let data = await db.query(query);
-    client.release();
 
     if (data.rows[0].author == activeUser.data.sub) {
       next();
@@ -98,9 +96,7 @@ router.post("/", checkAuth, async (req, res) => {
     ],
   };
   try {
-    const client = await db.connect();
     let data = await db.query(query);
-    client.release();
   } catch (error) {
     console.error(error);
   }

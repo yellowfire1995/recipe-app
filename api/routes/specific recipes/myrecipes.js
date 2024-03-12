@@ -27,9 +27,9 @@ WHERE recipes.recipe_id = recipe_cuisines.recipe_id
             ;`,
       values: [req.user],
     };
-    const client = await db.connect();
+
     const data = await db.query(query);
-    client.release();
+
     res.json(data.rows);
   } catch (error) {
     console.error(error);

@@ -14,12 +14,11 @@ router.patch("/", async (req, res) => {
 
   try {
     const updateAuth0 = axios.patch(
-      `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/api/v2/users/${req.body.user_id}`,
+      `${_.AUTH0_AUDIENCE}users/${req.body.user_id}`,
       { nickname: req.body.nickname },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    const client = await db.connect();
     const query = {
       text: ` UPDATE recipes
       SET nickname = $1
@@ -27,7 +26,6 @@ router.patch("/", async (req, res) => {
       values: [req.body.nickname, req.body.user_id],
     };
     const updateDb = await db.query(query);
-    client.release();
 
     res.send([updateAuth0.data, updateDb.data]);
   } catch (error) {

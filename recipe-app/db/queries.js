@@ -1,6 +1,5 @@
 import httpClient from "./axiosConfig";
-
-const server = import.meta.env.VITE_SERVER_HOST;
+import { server } from "../env/env.js";
 
 //Get category list for new recipe page
 export async function getCategories() {

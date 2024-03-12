@@ -6,11 +6,11 @@ export async function searchSolr(ingredient) {
     const searchResult = await axios.post(
       `${process.env.SOLR_HOST}/solr/allIngredients/select`,
       {
-        query: `price:* desc2:raw ${ingredient}`,
+        query: `price:* desc2:raw sr_secondary:* branded_secondary:* ${ingredient}`,
         params: {
           defType: "edismax",
           indent: "true",
-          qf: "desc1^5 desc2^3 desc3^3 description^1",
+          qf: "desc1^5 desc2^3 desc3^3 description^1 brand_name^3 brand_owner^1 upc^1",
           "q.op": "OR",
           stopwords: "false",
         },

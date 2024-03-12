@@ -18,6 +18,7 @@ export default function App() {
   useEffect(() => {
     addAccessTokenInterceptor(getAccessTokenSilently);
   }, [getAccessTokenSilently]);
+
   return (
     <div>
       <Row className="">

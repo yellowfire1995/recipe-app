@@ -10,7 +10,6 @@ router.post("/search", async (req, res) => {
     const searchResult = await searchSolr(req.body.ingredient);
     const ingredients = await Promise.all(
       searchResult.map(async (doc) => {
-        const client = await db.connect();
         const query = {
           text: `SELECT description,
       food.fdc_id,
@@ -40,7 +39,7 @@ router.post("/search", async (req, res) => {
           values: [doc.fdc_id],
         };
         const data = await db.query(query);
-        client.release();
+
         return data.rows[0];
       })
     );
@@ -59,7 +58,6 @@ router.post("/import", async (req, res) => {
     const searchResult = await searchSolr(req.body.ingredient);
     console.log(searchResult);
 
-    const client = await db.connect();
     const query = {
       text: `SELECT description, food.fdc_id, case 
         when food.data_type = 'branded_food' 
@@ -81,7 +79,7 @@ router.post("/import", async (req, res) => {
       values: [searchResult[0].fdc_id],
     };
     data = await db.query(query);
-    client.release();
+
     res.json(data.rows);
   } catch (error) {
     res.send(error);
@@ -94,7 +92,6 @@ router.post("/price", getUserId, async (req, res) => {
   const i = req.body;
 
   try {
-    const client = await db.connect();
     const query = {
       text: `insert into food_prices (fdc_id, package_grams, package_cost, url, user_id) 
       values ( $1, $2, $3, $4, $5 )
@@ -104,7 +101,7 @@ router.post("/price", getUserId, async (req, res) => {
       values: [i.fdc_id, i.pkgGrms, i.pkgCost, i.url, req.user],
     };
     data = await db.query(query);
-    client.release();
+
     res.json(data.rows);
   } catch (error) {
     res.send(error);

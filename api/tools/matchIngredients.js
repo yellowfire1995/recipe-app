@@ -13,7 +13,6 @@ export async function matchIngredients(ingredients) {
         //Obtain ingredient information from database using search result
         const ingredients = await Promise.all(
           searchResult.map(async (doc) => {
-            const client = await db.connect();
             const query = {
               text: `SELECT description, food.fdc_id, case 
               when food.data_type = 'branded_food' 
@@ -35,7 +34,6 @@ export async function matchIngredients(ingredients) {
               values: [doc.fdc_id],
             };
             const data = await db.query(query);
-            client.release();
 
             //Test to see if there is a match between original measurement and database measurement to convert into grams
             const [measurement, type] = await findMeasureMatch([
@@ -68,5 +66,6 @@ export async function matchIngredients(ingredients) {
       }
     })
   );
+
   return ingredientArray;
 }

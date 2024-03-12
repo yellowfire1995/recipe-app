@@ -5,7 +5,6 @@ import db from "../../database/db.js";
 router.get("/", async (req, res) => {
   let data;
   try {
-    const client = await db.connect();
     data = await db.query(`
       SELECT recipes.* ,
   (
@@ -23,7 +22,7 @@ router.get("/", async (req, res) => {
               GROUP BY recipes.recipe_id
            
               ;`);
-    client.release();
+
     res.json(data.rows);
   } catch (error) {
     console.error(error);

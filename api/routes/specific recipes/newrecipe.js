@@ -52,9 +52,8 @@ router.post("/", async (req, res) => {
   };
 
   try {
-    const client = await db.connect();
     data = await db.query(query);
-    client.release();
+
     res.json(data.rows[0]);
   } catch (error) {
     console.error(error);

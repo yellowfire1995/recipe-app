@@ -6,13 +6,11 @@ import { useState, useEffect } from "react";
 import httpClient from "../../db/axiosConfig";
 import { Button } from "bootstrap";
 import LogoutButton from "../utils/LogoutButton";
+import { auth0Audience, server } from "../../env/env";
 
 async function handleClick(userData) {
   try {
-    let response = await httpClient.patch(
-      "http://192.168.68.74:3000/profile",
-      userData
-    );
+    let response = await httpClient.patch(`${server}/profile`, userData);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -28,7 +26,7 @@ export default function Profile() {
     (async () => {
       try {
         let response = await httpClient.get(
-          `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/api/v2/users/${user.sub}`
+          `${auth0Audience}users/${user.sub}`
         );
         setUserData(response.data);
       } catch (e) {

@@ -13,10 +13,6 @@ import sidebarCuisinesRoute from "./routes/all recipes/sidebarcuisines.js";
 import authRoute from "./routes/auth/auth.js";
 import importDirectionsRoute from "./routes/import/directions.js";
 import importIngredientsRoute from "./routes/import/ingredients.js";
-import passport from "passport";
-import session from "express-session";
-import "dotenv/config";
-import { auth } from "express-oauth2-jwt-bearer";
 import helmet from "helmet";
 import auth0Route from "./routes/auth/auth0.js";
 import myRecipesRoute from "./routes/specific recipes/myrecipes.js";
@@ -26,7 +22,18 @@ const _ = process.env;
 const app = express();
 const port = _.SERVER_PORT;
 
-app.use(cors());
+var whitelist = [_.HOST];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(bodyParser.json());
 

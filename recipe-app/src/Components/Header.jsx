@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { auth0Audience } from "../../env/env";
 
 function Header() {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -16,20 +17,17 @@ function Header() {
       try {
         const token = await getAccessTokenSilently({
           authorizationParams: {
-            audience: `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/api/v2/`, // Value in Identifier field for the API being called.
+            audience: auth0Audience, // Value in Identifier field for the API being called.
             scope: "read:current_user update:current_user_metadata", // Scope that exists for the API being called. You can create these through the Auth0 Management API or through the Auth0 Dashboard in the Permissions view of your API.
           },
         });
         const response = isLoading
           ? null
-          : await axios.get(
-              `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/api/v2/users/${user.sub}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
+          : await axios.get(`${auth0Audience}users/${user.sub}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
         setUserData(response.data);
       } catch (e) {
         console.error(e);

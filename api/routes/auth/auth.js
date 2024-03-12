@@ -6,7 +6,6 @@ import crypto from "crypto";
 
 passport.use(
   new LocalStrategy(async function verify(username, password, cb) {
-    const client = await db.connect();
     const query = {
       text: `SELECT * FROM users WHERE username = $1`,
       values: [username],
@@ -18,7 +17,7 @@ passport.use(
       if (!row) {
         return cb(null, false, { message: "Incorrect username or password." });
       }
-      client.release();
+
       crypto.pbkdf2(
         password,
         row.rows[0].salt,
@@ -86,13 +85,11 @@ router.post("/signup", (req, res, next) => {
       }
       try {
         console.log(hashedPassword);
-        const client = await db.connect();
+
         const query = {
           text: `INSERT INTO users (username, hashed_password, salt) VALUES ($1, $2, $3)`,
           values: [req.body.username, hashedPassword, salt],
         };
-        await db.query(query);
-        client.release();
       } catch (error) {
         console.log(error);
       }

@@ -29,6 +29,12 @@ import PrivateRoutes from "./utils/PrivateRoutes.jsx";
 import { Auth0Provider } from "@auth0/auth0-react";
 import Profile from "./routes/profile.jsx";
 import MyRecipes, { loader as myRecipesLoader } from "./routes/myrecipes.jsx";
+import {
+  auth0Audience,
+  auth0ClientId,
+  auth0Domain,
+  auth0Redirect,
+} from "../env/env.js";
 
 export const queryClient = new QueryClient();
 
@@ -108,13 +114,12 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <Auth0Provider
-          domain="dev-8oxkv6xzy7mdml3z.us.auth0.com"
-          clientId="NltLfppnAwfww6tNWfaG6akUHKO5gCrk"
-          audience="recipeauth"
+          domain={auth0Domain}
+          clientId={auth0ClientId}
           cacheLocation={"localstorage"}
           authorizationParams={{
-            redirect_uri: "http://localhost:5173/",
-            audience: "https://dev-8oxkv6xzy7mdml3z.us.auth0.com/api/v2/",
+            redirect_uri: auth0Redirect,
+            audience: auth0Audience,
             scope: "read:current_user update:current_user_metadata",
           }}
         >

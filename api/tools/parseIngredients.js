@@ -48,7 +48,7 @@ export default function parseIngredients(ingredients) {
   //Split ingredient list into lines based on new line break
   const ingredientLines = ingredients
     .split("\n")
-    .filter((ingredient) => ingredient != "");
+    .filter((ingredient) => ingredient.match(/^[^a-zA-Z ]/));
 
   //Find ingredient quantity by looking at characters/vulgar fractions until hit a word or parenthesis
   const ingredientAmt = ingredientLines.map((ingredient) =>
@@ -98,6 +98,16 @@ export default function parseIngredients(ingredients) {
   //Remaining ingredient name is any word(s) remaining
   const ingredientName = ingredientLines.map((ingredient, idx) => {
     try {
+      console.log(
+        ingredient
+          // .replace(ingredientComment[idx], "")
+          // .replace(ingredientMeasure[idx], "")
+          .replace(ingredientAmtString[idx], "")
+          .replace(ingredientSecondary[idx], "")
+          .replace(foodMeasurementRegex, "")
+          .match(/\w+/g)
+          .join(" ")
+      );
       return (
         ingredient
           // .replace(ingredientComment[idx], "")

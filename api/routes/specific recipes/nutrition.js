@@ -54,9 +54,8 @@ async function getNutrition(recipeId) {
 
   let data;
   try {
-    const client = await db.connect();
     data = await db.query(query);
-    client.release();
+
     return data.rows;
   } catch (error) {
     console.error(error);

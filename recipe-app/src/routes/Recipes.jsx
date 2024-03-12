@@ -142,15 +142,17 @@ export default function Recipe() {
                         ingredient.amt * servs
                       )} grams`}</div>
                       {` ${ingredient.ingredient}`}{" "}
-                      {`(${
-                        Math.round(ingredient.engAmt * servs * 100) / 100 +
-                        " " +
-                        ingredient.engLabel
-                      }) - $${(
-                        Math.round(
-                          ingredient.price * ingredient.amt * servs * 100
-                        ) / 100
-                      ).toFixed(2)}`}{" "}
+                      {ingredient.engAmt
+                        ? `(${
+                            Math.round(ingredient.engAmt * servs * 100) / 100 +
+                            " " +
+                            ingredient.engLabel
+                          }) - $${(
+                            Math.round(
+                              ingredient.price * ingredient.amt * servs * 100
+                            ) / 100
+                          ).toFixed(2)}`
+                        : ""}{" "}
                     </label>
                     <AttachMoneyIcon
                       type="button"

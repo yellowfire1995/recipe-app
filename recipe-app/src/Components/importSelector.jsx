@@ -27,12 +27,18 @@ export function ImportSelector(props) {
       g
       <select
         onChange={(e) => setIngredient(ingredientChoices[e.target.value])}
-        style={{ width: "50%" }}
+        style={{ width: "60%" }}
       >
         {ingredientChoices.map((ingredient, idx) => (
           <>
-            <option value={idx} key={ingredient.fdc_id}>
-              {ingredient.ingredient}
+            <option
+              value={idx}
+              key={ingredient.fdc_id}
+              style={{ color: ingredient.amt > 0 ? "green" : "black" }}
+            >
+              {`${ingredient.ingredient} ${
+                ingredient.altLabel ? `(${ingredient.altLabel})` : ""
+              }`}
             </option>
           </>
         ))}
