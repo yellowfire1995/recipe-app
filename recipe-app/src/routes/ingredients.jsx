@@ -2,17 +2,17 @@ import { useState } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/esm/Button";
 import AddPricePopup from "../Components/priceaddpopup.jsx";
+import { server } from "../../env/env.js";
 
 export default function Ingredients() {
   const [search, setSearch] = useState("");
-  const [ingredients, setIngredients] = useState([]);
-  const [activeModal, setActiveModal] = useState();
+  const [price, setPrice] = useState();
 
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
       const listIngredients = await axios.post(
-        `http://192.168.68.74:3000/getPrice`,
+        `${server}/getPrice`,
         { url: search },
         {
           headers: {
@@ -20,9 +20,7 @@ export default function Ingredients() {
           },
         }
       );
-      setIngredients(listIngredients.data);
-
-      console.log(listIngredients.data);
+      setPrice(listIngredients.data);
     } catch (error) {
       console.error(error);
     }
@@ -43,37 +41,8 @@ export default function Ingredients() {
         </button>
       </form>
 
-      <ol>
-        {ingredients.length > 0
-          ? ingredients.map((ingredient) => {
-              return (
-                <div key={ingredient.fdc_id}>
-                  <li>
-                    <form>
-                      {`${ingredient.description} - ${Math.round(
-                        1 / ingredient.gram_amt
-                      )}g per ${ingredient.gram_label}`}
-                      <Button
-                        type="button"
-                        onClick={() => setActiveModal(ingredient.fdc_id)}
-                      >
-                        {" "}
-                        Add price{" "}
-                      </Button>{" "}
-                      <br />
-                      {`${ingredient.fdc_id} - ${ingredient.package_grams}g - ${ingredient.package_cost}`}
-                    </form>
-                  </li>
-                  <AddPricePopup
-                    show={activeModal == ingredient.fdc_id ? true : false}
-                    onHide={() => setActiveModal()}
-                    ingredient={ingredient}
-                  />
-                </div>
-              );
-            })
-          : "No Results"}
-      </ol>
+      <br />
+      {price}
     </>
   );
 }
