@@ -27,11 +27,11 @@ export async function matchIngredients(ingredients) {
                   left join branded_food bf on bf.fdc_id = food.fdc_id
                   left join food_portion fp on fp.fdc_id = food.fdc_id
                    where
-              food.fdc_id = $1
+              food.fdc_id = $1 and (id is null or id = $2)
               ;
         
               `,
-              values: [doc.fdc_id],
+              values: [doc.fdc_id, doc.sr_id],
             };
             const data = await db.query(query);
 

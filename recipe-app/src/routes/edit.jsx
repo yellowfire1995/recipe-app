@@ -36,7 +36,6 @@ export default function Edit() {
   const recipe = activeRecipe[0];
   const navigate = useNavigate();
   const [updatedRecipe, setUpdatedRecipe] = useState(recipe);
-  const [servings, setServings] = useState(recipe.servings);
   const { user, isAuthenticated } = useAuth0();
 
   function ingredientCallBack(childdata) {

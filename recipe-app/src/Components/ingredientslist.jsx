@@ -10,9 +10,10 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { ingredientSearch } from "../../db/queries.js";
 
 function deleteIngredient(updatedRecipe, e) {
-  const currentRecipe = _.remove(
+  const buttonId = e.target.id ? e.target.id : e.target.viewportElement.id;
+  _.remove(
     updatedRecipe.ingredients,
-    (ingredient) => ingredient.id == e.target.id
+    (ingredient) => ingredient.id == buttonId
   );
 
   return { ...updatedRecipe };
@@ -99,6 +100,7 @@ export default function IngredientsList(props) {
                 <DeleteIcon
                   id={ingredient.id}
                   aria-label="delete"
+                  children={ingredient.id}
                   type="button"
                   onClick={(e) => {
                     setUpdatedRecipe(deleteIngredient(updatedRecipe, e));
