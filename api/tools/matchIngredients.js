@@ -23,13 +23,17 @@ export async function matchIngredients(ingredients) {
                 when food.data_type = 'branded_food' 
                   then bf.alt_label
                 when food.data_type = 'sr_legacy_food' 
-                  then fp.modifier  end as gram_label from food
+                  then fp.modifier  end as gram_label,
+                case 
+                	when food.data_type = 'sr_legacy_food'
+                	then fp.id
+                end as sr_id                
+                  from food
                   left join branded_food bf on bf.fdc_id = food.fdc_id
                   left join food_portion fp on fp.fdc_id = food.fdc_id
                    where
               food.fdc_id = $1 and (id is null or id = $2)
               ;
-        
               `,
               values: [doc.fdc_id, doc.sr_id],
             };
@@ -46,6 +50,7 @@ export async function matchIngredients(ingredients) {
               ...ingredient,
               ingredient: data.rows[0].description.toLowerCase(),
               fdc_id: data.rows[0].fdc_id,
+              sr_id: data.rows[0].sr_id,
               convertAmt: data.rows[0].gram_amt,
               amt:
                 type == "weight"

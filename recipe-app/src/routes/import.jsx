@@ -15,6 +15,7 @@ import Container from "react-bootstrap/esm/Container";
 import { newRecipe } from "../../db/queries";
 import httpClient from "../../db/axiosConfig";
 import { useAuth0 } from "@auth0/auth0-react";
+import { auth0Audience } from "../../env/env";
 
 export default function ImportRecipe() {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -25,7 +26,7 @@ export default function ImportRecipe() {
     (async () => {
       try {
         let response = await httpClient.get(
-          `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/api/v2/users/${user.sub}`
+          `${auth0Audience}users/${user.sub}`
         );
         setUserData(response.data);
       } catch (e) {

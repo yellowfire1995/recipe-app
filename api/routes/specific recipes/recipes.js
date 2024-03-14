@@ -72,6 +72,7 @@ router.get("/:recipeId", async (req, res) => {
                 'ingredient', SPLIT_PART(food.description, ',', 1),
                 'niceName', nice_name,
                 'fdc_id', ingredients.fdc_id,
+                'sr_id', ingredients.sr_id,
                 'engAmt', case 
                                 when food.data_type = 'branded_food' 
                                     then bf.gram_modifier*amt
@@ -93,7 +94,7 @@ router.get("/:recipeId", async (req, res) => {
      JOIN food ON ingredients.fdc_id = food.fdc_id 
      JOIN recipes ON ingredients.recipe_id = recipes.recipe_id
      left join branded_food bf on bf.fdc_id = food.fdc_id
-     left join lateral (select modifier, gram_modifier, fdc_id, min(id) as id from food_portion fp where fp.fdc_id = ingredients.fdc_id group by modifier, gram_modifier, fdc_id limit 1) as fp on fp.fdc_id = ingredients.fdc_id
+     left join lateral (select modifier, gram_modifier, fdc_id, min(id) as id from food_portion fp where fp.id = ingredients.sr_id group by modifier, gram_modifier, fdc_id limit 1) as fp on fp.fdc_id = ingredients.fdc_id
      left join lateral (select fdc_id, package_grams, package_cost, url, max(date), price_g from food_prices fps where fps.fdc_id = ingredients.fdc_id group by package_grams, fdc_id, package_cost, url, price_g limit 1  ) as fps on fps.fdc_id = ingredients.fdc_id
      WHERE recipes.recipe_id = $1
           ) as ingredients,
@@ -103,9 +104,8 @@ router.get("/:recipeId", async (req, res) => {
             JOIN recipes r ON d.recipe_id = r.recipe_id
               WHERE r.recipe_id = $1
           ) as directions
+                                  FROM recipes
               
-                    FROM recipes
-                
              
                 
                 WHERE recipes.recipe_id = $1

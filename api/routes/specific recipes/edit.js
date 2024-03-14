@@ -37,6 +37,7 @@ async function checkAuth(req, res, next) {
 
 router.post("/", checkAuth, async (req, res) => {
   const recipe = req.body;
+  console.log(recipe.ingredients);
   const query = {
     text: `WITH r AS
       (
@@ -61,8 +62,8 @@ router.post("/", checkAuth, async (req, res) => {
   WHERE recipe_id = (SELECT recipe_id FROM r)
       ),	i AS
       (
-      insert into ingredients (recipe_id,  amt, fdc_id, nice_name)
-      SELECT (SELECT recipe_id FROM r),(t ->> 'amt')::real,(t ->> 'fdc_id')::int, t ->> 'niceName'
+      insert into ingredients (recipe_id,  amt, fdc_id, sr_id)
+      SELECT (SELECT recipe_id FROM r),(t ->> 'amt')::real,(t ->> 'fdc_id')::int,(t ->> 'sr_id')::int'
       from json_array_elements($7::json) t 
       ), cusdel AS 
       (
