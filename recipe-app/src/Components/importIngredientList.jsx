@@ -9,47 +9,47 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { ingredientSearch } from "../../db/queries.js";
 import { ImportSelector } from "./importSelector.jsx";
 
-function deleteIngredient(updatedRecipe, e) {
-  const currentRecipe = _.remove(
-    updatedRecipe.ingredients,
-    (ingredient) => ingredient.id == e.target.id
-  );
+// function deleteIngredient(updatedRecipe, e) {
+//   const currentRecipe = _.remove(
+//     updatedRecipe.ingredients,
+//     (ingredient) => ingredient.id == e.target.id
+//   );
 
-  return { ...updatedRecipe };
-}
+//   return { ...updatedRecipe };
+// }
 
-function addNewIngredient(updatedRecipe, idNum, name) {
-  const currentLastingredient =
-    updatedRecipe.ingredients.length > 0
-      ? _.last(updatedRecipe.ingredients).id
-      : 0;
+// function addNewIngredient(updatedRecipe, idNum, name) {
+//   const currentLastingredient =
+//     updatedRecipe.ingredients.length > 0
+//       ? _.last(updatedRecipe.ingredients).id
+//       : 0;
 
-  const ingredient = {
-    recipe_id: updatedRecipe.recipe_id,
-    id: 1 + currentLastingredient,
-    amt: 10,
-    ingredient: name,
-    fdc_id: idNum,
-  };
-  const finalRecipe = { ...updatedRecipe.ingredients.push(ingredient) };
-  return { ...updatedRecipe };
-}
+//   const ingredient = {
+//     recipe_id: updatedRecipe.recipe_id,
+//     id: 1 + currentLastingredient,
+//     amt: 10,
+//     ingredient: name,
+//     fdc_id: idNum,
+//   };
+//   const finalRecipe = { ...updatedRecipe.ingredients.push(ingredient) };
+//   return { ...updatedRecipe };
+// }
 
-function handleIngredientUpdate2(activeIngredientList, newIngredient) {
-  return {
-    ...updatedRecipe,
-    ingredients: updatedRecipe.ingredients.map((ingredient) => {
-      if (ingredient.ingredient == e.target.id) {
-        return {
-          ...ingredient,
-          amt: e.target.valueAsNumber,
-        };
-      } else {
-        return { ...ingredient };
-      }
-    }),
-  };
-}
+// function handleIngredientUpdate2(activeIngredientList, newIngredient) {
+//   return {
+//     ...updatedRecipe,
+//     ingredients: updatedRecipe.ingredients.map((ingredient) => {
+//       if (ingredient.description == e.target.id) {
+//         return {
+//           ...ingredient,
+//           amt: e.target.valueAsNumber,
+//         };
+//       } else {
+//         return { ...ingredient };
+//       }
+//     }),
+//   };
+// }
 
 function handleIngredientUpdate(activeIngredientList, newIngredient) {
   const activeIndex = activeIngredientList.findIndex(
@@ -64,9 +64,6 @@ function handleIngredientUpdate(activeIngredientList, newIngredient) {
 }
 
 export default function IngredientsList(props) {
-  const [search, setSearch] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
-
   const [ingredientList, setIngredientList] = useState(
     props.ingredientsChoices
   );
@@ -78,8 +75,6 @@ export default function IngredientsList(props) {
     );
     props.handleCallBack(activeIngredientList);
   }
-
-  console.log(activeIngredientList);
 
   useEffect(
     () => setIngredientList(props.ingredientsChoices),

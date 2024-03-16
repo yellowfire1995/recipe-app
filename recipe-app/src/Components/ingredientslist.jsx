@@ -28,7 +28,7 @@ function addNewIngredient(updatedRecipe, idNum, name) {
   const ingredient = {
     recipe_id: updatedRecipe.recipe_id,
     id: 1 + currentLastingredient,
-    amt: 10,
+    quantity: 10,
     ingredient: name,
     fdc_id: idNum,
   };
@@ -40,10 +40,10 @@ function handleIngredientUpdate(updatedRecipe, e) {
   return {
     ...updatedRecipe,
     ingredients: updatedRecipe.ingredients.map((ingredient) => {
-      if (ingredient.ingredient == e.target.id) {
+      if (ingredient.description == e.target.id) {
         return {
           ...ingredient,
-          amt: e.target.valueAsNumber,
+          quantity: e.target.valueAsNumber,
         };
       } else {
         return { ...ingredient };
@@ -79,20 +79,20 @@ export default function IngredientsList(props) {
                   ingredient={ingredient}
                 />
                 <input
-                  id={ingredient.ingredient}
+                  id={ingredient.description}
                   type="number"
                   min="0"
                   step=".01"
                   className="form-check-label"
-                  htmlFor={ingredient.ingredient}
+                  htmlFor={ingredient.description}
                   style={{ width: "5rem" }}
-                  name={ingredient.ingredient}
-                  value={ingredient.amt}
+                  name={ingredient.description}
+                  value={ingredient.quantity}
                   onChange={(e) => {
                     setUpdatedRecipe(handleIngredientUpdate(updatedRecipe, e));
                   }}
                 />
-                g {ingredient.ingredient}
+                g {ingredient.description}
                 <AttachMoneyIcon
                   type="button"
                   onClick={() => setActiveModal(ingredient.id)}

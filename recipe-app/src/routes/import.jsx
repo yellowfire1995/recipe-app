@@ -34,9 +34,10 @@ export default function ImportRecipe() {
       }
     })();
   }, [getAccessTokenSilently]);
+
   const recipe = {
     name: "",
-    img_url: "",
+    img_url: "/default.png",
     servings: 1,
     cuisine: [],
     ingredients: [],
@@ -49,6 +50,7 @@ export default function ImportRecipe() {
   const [ingredientList, setIngredientList] = useState([]);
   const [updatedRecipe, setUpdatedRecipe] = useState(recipe);
 
+  console.log(updatedRecipe);
   const navigate = useNavigate();
 
   async function handleSubmit() {
@@ -74,49 +76,49 @@ export default function ImportRecipe() {
 
   function ingredientCallBack(childData) {
     setUpdatedRecipe({ ...updatedRecipe, ingredients: childData });
-    console.log(updatedRecipe);
   }
 
   return (
     <>
       <Container style={{ width: "100%" }} className="border shadow ">
-        <Row>
-          <CardImg
-            src={updatedRecipe.img_url}
-            style={{ width: "100%", height: "200px" }}
-            className="object-fit-cover"
-          />
+        <ReactForm onSubmit={handleSubmit}>
+          <Row>
+            <CardImg
+              src={updatedRecipe.img_url}
+              style={{ width: "100%", height: "200px" }}
+              className="object-fit-cover"
+            />
 
-          <input
-            type="text"
-            // name="name"
-            value={updatedRecipe.img_url}
-            placeholder="Enter img url..."
-            onChange={(e) =>
-              setUpdatedRecipe({
-                ...updatedRecipe,
-                img_url: e.target.value,
-              })
-            }
-          />
-          <input
-            type="text"
-            // name="name"
-            value={updatedRecipe.url}
-            placeholder="Enter recipe url..."
-            onChange={(e) =>
-              setUpdatedRecipe({
-                ...updatedRecipe,
-                url: e.target.value,
-              })
-            }
-          />
-        </Row>
-        <Row className="d-inline">
-          <Container>
-            <h2>
-              <ReactForm onSubmit={handleSubmit}>
+            <input
+              required
+              type="text"
+              value={updatedRecipe.img_url}
+              placeholder="Enter img url..."
+              onChange={(e) =>
+                setUpdatedRecipe({
+                  ...updatedRecipe,
+                  img_url: e.target.value,
+                })
+              }
+            />
+            <input
+              type="text"
+              // name="name"
+              value={updatedRecipe.url}
+              placeholder="Enter recipe url..."
+              onChange={(e) =>
+                setUpdatedRecipe({
+                  ...updatedRecipe,
+                  url: e.target.value,
+                })
+              }
+            />
+          </Row>
+          <Row className="d-inline">
+            <Container>
+              <h2>
                 <input
+                  required
                   type="text"
                   // name="name"
                   value={updatedRecipe.name}
@@ -132,91 +134,95 @@ export default function ImportRecipe() {
                 <Button type="submit" className="p-1">
                   Save Recipe
                 </Button>
-              </ReactForm>
-            </h2>
+              </h2>
 
-            <label id="servings">Default Servings </label>
-            <input
-              type="number"
-              id="servings"
-              min="0"
-              value={updatedRecipe.servings}
-              onChange={(e) =>
-                setUpdatedRecipe({
-                  ...updatedRecipe,
-                  servings: e.target.value,
-                })
-              }
-              style={{ width: "3rem" }}
-              className="me-2"
-              // name="servings"
-            />
-          </Container>
-        </Row>
-        <Row className="pt-3">
-          <CategorySelector recipe={recipe} handleCallBack={categoryCallBack} />{" "}
-          <CuisineSelector recipe={recipe} handleCallBack={cuisineCallBack} />
-        </Row>
-        <Row>
-          <Col>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Enter recipe ingredients</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={10}
-                value={ingredients}
-                onChange={(e) => setIngredients(e.target.value)}
-                placeholder="Enter ingredient list - one ingredient per line"
+              <label id="servings">Default Servings </label>
+              <input
+                required
+                type="number"
+                id="servings"
+                min="0"
+                value={updatedRecipe.servings}
+                onChange={(e) =>
+                  setUpdatedRecipe({
+                    ...updatedRecipe,
+                    servings: e.target.value,
+                  })
+                }
+                style={{ width: "3rem" }}
+                className="me-2"
+                // name="servings"
               />
-              <Button
-                variant="primary"
-                onClick={async () => {
-                  setIngredientList(await parseIngredients(ingredients));
-                }}
-              >
-                Import Ingredients
-              </Button>
-            </Form.Group>
-            <IngredientsList
-              ingredientsChoices={ingredientList}
+            </Container>
+          </Row>
+          <Row className="pt-3">
+            <CategorySelector
               recipe={recipe}
-              handleCallBack={ingredientCallBack}
-            />
-          </Col>
-          <Col>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Enter Recipe Directions</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={10}
-                value={directions}
-                onChange={(e) => setDirections(e.target.value)}
-                placeholder="Enter directions"
-              />
-              <Button
-                variant="primary"
-                onClick={async () => {
-                  setDirectionList({
-                    ...recipe,
-                    directions: await parseDirections(directions),
-                  });
-                }}
+              handleCallBack={categoryCallBack}
+            />{" "}
+            <CuisineSelector recipe={recipe} handleCallBack={cuisineCallBack} />
+          </Row>
+          <Row>
+            <Col>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlTextarea1"
               >
-                Import Directions
-              </Button>
-            </Form.Group>
-            <DirectionsList
-              recipe={directionList}
-              handleCallBack={directionCallBack}
-            />
-          </Col>
-        </Row>
+                <Form.Label>Enter recipe ingredients</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={10}
+                  value={ingredients}
+                  onChange={(e) => setIngredients(e.target.value)}
+                  placeholder="Enter ingredient list - one ingredient per line"
+                />
+                <Button
+                  variant="primary"
+                  onClick={async () => {
+                    setIngredientList(await parseIngredients(ingredients));
+                  }}
+                >
+                  Import Ingredients
+                </Button>
+              </Form.Group>
+              <IngredientsList
+                ingredientsChoices={ingredientList}
+                recipe={recipe}
+                handleCallBack={ingredientCallBack}
+              />
+            </Col>
+            <Col>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlTextarea1"
+              >
+                <Form.Label>Enter Recipe Directions</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={10}
+                  value={directions}
+                  onChange={(e) => setDirections(e.target.value)}
+                  placeholder="Enter directions"
+                />
+                <Button
+                  variant="primary"
+                  onClick={async () => {
+                    setDirectionList({
+                      ...recipe,
+                      directions: await parseDirections(directions),
+                    });
+                  }}
+                >
+                  Import Directions
+                </Button>
+              </Form.Group>
+              <DirectionsList
+                recipe={directionList}
+                handleCallBack={directionCallBack}
+              />
+            </Col>
+          </Row>
+        </ReactForm>
       </Container>
     </>
   );

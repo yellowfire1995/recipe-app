@@ -5,10 +5,13 @@ import { searchSolr } from "./searchSolr.js";
 
 export async function matchIngredients(ingredients) {
   const ingredientArray = await Promise.all(
-    ingredients.map(async (ingredient) => {
+    ingredients.map(async (ingredient, idx) => {
       try {
         //Search on SOLR to find best match
-        const searchResult = await searchSolr(ingredient.ingredient);
+        const searchResult = await searchSolr(
+          ingredient.description,
+          ingredient.unitOfMeasure
+        );
 
         //Obtain ingredient information from database using search result
         const ingredients = await Promise.all(
@@ -42,23 +45,27 @@ export async function matchIngredients(ingredients) {
             //Test to see if there is a match between original measurement and database measurement to convert into grams
             const [measurement, type] = await findMeasureMatch([
               data.rows[0].gram_label?.trim(),
-              ingredient.measure,
+              ingredient.unitOfMeasure,
             ]);
 
             //Create final ingredient structure
             const finalIngredient = {
               ...ingredient,
-              ingredient: data.rows[0].description.toLowerCase(),
+              id: idx,
+              description: data.rows[0].description.toLowerCase(),
               fdc_id: data.rows[0].fdc_id,
               sr_id: data.rows[0].sr_id,
-              convertAmt: data.rows[0].gram_amt,
-              amt:
-                type == "weight"
-                  ? Math.round(ingredient.origAmt * measurement)
-                  : Math.round(
-                      (ingredient.origAmt / data.rows[0].gram_amt) * measurement
-                    ),
-              altLabel: data.rows[0].gram_label?.trim(),
+              gramConversion: data.rows[0].gram_amt,
+              matchedMeasure: data.rows[0].gram_label
+                ? data.rows[0].gram_label
+                : null,
+              // quantity2:
+              //   type == "weight"
+              //     ? Math.round(ingredient.quantity * measurement)
+              //     : Math.round(
+              //         (ingredient.quantity / data.rows[0].gram_amt) *
+              //           measurement
+              //       ),
             };
             return finalIngredient;
           })

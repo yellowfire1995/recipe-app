@@ -24,7 +24,7 @@ export default function AddPricePopup(props) {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Add price for {i.ingredient.toLowerCase()}
+          Add price for {i.description.toLowerCase()}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

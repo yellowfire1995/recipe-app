@@ -68,8 +68,8 @@ router.get("/:recipeId", async (req, res) => {
               (
                'recipe_id', ingredients.recipe_id, 
                 'id', ingredients.id, 
-                'amt', amt, 
-                'ingredient', SPLIT_PART(food.description, ',', 1),
+                'quantity', amt, 
+                'description', SPLIT_PART(food.description, ',', 1),
                 'niceName', nice_name,
                 'fdc_id', ingredients.fdc_id,
                 'sr_id', ingredients.sr_id,

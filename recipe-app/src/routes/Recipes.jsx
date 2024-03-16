@@ -37,7 +37,7 @@ export default function Recipe() {
   const recipePrice = (
     Math.round(
       recipe.ingredients
-        .map((ingredient) => ingredient.price * ingredient.amt * servs)
+        .map((ingredient) => ingredient.price * ingredient.quantity * servs)
         .reduce((partialSum, a) => partialSum + a, 0) * 100
     ) / 100
   ).toFixed(2);
@@ -139,9 +139,9 @@ export default function Recipe() {
                       htmlFor={ingredient.id}
                     >
                       <div className="d-inline fw-semibold">{`${Math.round(
-                        ingredient.amt * servs
+                        ingredient.quantity * servs
                       )} grams`}</div>
-                      {` ${ingredient.ingredient}`}{" "}
+                      {` ${ingredient.description}`}{" "}
                       {ingredient.engAmt
                         ? `(${
                             Math.round(ingredient.engAmt * servs * 100) / 100 +
@@ -149,7 +149,10 @@ export default function Recipe() {
                             ingredient.engLabel
                           }) - $${(
                             Math.round(
-                              ingredient.price * ingredient.amt * servs * 100
+                              ingredient.price *
+                                ingredient.quantity *
+                                servs *
+                                100
                             ) / 100
                           ).toFixed(2)}`
                         : ""}{" "}

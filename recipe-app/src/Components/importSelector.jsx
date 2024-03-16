@@ -11,33 +11,40 @@ export function ImportSelector(props) {
   return (
     <div key={origIdx}>
       <input
-        id={ingredient.ingredient}
+        required
+        key={origIdx}
+        id={ingredient.description}
         type="number"
         min="0"
         step=".1"
         className="form-check-label"
-        htmlFor={ingredient.ingredient}
+        htmlFor={ingredient.id}
         style={{ width: "5rem" }}
-        name={ingredient.ingredient}
-        value={ingredient.amt}
+        name={ingredient.description}
+        value={ingredient.quantity}
         onChange={(e) =>
-          setIngredient({ ...ingredient, amt: parseInt(e.target.value) })
+          setIngredient({ ...ingredient, quantity: parseFloat(e.target.value) })
         }
       />
-      g
+
       <select
         onChange={(e) => setIngredient(ingredientChoices[e.target.value])}
         style={{ width: "60%" }}
       >
-        {ingredientChoices.map((ingredient, idx) => (
+        {ingredientChoices.map((choice, idx) => (
           <>
             <option
               value={idx}
-              key={ingredient.fdc_id}
-              style={{ color: ingredient.amt > 0 ? "green" : "black" }}
+              key={choice.id}
+              id={idx}
+              style={{ color: choice.gramConversion ? "green" : "black" }}
             >
-              {`${ingredient.ingredient} ${
-                ingredient.altLabel ? `(${ingredient.altLabel})` : ""
+              {`${choice.matchedMeasure} ${choice.description} ${
+                choice.gramConversion
+                  ? `(${parseInt(
+                      ingredient.quantity / choice.gramConversion
+                    )}g )`
+                  : ""
               }`}
             </option>
           </>

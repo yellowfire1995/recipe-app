@@ -1,12 +1,12 @@
 import axios from "axios";
 import "dotenv/config";
 
-export async function searchSolr(ingredient) {
+export async function searchSolr(ingredient, measure) {
   try {
     const searchResult = await axios.post(
       `${process.env.SOLR_HOST}/solr/allIngredients/select`,
       {
-        query: `price:* desc2:raw sr_secondary:* branded_secondary:* ${ingredient}`,
+        query: `price:* desc2:raw^2 sr_secondary:${measure} branded_secondary:* ${ingredient} `,
         params: {
           defType: "edismax",
           indent: "true",
