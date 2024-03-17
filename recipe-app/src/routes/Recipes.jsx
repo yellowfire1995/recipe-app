@@ -130,6 +130,7 @@ export default function Recipe() {
                       id={ingredient.id}
                       onClick={() => handleCheck(ingredient.id)}
                     />
+
                     <label
                       className={`form-check-label text-lowercase ${
                         checkedArray.includes(ingredient.id)
@@ -138,24 +139,29 @@ export default function Recipe() {
                       }`}
                       htmlFor={ingredient.id}
                     >
-                      <div className="d-inline fw-semibold">{`${Math.round(
-                        ingredient.quantity * servs
-                      )} grams`}</div>
-                      {` ${ingredient.description}`}{" "}
-                      {ingredient.engAmt
-                        ? `(${
-                            Math.round(ingredient.engAmt * servs * 100) / 100 +
+                      <div className="d-inline fw-semibold">
+                        {ingredient.userG
+                          ? Math.round(ingredient.userG * servs * 100) / 100 +
                             " " +
-                            ingredient.engLabel
-                          }) - $${(
-                            Math.round(
-                              ingredient.price *
-                                ingredient.quantity *
-                                servs *
-                                100
-                            ) / 100
-                          ).toFixed(2)}`
-                        : ""}{" "}
+                            ingredient.userLabel
+                          : ingredient.engAmt
+                          ? `${
+                              Math.round(ingredient.engAmt * servs * 100) /
+                                100 +
+                              " " +
+                              ingredient.engLabel
+                            }`
+                          : `${Math.round(ingredient.quantity * servs)}g`}
+                      </div>
+                      {ingredient.engAmt
+                        ? ` (${Math.round(ingredient.quantity * servs)}g)`
+                        : ""}
+                      {` ${ingredient.description}`}{" "}
+                      {`- $${(
+                        Math.round(
+                          ingredient.price * ingredient.quantity * servs * 100
+                        ) / 100
+                      ).toFixed(2)}`}{" "}
                     </label>
                     <AttachMoneyIcon
                       type="button"

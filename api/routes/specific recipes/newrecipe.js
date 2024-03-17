@@ -26,8 +26,8 @@ router.post("/", async (req, res) => {
       ), 
       i AS
       (
-      insert into ingredients (recipe_id,  amt, fdc_id, sr_id)
-      SELECT (SELECT recipe_id FROM r),(t ->> 'quantity')::real/(t ->> 'gramConversion')::real,(t ->> 'fdc_id')::int, (t ->> 'sr_id')::int
+      insert into ingredients (recipe_id,  amt, fdc_id, sr_id,  alt_g_conv, alt_label)
+      SELECT (SELECT recipe_id FROM r),(t ->> 'quantity')::real/(t ->> 'gramConversion')::real,(t ->> 'fdc_id')::int, (t ->> 'sr_id')::int,(t ->> 'userGrams')::float, (t ->> 'userMeasure')
       from json_array_elements($7::json) t 
       ),
       cat as (

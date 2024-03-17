@@ -29,7 +29,7 @@ function addNewIngredient(updatedRecipe, idNum, name) {
     recipe_id: updatedRecipe.recipe_id,
     id: 1 + currentLastingredient,
     quantity: 10,
-    ingredient: name,
+    description: name,
     fdc_id: idNum,
   };
   const finalRecipe = { ...updatedRecipe.ingredients.push(ingredient) };

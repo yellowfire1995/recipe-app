@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AddDensityPopup from "./AddWeightModal.jsx";
 
 export function ImportSelector(props) {
   const ingredientChoices = props.ingredients;
@@ -8,6 +9,15 @@ export function ImportSelector(props) {
 
   useEffect(() => props.handleCallback(ingredient), [ingredient]);
 
+  function setDensity(grams, description) {
+    setIngredient({
+      ...ingredient,
+      userGrams: 1 / grams,
+      userMeasure: description,
+      gramConversion: 1 / grams,
+    });
+  }
+
   return (
     <div key={origIdx}>
       <input
@@ -16,7 +26,7 @@ export function ImportSelector(props) {
         id={ingredient.description}
         type="number"
         min="0"
-        step=".1"
+        step=".01"
         className="form-check-label"
         htmlFor={ingredient.id}
         style={{ width: "5rem" }}
@@ -39,9 +49,15 @@ export function ImportSelector(props) {
               id={idx}
               style={{ color: choice.gramConversion ? "green" : "black" }}
             >
-              {`${choice.matchedMeasure} ${choice.description} ${
+              {`${
+                choice.matchedMeasure
+                  ? choice.matchedMeasure
+                  : choice.unitOfMeasure
+                  ? choice.unitOfMeasure
+                  : ""
+              } ${choice.description} ${
                 choice.gramConversion
-                  ? `(${parseInt(
+                  ? `${choice.fdc_id} (${parseInt(
                       ingredient.quantity / choice.gramConversion
                     )}g )`
                   : ""
@@ -50,6 +66,7 @@ export function ImportSelector(props) {
           </>
         ))}
       </select>
+      {<AddDensityPopup ingredient={ingredient} callback={setDensity} />}
     </div>
   );
 }

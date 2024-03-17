@@ -50,7 +50,6 @@ export default function ImportRecipe() {
   const [ingredientList, setIngredientList] = useState([]);
   const [updatedRecipe, setUpdatedRecipe] = useState(recipe);
 
-  console.log(updatedRecipe);
   const navigate = useNavigate();
 
   async function handleSubmit() {
@@ -75,6 +74,7 @@ export default function ImportRecipe() {
   }
 
   function ingredientCallBack(childData) {
+    console.log(childData);
     setUpdatedRecipe({ ...updatedRecipe, ingredients: childData });
   }
 

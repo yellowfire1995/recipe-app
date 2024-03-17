@@ -3,10 +3,6 @@ import Container from "react-bootstrap/esm/Container";
 import { useEffect, useState } from "react";
 import InputGroup from "react-bootstrap/InputGroup";
 import _ from "lodash";
-import AddPricePopup from "../Components/priceaddpopup.jsx";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { ingredientSearch } from "../../db/queries.js";
 import { ImportSelector } from "./importSelector.jsx";
 
 // function deleteIngredient(updatedRecipe, e) {
@@ -68,6 +64,7 @@ export default function IngredientsList(props) {
     props.ingredientsChoices
   );
   const [activeIngredientList, setActiveIngredientList] = useState([]);
+  const [activeModal, setActiveModal] = useState();
 
   function ingredientCallBack(childData) {
     setActiveIngredientList(

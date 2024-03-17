@@ -17,14 +17,14 @@ export async function matchIngredients(ingredients) {
         const ingredients = await Promise.all(
           searchResult.map(async (doc) => {
             const query = {
-              text: `SELECT description, food.fdc_id, case 
+              text: `SELECT food.description, food.fdc_id, case 
               when food.data_type = 'branded_food' 
-                then bf.gram_modifier
+                then coalesce(bf.gram_modifier, um.grams)
               when food.data_type = 'sr_legacy_food' 
                 then fp.gram_modifier end as gram_amt,
                 case 
                 when food.data_type = 'branded_food' 
-                  then bf.alt_label
+                  then coalesce(bf.alt_label, um.description)
                 when food.data_type = 'sr_legacy_food' 
                   then fp.modifier  end as gram_label,
                 case 
@@ -34,8 +34,9 @@ export async function matchIngredients(ingredients) {
                   from food
                   left join branded_food bf on bf.fdc_id = food.fdc_id
                   left join food_portion fp on fp.fdc_id = food.fdc_id
+                  left join user_measures um on um.fdc_id = food.fdc_id 
                    where
-              food.fdc_id = $1 and (id is null or id = $2)
+              food.fdc_id = $1 and (fp.id is null or fp.id = $2)
               ;
               `,
               values: [doc.fdc_id, doc.sr_id],
@@ -43,10 +44,9 @@ export async function matchIngredients(ingredients) {
             const data = await db.query(query);
 
             //Test to see if there is a match between original measurement and database measurement to convert into grams
-            const [measurement, type] = await findMeasureMatch([
-              data.rows[0].gram_label?.trim(),
-              ingredient.unitOfMeasure,
-            ]);
+            const weightConversion = await findMeasureMatch(
+              ingredient.unitOfMeasure
+            );
 
             //Create final ingredient structure
             const finalIngredient = {
@@ -55,8 +55,14 @@ export async function matchIngredients(ingredients) {
               description: data.rows[0].description.toLowerCase(),
               fdc_id: data.rows[0].fdc_id,
               sr_id: data.rows[0].sr_id,
-              gramConversion: data.rows[0].gram_amt,
-              matchedMeasure: data.rows[0].gram_label
+              gramConversion: weightConversion
+                ? weightConversion
+                : data.rows[0].gram_amt
+                ? data.rows[0].gram_amt
+                : null,
+              matchedMeasure: weightConversion
+                ? ingredient.unitOfMeasure
+                : data.rows[0].gram_label
                 ? data.rows[0].gram_label
                 : null,
               // quantity2:

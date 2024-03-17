@@ -67,7 +67,9 @@ router.get("/:recipeId", async (req, res) => {
             Select COALESCE(JSON_AGG( json_build_object
               (
                'recipe_id', ingredients.recipe_id, 
-                'id', ingredients.id, 
+                'id', ingredients.id,
+                'userG', coalesce(ingredients.alt_g_conv*amt, null),
+                'userLabel', coalesce(ingredients.alt_label, null), 
                 'quantity', amt, 
                 'description', SPLIT_PART(food.description, ',', 1),
                 'niceName', nice_name,
@@ -75,12 +77,12 @@ router.get("/:recipeId", async (req, res) => {
                 'sr_id', ingredients.sr_id,
                 'engAmt', case 
                                 when food.data_type = 'branded_food' 
-                                    then bf.gram_modifier*amt
+                                then coalesce(bf.gram_modifier*amt, 1/um.grams*amt)
                                 when food.data_type = 'sr_legacy_food' 
                                     then fp.gram_modifier*amt end,
                  'engLabel', case 
                                 when food.data_type = 'branded_food' 
-                                    then bf.alt_label
+                                    then coalesce(bf.alt_label, um.description)
                                 when food.data_type = 'sr_legacy_food' 
                                     then fp.modifier  end,
                                     
@@ -96,6 +98,8 @@ router.get("/:recipeId", async (req, res) => {
      left join branded_food bf on bf.fdc_id = food.fdc_id
      left join lateral (select modifier, gram_modifier, fdc_id, min(id) as id from food_portion fp where fp.id = ingredients.sr_id group by modifier, gram_modifier, fdc_id limit 1) as fp on fp.fdc_id = ingredients.fdc_id
      left join lateral (select fdc_id, package_grams, package_cost, url, max(date), price_g from food_prices fps where fps.fdc_id = ingredients.fdc_id group by package_grams, fdc_id, package_cost, url, price_g limit 1  ) as fps on fps.fdc_id = ingredients.fdc_id
+     left join user_measures um on um.fdc_id = ingredients.fdc_id 
+     --need to make this a lateral join
      WHERE recipes.recipe_id = $1
           ) as ingredients,
           (
