@@ -153,7 +153,7 @@ export default function Recipe() {
                             }`
                           : `${Math.round(ingredient.quantity * servs)}g`}
                       </div>
-                      {ingredient.engAmt
+                      {ingredient.engAmt || ingredient.userG
                         ? ` (${Math.round(ingredient.quantity * servs)}g)`
                         : ""}
                       {` ${ingredient.description}`}{" "}

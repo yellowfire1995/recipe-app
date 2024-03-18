@@ -18,7 +18,7 @@ function updateCuisines(updatedRecipe, newCuisines) {
 
 export default function CuisineSelector(props) {
   const [cuisines, setCuisines] = useState([]);
-  const [updatedRecipe, setUpdatedRecipe] = useState(props.recipe);
+  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
 
   useEffect(() => {
     async function startFetching() {
@@ -28,8 +28,6 @@ export default function CuisineSelector(props) {
 
     startFetching();
   }, []);
-
-  useEffect(() => props.handleCallBack(updatedRecipe.cuisine), [updatedRecipe]);
 
   return (
     <Autocomplete

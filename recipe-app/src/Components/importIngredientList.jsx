@@ -5,78 +5,9 @@ import InputGroup from "react-bootstrap/InputGroup";
 import _ from "lodash";
 import { ImportSelector } from "./importSelector.jsx";
 
-// function deleteIngredient(updatedRecipe, e) {
-//   const currentRecipe = _.remove(
-//     updatedRecipe.ingredients,
-//     (ingredient) => ingredient.id == e.target.id
-//   );
-
-//   return { ...updatedRecipe };
-// }
-
-// function addNewIngredient(updatedRecipe, idNum, name) {
-//   const currentLastingredient =
-//     updatedRecipe.ingredients.length > 0
-//       ? _.last(updatedRecipe.ingredients).id
-//       : 0;
-
-//   const ingredient = {
-//     recipe_id: updatedRecipe.recipe_id,
-//     id: 1 + currentLastingredient,
-//     amt: 10,
-//     ingredient: name,
-//     fdc_id: idNum,
-//   };
-//   const finalRecipe = { ...updatedRecipe.ingredients.push(ingredient) };
-//   return { ...updatedRecipe };
-// }
-
-// function handleIngredientUpdate2(activeIngredientList, newIngredient) {
-//   return {
-//     ...updatedRecipe,
-//     ingredients: updatedRecipe.ingredients.map((ingredient) => {
-//       if (ingredient.description == e.target.id) {
-//         return {
-//           ...ingredient,
-//           amt: e.target.valueAsNumber,
-//         };
-//       } else {
-//         return { ...ingredient };
-//       }
-//     }),
-//   };
-// }
-
-function handleIngredientUpdate(activeIngredientList, newIngredient) {
-  const activeIndex = activeIngredientList.findIndex(
-    (ingredient) => ingredient.id == newIngredient.id
-  );
-
-  activeIndex < 0
-    ? activeIngredientList.push(newIngredient)
-    : activeIngredientList.splice(activeIndex, 1, newIngredient);
-
-  return activeIngredientList;
-}
-
 export default function IngredientsList(props) {
-  const [ingredientList, setIngredientList] = useState(
-    props.ingredientsChoices
-  );
-  const [activeIngredientList, setActiveIngredientList] = useState([]);
-  const [activeModal, setActiveModal] = useState();
-
-  function ingredientCallBack(childData) {
-    setActiveIngredientList(
-      handleIngredientUpdate(activeIngredientList, childData)
-    );
-    props.handleCallBack(activeIngredientList);
-  }
-
-  useEffect(
-    () => setIngredientList(props.ingredientsChoices),
-    [props.ingredientsChoices]
-  );
+  const [ingredientList, setIngredientList] = props.ingredientList;
+  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
 
   return (
     <Container>
@@ -86,8 +17,8 @@ export default function IngredientsList(props) {
           {ingredientList.map((ingredientChoices, idx) => {
             return (
               <ImportSelector
+                updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
                 ingredients={ingredientChoices}
-                handleCallback={ingredientCallBack}
                 origIdx={idx}
               />
             );

@@ -1,28 +1,34 @@
-import { useEffect, useState } from "react";
 import AddDensityPopup from "./AddWeightModal.jsx";
 
 export function ImportSelector(props) {
   const ingredientChoices = props.ingredients;
   const origIdx = props.origIdx;
-
-  const [ingredient, setIngredient] = useState(ingredientChoices[0]);
-
-  useEffect(() => props.handleCallback(ingredient), [ingredient]);
+  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
+  const ingredient = updatedRecipe.ingredients[origIdx];
 
   function setDensity(grams, description) {
-    setIngredient({
-      ...ingredient,
-      userGrams: 1 / grams,
-      userMeasure: description,
-      gramConversion: 1 / grams,
+    setUpdatedRecipe({
+      ...updatedRecipe,
+      ingredients: updatedRecipe.ingredients.map((ingredient) => {
+        if (ingredient.id === origIdx) {
+          return {
+            ...ingredient,
+            userGrams: 1 / grams,
+            userMeasure: description,
+            gramConversion: 1 / grams,
+          };
+        } else {
+          return { ...ingredient };
+        }
+      }),
     });
   }
 
   return (
-    <div key={origIdx}>
+    <div>
       <input
         required
-        key={origIdx}
+        key={`input${origIdx}`}
         id={ingredient.description}
         type="number"
         min="0"
@@ -31,22 +37,48 @@ export function ImportSelector(props) {
         htmlFor={ingredient.id}
         style={{ width: "5rem" }}
         name={ingredient.description}
-        value={ingredient.quantity}
-        onChange={(e) =>
-          setIngredient({ ...ingredient, quantity: parseFloat(e.target.value) })
-        }
+        value={updatedRecipe.ingredients[origIdx]?.quantity}
+        onChange={(e) => {
+          setUpdatedRecipe({
+            ...updatedRecipe,
+            ingredients: updatedRecipe.ingredients.map((ingredient) => {
+              if (ingredient.id === origIdx) {
+                return {
+                  ...ingredient,
+                  quantity: parseFloat(e.target.value),
+                };
+              } else {
+                return { ...ingredient };
+              }
+            }),
+          });
+        }}
       />
 
       <select
-        onChange={(e) => setIngredient(ingredientChoices[e.target.value])}
-        style={{ width: "60%" }}
+        key={`selector${origIdx}`}
+        onChange={(e) =>
+          setUpdatedRecipe({
+            ...updatedRecipe,
+            ingredients: updatedRecipe.ingredients.map((ingredient) => {
+              if (ingredient.id === origIdx) {
+                return ingredientChoices[e.target.value];
+              } else {
+                return { ...ingredient };
+              }
+            }),
+          })
+        }
+        style={{
+          width: "60%",
+        }}
       >
         {ingredientChoices.map((choice, idx) => (
           <>
             <option
               value={idx}
-              key={choice.id}
-              id={idx}
+              key={`${origIdx}${idx}`}
+              id={origIdx}
               style={{ color: choice.gramConversion ? "green" : "black" }}
             >
               {`${
@@ -66,7 +98,13 @@ export function ImportSelector(props) {
           </>
         ))}
       </select>
-      {<AddDensityPopup ingredient={ingredient} callback={setDensity} />}
+      {
+        <AddDensityPopup
+          ingredient={ingredient}
+          callback={setDensity}
+          htmlColor={ingredient.gramConversion ? "black" : "red"}
+        />
+      }
     </div>
   );
 }

@@ -16,6 +16,7 @@ import { newRecipe } from "../../db/queries";
 import httpClient from "../../db/axiosConfig";
 import { useAuth0 } from "@auth0/auth0-react";
 import { auth0Audience } from "../../env/env";
+import { update } from "lodash";
 
 export default function ImportRecipe() {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -35,7 +36,10 @@ export default function ImportRecipe() {
     })();
   }, [getAccessTokenSilently]);
 
-  const recipe = {
+  const [ingredients, setIngredients] = useState("");
+  const [directions, setDirections] = useState("");
+  const [ingredientList, setIngredientList] = useState([]);
+  const [updatedRecipe, setUpdatedRecipe] = useState({
     name: "",
     img_url: "/default.png",
     servings: 1,
@@ -43,12 +47,19 @@ export default function ImportRecipe() {
     ingredients: [],
     directions: [],
     category: [],
-  };
-  const [ingredients, setIngredients] = useState("");
-  const [directions, setDirections] = useState("");
-  const [directionList, setDirectionList] = useState(recipe);
-  const [ingredientList, setIngredientList] = useState([]);
-  const [updatedRecipe, setUpdatedRecipe] = useState(recipe);
+  });
+
+  async function getIngredientChoices() {
+    const choices = await parseIngredients(ingredients);
+
+    setUpdatedRecipe({
+      ...updatedRecipe,
+      ingredients: choices.map((choice) => choice[0]),
+    });
+    console.log(choices);
+
+    return choices;
+  }
 
   const navigate = useNavigate();
 
@@ -59,23 +70,6 @@ export default function ImportRecipe() {
     } catch (err) {
       console.error(1, err);
     }
-  }
-
-  function directionCallBack(childData) {
-    setUpdatedRecipe({ ...updatedRecipe, directions: childData });
-  }
-
-  function cuisineCallBack(childData) {
-    setUpdatedRecipe({ ...updatedRecipe, cuisine: childData });
-  }
-
-  function categoryCallBack(childData) {
-    setUpdatedRecipe({ ...updatedRecipe, category: childData });
-  }
-
-  function ingredientCallBack(childData) {
-    console.log(childData);
-    setUpdatedRecipe({ ...updatedRecipe, ingredients: childData });
   }
 
   return (
@@ -134,6 +128,13 @@ export default function ImportRecipe() {
                 <Button type="submit" className="p-1">
                   Save Recipe
                 </Button>
+                <Button
+                  type="button"
+                  onClick={() => console.log(updatedRecipe.ingredients)}
+                  className="p-1"
+                >
+                  Test
+                </Button>
               </h2>
 
               <label id="servings">Default Servings </label>
@@ -157,10 +158,11 @@ export default function ImportRecipe() {
           </Row>
           <Row className="pt-3">
             <CategorySelector
-              recipe={recipe}
-              handleCallBack={categoryCallBack}
+              updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
             />{" "}
-            <CuisineSelector recipe={recipe} handleCallBack={cuisineCallBack} />
+            <CuisineSelector
+              updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
+            />
           </Row>
           <Row>
             <Col>
@@ -179,7 +181,8 @@ export default function ImportRecipe() {
                 <Button
                   variant="primary"
                   onClick={async () => {
-                    setIngredientList(await parseIngredients(ingredients));
+                    console.log("importing...");
+                    setIngredientList(await getIngredientChoices());
                   }}
                 >
                   Import Ingredients
@@ -187,8 +190,8 @@ export default function ImportRecipe() {
               </Form.Group>
               <IngredientsList
                 ingredientsChoices={ingredientList}
-                recipe={recipe}
-                handleCallBack={ingredientCallBack}
+                ingredientList={[ingredientList, setIngredientList]}
+                updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
               />
             </Col>
             <Col>
@@ -207,8 +210,8 @@ export default function ImportRecipe() {
                 <Button
                   variant="primary"
                   onClick={async () => {
-                    setDirectionList({
-                      ...recipe,
+                    setUpdatedRecipe({
+                      ...updatedRecipe,
                       directions: await parseDirections(directions),
                     });
                   }}
@@ -217,8 +220,7 @@ export default function ImportRecipe() {
                 </Button>
               </Form.Group>
               <DirectionsList
-                recipe={directionList}
-                handleCallBack={directionCallBack}
+                updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
               />
             </Col>
           </Row>

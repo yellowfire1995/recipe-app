@@ -47,14 +47,7 @@ function deleteDirection(updatedRecipe, e) {
 }
 
 export default function DirectionsList(props) {
-  const [updatedRecipe, setUpdatedRecipe] = useState(props.recipe);
-
-  useEffect(
-    () => props.handleCallBack(updatedRecipe.directions),
-    [updatedRecipe]
-  );
-
-  useEffect(() => setUpdatedRecipe(props.recipe), [props.recipe]);
+  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
 
   return (
     <Container>

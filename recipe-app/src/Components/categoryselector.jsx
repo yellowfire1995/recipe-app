@@ -19,7 +19,7 @@ function updateCategories(updatedRecipe, newCategories) {
 
 export default function CategorySelector(props) {
   const [categories, setCategories] = useState([]);
-  const [updatedRecipe, setUpdatedRecipe] = useState(props.recipe);
+  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
 
   useEffect(() => {
     async function startFetching() {
@@ -29,11 +29,6 @@ export default function CategorySelector(props) {
 
     startFetching();
   }, []);
-
-  useEffect(
-    () => props.handleCallBack(updatedRecipe.category),
-    [updatedRecipe]
-  );
 
   return (
     <Autocomplete

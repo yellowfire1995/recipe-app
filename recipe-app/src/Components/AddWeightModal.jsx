@@ -28,7 +28,11 @@ export default function AddDensityPopup(props) {
 
   return (
     <>
-      <ScaleIcon onClick={handleShow} />
+      <ScaleIcon
+        onClick={handleShow}
+        color={props.color}
+        htmlColor={props.htmlColor}
+      />
       <Modal
         {...props}
         size="lg"

@@ -46,14 +46,6 @@ export default function Edit() {
     setUpdatedRecipe({ ...updatedRecipe, directions: childdata });
   }
 
-  function cuisineCallBack(childdata) {
-    setUpdatedRecipe({ ...updatedRecipe, cuisine: childdata });
-  }
-
-  function categoryCallBack(childdata) {
-    setUpdatedRecipe({ ...updatedRecipe, category: childdata });
-  }
-
   if (user.sub == recipe.author && isAuthenticated) {
     return (
       <>
@@ -154,16 +146,13 @@ export default function Edit() {
               </Col>
               <Col>
                 <CategorySelector
-                  recipe={recipe}
-                  handleCallBack={categoryCallBack}
+                  updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
                 />{" "}
                 <CuisineSelector
-                  recipe={recipe}
-                  handleCallBack={cuisineCallBack}
+                  updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
                 />
                 <DirectionsList
-                  recipe={recipe}
-                  handleCallBack={directionCallBack}
+                  updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
                 />
               </Col>
             </Row>
