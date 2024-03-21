@@ -189,3 +189,21 @@ export async function getNutritionInfo(recipeId) {
     console.error(error);
   }
 }
+
+//Get recipe data from url
+export async function scrapeRecipe(url) {
+  try {
+    const recipe = await httpClient.post(
+      `${server}/import/scrape`,
+      { url: url },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return recipe.data;
+  } catch (error) {
+    console.error(error);
+  }
+}

@@ -17,6 +17,7 @@ import importIngredientsRoute from "./routes/import/ingredients.js";
 import auth0Route from "./routes/auth/auth0.js";
 import myRecipesRoute from "./routes/specific recipes/myrecipes.js";
 import getPriceRoute from "./routes/specific recipes/getprice.js";
+import scrapeRecipeRoute from "./routes/import/scrapeRecipe.js";
 
 const _ = process.env;
 const app = express();
@@ -48,6 +49,7 @@ app.use("/cuisines", cuisineRouter);
 app.use("/sidebarcuisines", sidebarCuisinesRoute);
 app.use("/import", importDirectionsRoute);
 app.use("/import", importIngredientsRoute);
+app.use("/import", scrapeRecipeRoute);
 app.use("/profile", auth0Route);
 app.use("/myrecipes", myRecipesRoute);
 app.use("/getPrice", getPriceRoute);

@@ -9,7 +9,7 @@ import CuisineSelector from "../Components/cuisineselector";
 import CategorySelector from "../Components/categoryselector";
 import Row from "react-bootstrap/esm/Row";
 import CardImg from "react-bootstrap/esm/CardImg";
-import { parseDirections } from "../../db/queries";
+import { parseDirections, scrapeRecipe } from "../../db/queries";
 import { parseIngredients } from "../../db/queries";
 import Container from "react-bootstrap/esm/Container";
 import { newRecipe } from "../../db/queries";
@@ -48,6 +48,30 @@ export default function ImportRecipe() {
     directions: [],
     category: [],
   });
+
+  async function handleImport(scrapedData) {
+    const ingredientString = scrapedData.recipeIngredient.join("\r\n");
+    const directionString =
+      typeof scrapedData.recipeInstructions == "string"
+        ? scrapedData.recipeInstructions
+        : scrapedData.recipeInstructions
+            .map((direction) => direction.text)
+            .join("\r\n");
+
+    setIngredients(ingredientString);
+    setDirections(directionString);
+    const choices = await parseIngredients(ingredientString);
+    const directions = await parseDirections(directionString);
+    setUpdatedRecipe({
+      ...updatedRecipe,
+      directions: directions,
+      img_url: scrapedData.image?.url,
+      name: scrapedData.name ? scrapedData.name : "",
+      ingredients: choices.map((choice) => choice[0]),
+    });
+
+    setIngredientList(choices);
+  }
 
   async function getIngredientChoices() {
     const choices = await parseIngredients(ingredients);
@@ -97,7 +121,7 @@ export default function ImportRecipe() {
             />
             <input
               type="text"
-              // name="name"
+              name="importURL"
               value={updatedRecipe.url}
               placeholder="Enter recipe url..."
               onChange={(e) =>
@@ -107,6 +131,15 @@ export default function ImportRecipe() {
                 })
               }
             />
+
+            <Button
+              size="sm"
+              onClick={async () =>
+                handleImport(await scrapeRecipe(updatedRecipe.url))
+              }
+            >
+              Import
+            </Button>
           </Row>
           <Row className="d-inline">
             <Container>
