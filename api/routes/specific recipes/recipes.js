@@ -36,9 +36,10 @@ async function checkAuth(req, res, next) {
 }
 
 router.get("/:recipeId", async (req, res) => {
-  let data;
-  const query = {
-    text: `SELECT recipes.* ,
+  try {
+    let data;
+    const query = {
+      text: `SELECT recipes.* ,
     (
            Select COALESCE(JSON_AGG(json_build_object(
                 'id',  recipe_cuisines.id, 
@@ -68,18 +69,18 @@ router.get("/:recipeId", async (req, res) => {
               (
                'recipe_id', ingredients.recipe_id, 
                 'id', ingredients.id,
-                'userG', coalesce(ingredients.alt_g_conv*amt, null),
+                'userG', coalesce(ingredients.alt_g_conv, null),
                 'userLabel', coalesce(ingredients.alt_label, null), 
                 'quantity', amt, 
                 'description', SPLIT_PART(food.description, ',', 1),
                 'niceName', nice_name,
                 'fdc_id', ingredients.fdc_id,
                 'sr_id', ingredients.sr_id,
-                'engAmt', case 
+                'gramConversion', case 
                                 when food.data_type = 'branded_food' 
-                                then coalesce(bf.gram_modifier*amt, 1/um.grams*amt)
+                                then coalesce(bf.gram_modifier, 1/um.grams)
                                 when food.data_type = 'sr_legacy_food' 
-                                    then fp.gram_modifier*amt end,
+                                    then fp.gram_modifier end,
                  'engLabel', case 
                                 when food.data_type = 'branded_food' 
                                     then coalesce(bf.alt_label, um.description)
@@ -117,14 +118,15 @@ router.get("/:recipeId", async (req, res) => {
              
                 ;`,
 
-    values: [req.params.recipeId],
-  };
-  try {
+      values: [req.params.recipeId],
+    };
+
     data = await db.query(query);
 
     res.send(data.rows);
   } catch (error) {
     console.error(error);
+    res.status(404).send("Recipe not found");
   }
 });
 

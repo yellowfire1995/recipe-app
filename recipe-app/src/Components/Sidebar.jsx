@@ -1,21 +1,18 @@
-import React, { useState, useRef, useEffect } from "react";
-import Accordion from "react-bootstrap/Accordion";
-import ListGroup from "react-bootstrap/ListGroup";
-import ListGroupItem from "react-bootstrap/esm/ListGroupItem";
-// import { getAllIds, changeActive } from "../../trash/filters.js";
-import AccordionHeader from "react-bootstrap/esm/AccordionHeader.js";
-import AccordionBody from "react-bootstrap/esm/AccordionBody.js";
-import { useLoaderData, useSubmit, useFetcher } from "react-router-dom";
-import Form from "react-bootstrap/Form";
+import Loading from "./Loading.jsx";
 import SearchCheckboxList from "./searchcheckboxlist.jsx";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Sidebar(props) {
-  const cuisines = props.cuisines;
-  return (
-    <>
-      <SearchCheckboxList title="Cuisines" list={cuisines} />
-    </>
-  );
+  const sidebarQuery = useQuery({
+    queryKey: ["sidebar"],
+    queryFn: props.fetcher,
+  });
+
+  if (sidebarQuery.isPending) {
+    return <Loading />;
+  }
+
+  return <SearchCheckboxList title="Cuisines" list={sidebarQuery.data} />;
 }
 
 // export default function Sidebar(props) {

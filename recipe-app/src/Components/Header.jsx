@@ -43,11 +43,9 @@ function Header() {
     >
       <Container>
         <Navbar.Brand>myRecipe</Navbar.Brand>
-        <Link to="/">All Recipes</Link>
+        <Link to="/recipes">All Recipes</Link>
         <Link to="/myrecipes">Your Recipes</Link>
-        <Link to="/ingredients">Ingredients</Link>
-        <Link to="/newrecipe">New Recipe</Link>
-        <Link to="/importrecipe">Import Recipe </Link>
+        <Link to="/importrecipe">Add Recipe </Link>
 
         <Navbar.Text>
           Signed in as: <Link to="/profile">{userData?.nickname} </Link>

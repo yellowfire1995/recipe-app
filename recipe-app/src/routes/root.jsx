@@ -12,12 +12,16 @@ export async function action({ params, request }) {
   return redirect(`/`);
 }
 
+//add tanstack query for getaccesstoken silently to fix refresh bug?
+
 export default function App() {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
   useEffect(() => {
-    addAccessTokenInterceptor(getAccessTokenSilently);
-  }, [getAccessTokenSilently]);
+    if (isAuthenticated) {
+      addAccessTokenInterceptor(getAccessTokenSilently);
+    }
+  }, [getAccessTokenSilently, isAuthenticated]);
 
   return (
     <div>

@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState, useEffect } from "react";
 import Col from "react-bootstrap/esm/Col";
-import IngredientsList from "../Components/importIngredientList";
+import ImportIngredientsList from "../Components/importIngredientList";
 import DirectionsList from "../Components/directionslist";
 import CuisineSelector from "../Components/cuisineselector";
 import CategorySelector from "../Components/categoryselector";
@@ -16,12 +16,16 @@ import { newRecipe } from "../../db/queries";
 import httpClient from "../../db/axiosConfig";
 import { useAuth0 } from "@auth0/auth0-react";
 import { auth0Audience } from "../../env/env";
-import { update } from "lodash";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "../main";
+import { getMyRecipeCards } from "../../db/queries";
+import { getRecipeCards } from "../../db/queries";
 
 export default function ImportRecipe() {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const { getAccessTokenSilently } = useAuth0();
   const [userData, setUserData] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -47,6 +51,26 @@ export default function ImportRecipe() {
     ingredients: [],
     directions: [],
     category: [],
+  });
+
+  const mutation = useMutation({
+    mutationFn: () => {
+      return newRecipe(updatedRecipe, userData);
+    },
+    onError: () => {
+      alert("Please try again!");
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["AllRecipes"],
+        refetchType: "all",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["MyRecipes"],
+        refetchType: "all",
+      });
+      navigate(`/recipes/${data}`);
+    },
   });
 
   async function handleImport(scrapedData) {
@@ -85,21 +109,10 @@ export default function ImportRecipe() {
     return choices;
   }
 
-  const navigate = useNavigate();
-
-  async function handleSubmit() {
-    try {
-      const recipeId = await newRecipe(updatedRecipe, userData);
-      navigate(`/recipes/${recipeId}`);
-    } catch (err) {
-      console.error(1, err);
-    }
-  }
-
   return (
     <>
       <Container style={{ width: "100%" }} className="border shadow ">
-        <ReactForm onSubmit={handleSubmit}>
+        <ReactForm onSubmit={mutation.mutate}>
           <Row>
             <CardImg
               src={updatedRecipe.img_url}
@@ -221,8 +234,7 @@ export default function ImportRecipe() {
                   Import Ingredients
                 </Button>
               </Form.Group>
-              <IngredientsList
-                ingredientsChoices={ingredientList}
+              <ImportIngredientsList
                 ingredientList={[ingredientList, setIngredientList]}
                 updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
               />

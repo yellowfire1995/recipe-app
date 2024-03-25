@@ -2,6 +2,7 @@ import axios from "axios";
 
 export async function getUserId(req, res, next) {
   try {
+    console.log(req.headers?.authorization);
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -21,7 +22,6 @@ export async function getUserId(req, res, next) {
       res.status(401).send("Unauthorized");
     }
   } catch (error) {
-    console.error(error);
-    res.status;
+    res.status(401).send("ERROR");
   }
 }

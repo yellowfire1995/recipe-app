@@ -1,12 +1,12 @@
 import {
   Form as ReactForm,
   redirect,
-  useLoaderData,
   useNavigate,
+  useParams,
 } from "react-router-dom";
 import CardImg from "react-bootstrap/esm/CardImg";
 import Container from "react-bootstrap/esm/Container";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getRecipeById } from "../../db/queries";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
@@ -19,34 +19,54 @@ import CategorySelector from "../Components/categoryselector";
 import DeleteButton from "../Components/deleterecipe";
 import { editRecipe } from "../../db/queries";
 import { useAuth0 } from "@auth0/auth0-react";
-
-export async function loader({ params, request }) {
-  const activeRecipe = await getRecipeById(params.recipeId);
-  return [activeRecipe, params.recipeId];
-}
-
-export async function action(updatedRecipe, params) {
-  console.log("action called");
-
-  return redirect(`/recipes/${params.id}`);
-}
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryClient } from "../main";
+import Loading from "../Components/Loading";
 
 export default function Edit() {
-  const [activeRecipe, recipeId] = useLoaderData();
-  const recipe = activeRecipe[0];
+  const params = useParams();
+  const [updatedRecipe, setUpdatedRecipe] = useState();
   const navigate = useNavigate();
-  const [updatedRecipe, setUpdatedRecipe] = useState(recipe);
   const { user, isAuthenticated } = useAuth0();
 
-  function ingredientCallBack(childdata) {
-    setUpdatedRecipe({ ...updatedRecipe, ingredients: childdata });
-  }
+  const recipeFetch = useQuery({
+    queryKey: [`Recipe${params.recipeId}`],
+    queryFn: () => getRecipeById(params.recipeId),
+  });
 
-  function directionCallBack(childdata) {
-    setUpdatedRecipe({ ...updatedRecipe, directions: childdata });
-  }
+  useEffect(() => {
+    if (recipeFetch.status === "success") {
+      setUpdatedRecipe(recipeFetch.data[0]);
+    }
+  }, [recipeFetch.status, recipeFetch.data]);
 
-  if (user.sub == recipe.author && isAuthenticated) {
+  const editor = useMutation({
+    mutationFn: (e) => {
+      return editRecipe(e, updatedRecipe);
+    },
+    onError: () => {
+      alert("Error occured! Please try again");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["AllRecipes"],
+        refetchType: "all",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["MyRecipes"],
+        refetchType: "all",
+      });
+      queryClient.invalidateQueries({
+        queryKey: [`Recipe${params.recipeId}`],
+        refetchType: "all",
+      });
+      navigate(`/recipes/${updatedRecipe.recipe_id}`);
+    },
+  });
+
+  if (recipeFetch.isLoading || typeof updatedRecipe == "undefined") {
+    return <Loading />;
+  } else if (user.sub == updatedRecipe.author && isAuthenticated) {
     return (
       <>
         <Container style={{ width: "100%" }} className="border shadow ">
@@ -61,9 +81,8 @@ export default function Edit() {
             </Button>
           </Row>
           <ReactForm
-            onSubmit={async (e) => {
-              await editRecipe(e, updatedRecipe),
-                navigate(`/recipes/${updatedRecipe.recipe_id}`);
+            onSubmit={(e) => {
+              editor.mutate(e);
             }}
           >
             <Row>
@@ -116,7 +135,13 @@ export default function Edit() {
                   <Button type="submit" className="p-1">
                     Save Recipe
                   </Button>
-                  <DeleteButton recipeId={recipeId} />
+                  <DeleteButton recipeId={params.recipeId} />
+                  <button
+                    type="button"
+                    onClick={() => console.log(updatedRecipe)}
+                  >
+                    Test
+                  </button>
                 </h2>
 
                 <label id="servings">Default Servings </label>
@@ -140,8 +165,7 @@ export default function Edit() {
             <Row>
               <Col className="">
                 <IngredientsList
-                  recipe={recipe}
-                  handleCallBack={ingredientCallBack}
+                  updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
                 />
               </Col>
               <Col>
@@ -161,6 +185,6 @@ export default function Edit() {
       </>
     );
   } else {
-    <div> Unauthorized</div>;
+    return <div> Unauthorized</div>;
   }
 }

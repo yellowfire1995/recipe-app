@@ -2,12 +2,16 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Container from "react-bootstrap/esm/Container";
 import { useEffect, useState } from "react";
 import InputGroup from "react-bootstrap/InputGroup";
-import _ from "lodash";
+import _, { update } from "lodash";
 import axios from "axios";
 import AddPricePopup from "../Components/priceaddpopup.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { ingredientSearch } from "../../db/queries.js";
+import AddDensityPopup from "./AddWeightModal.jsx";
+import { parseIngredients } from "../../db/queries";
+import { parse } from "dotenv";
+import { EditSelector } from "./EditNewIngredient.jsx";
 
 function deleteIngredient(updatedRecipe, e) {
   const buttonId = e.target.id ? e.target.id : e.target.viewportElement.id;
@@ -43,7 +47,9 @@ function handleIngredientUpdate(updatedRecipe, e) {
       if (ingredient.description == e.target.id) {
         return {
           ...ingredient,
-          quantity: e.target.valueAsNumber,
+          quantity:
+            e.target.valueAsNumber /
+            (ingredient.userG || ingredient.gramConversion),
         };
       } else {
         return { ...ingredient };
@@ -55,15 +61,8 @@ function handleIngredientUpdate(updatedRecipe, e) {
 export default function IngredientsList(props) {
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
-  const [updatedRecipe, setUpdatedRecipe] = useState(props.recipe);
+  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
   const [activeModal, setActiveModal] = useState();
-
-  useEffect(
-    () => props.handleCallBack(updatedRecipe.ingredients),
-    [updatedRecipe]
-  );
-
-  useEffect(() => setUpdatedRecipe(props.recipe), [props.recipe]);
 
   return (
     <Container>
@@ -82,17 +81,37 @@ export default function IngredientsList(props) {
                   id={ingredient.description}
                   type="number"
                   min="0"
-                  step=".01"
+                  step=".1"
                   className="form-check-label"
                   htmlFor={ingredient.description}
                   style={{ width: "5rem" }}
                   name={ingredient.description}
-                  value={ingredient.quantity}
+                  value={
+                    ingredient.userG
+                      ? Math.round(
+                          ingredient.userG * ingredient.quantity * 100
+                        ) / 100
+                      : ingredient.gramConversion
+                      ? Math.round(
+                          ingredient.quantity * ingredient.gramConversion * 100
+                        ) / 100
+                      : ingredient.quantity
+                  }
                   onChange={(e) => {
                     setUpdatedRecipe(handleIngredientUpdate(updatedRecipe, e));
                   }}
                 />
-                g {ingredient.description}
+                {ingredient.userLabel
+                  ? ingredient.userLabel
+                  : ingredient.gramConversion
+                  ? ingredient.engLabel || ingredient.matchedMeasure
+                  : "g"}{" "}
+                {ingredient.description}{" "}
+                {`(${
+                  ingredient.gramConversion
+                    ? parseInt(ingredient.quantity) + "g"
+                    : ""
+                } )`}
                 <AttachMoneyIcon
                   type="button"
                   onClick={() => setActiveModal(ingredient.id)}
@@ -106,6 +125,11 @@ export default function IngredientsList(props) {
                     setUpdatedRecipe(deleteIngredient(updatedRecipe, e));
                   }}
                   className="pt-0 mb-0"
+                />
+                <AddDensityPopup
+                  ingredient={ingredient}
+                  updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
+                  color={ingredient.gramConversion ? "black" : "red"}
                 />
                 <span style={{ color: "red" }}>
                   {" "}
@@ -122,52 +146,28 @@ export default function IngredientsList(props) {
         <input
           id="search"
           type="textbox"
-          placeholder="Search..."
+          placeholder="Enter new ingredient (e.g. 1 cup flour)"
           onChange={(e) => setSearch(e.target.value)}
         ></input>{" "}
         <button
           id="search"
-          type="submit"
-          onClick={async (e) =>
-            setSearchResult(await ingredientSearch(e, search))
-          }
+          type="button"
+          onClick={async (e) => setSearchResult(await parseIngredients(search))}
         >
           {" "}
           Search{" "}
         </button>
       </div>
       <ol>
-        {searchResult.length > 0
-          ? searchResult.map((ingredient) => {
-              return (
-                <div key={ingredient.fdc_id}>
-                  <li>
-                    <div>
-                      {ingredient.description}
-                      <button
-                        type="button"
-                        id={[ingredient.fdc_id]}
-                        onClick={(e) => {
-                          setUpdatedRecipe(
-                            addNewIngredient(
-                              updatedRecipe,
-                              ingredient.fdc_id,
-                              ingredient.description
-                            )
-                          );
-                        }}
-                      >
-                        {" "}
-                        Add{" "}
-                      </button>{" "}
-                      <br />
-                      {ingredient.fdc_id}
-                    </div>
-                  </li>
-                </div>
-              );
-            })
-          : "No Results"}
+        {searchResult.length > 0 ? (
+          <EditSelector
+            updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
+            ingredients={[searchResult, setSearchResult]}
+            origIdx={0}
+          />
+        ) : (
+          "No Results"
+        )}
       </ol>
     </Container>
   );

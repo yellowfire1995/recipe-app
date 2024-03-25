@@ -47,6 +47,7 @@ export async function editRecipe(e, updatedRecipe) {
 //Create new recipe and return recipe ID created
 export async function newRecipe(updatedRecipe, userData) {
   try {
+    // console.log(userData);
     const response = await httpClient.post(
       `${server}/newrecipe`,
       { updatedRecipe, userData },
@@ -58,7 +59,8 @@ export async function newRecipe(updatedRecipe, userData) {
     );
     return response.data.recipe_id;
   } catch (err) {
-    console.error(1, err);
+    console.error(err);
+    throw err;
   }
 }
 
@@ -140,28 +142,27 @@ export async function getRecipeById(recipeId) {
     return recipe.data;
   } catch (error) {
     console.error(error);
+    Promise.reject(404);
   }
 }
 
 //Get all recipes for recipe cards on home page
-export async function getRecipeCards() {
-  try {
-    const recipeCards = await httpClient.get(`${server}/recipecards`);
-
-    return recipeCards.data;
-  } catch (error) {
-    console.error(error);
-  }
+export async function getRecipeCards({ pageParam }) {
+  const recipeCards = await httpClient.get(
+    `${server}/recipecards?page=${pageParam}`
+  );
+  return recipeCards.data;
 }
 
 //Get all recipes for recipe cards on home page
 export async function getMyRecipeCards() {
   try {
     const recipeCards = await httpClient.get(`${server}/myrecipes`);
-
+    console.log(recipeCards);
     return recipeCards.data;
   } catch (error) {
-    console.error(error);
+    console.log("ERROR!");
+    return Promise.reject(401);
   }
 }
 

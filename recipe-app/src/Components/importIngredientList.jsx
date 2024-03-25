@@ -5,7 +5,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import _ from "lodash";
 import { ImportSelector } from "./importSelector.jsx";
 
-export default function IngredientsList(props) {
+export default function ImportIngredientsList(props) {
   const [ingredientList, setIngredientList] = props.ingredientList;
   const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
 

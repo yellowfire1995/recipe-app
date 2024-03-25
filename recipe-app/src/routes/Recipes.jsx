@@ -1,5 +1,5 @@
-import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import ListGroup from "react-bootstrap/ListGroup";
@@ -16,6 +16,8 @@ import { getRecipeById } from "../../db/queries";
 import { getNutritionInfo } from "../../db/queries";
 import AddPricePopup from "../Components/priceaddpopup";
 import { NutritionFacts } from "../Components/NutritionFacts";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../Components/Loading";
 
 export async function loader({ params }) {
   const activeRecipe = await getRecipeById(params.recipeId);
@@ -25,18 +27,39 @@ export async function loader({ params }) {
 }
 
 export default function Recipe() {
-  const [activeRecipe, nutrition] = useLoaderData();
-  const recipe = activeRecipe[0];
+  const params = useParams();
+  const nutrition = useQuery({
+    queryKey: [`Nutrition${params.recipeId}`],
+    queryFn: () => getNutritionInfo(params.recipeId),
+  });
+
+  const recipeFetch = useQuery({
+    queryKey: [`Recipe${params.recipeId}`],
+    queryFn: () => getRecipeById(params.recipeId),
+  });
+
+  let recipe = [];
+
   const navigate = useNavigate();
-  const [servings, setServings] = useState(recipe.servings);
-  const servs = servings / recipe.servings;
   const [checkedArray, setCheckedArray] = useState([]);
   const { user } = useAuth0();
   const [activeModal, setActiveModal] = useState();
+  const [servings, setServings] = useState();
+
+  if (recipeFetch.isError || nutrition.isError) {
+    return <div>Recipe not found</div>;
+  }
+
+  if (recipeFetch.isLoading || nutrition.isLoading) {
+    return <Loading />;
+  }
+
+  recipe = recipeFetch.data[0];
+  const servs = (servings ?? recipe.servings) / recipe.servings;
 
   const recipePrice = (
     Math.round(
-      recipe.ingredients
+      recipe?.ingredients
         .map((ingredient) => ingredient.price * ingredient.quantity * servs)
         .reduce((partialSum, a) => partialSum + a, 0) * 100
     ) / 100
@@ -141,20 +164,31 @@ export default function Recipe() {
                     >
                       <div className="d-inline fw-semibold">
                         {ingredient.userG
-                          ? Math.round(ingredient.userG * servs * 100) / 100 +
+                          ? Math.round(
+                              ingredient.userG *
+                                ingredient.quantity *
+                                servs *
+                                100
+                            ) /
+                              100 +
                             " " +
                             ingredient.userLabel
-                          : ingredient.engAmt
+                          : ingredient.gramConversion
                           ? `${
-                              Math.round(ingredient.engAmt * servs * 100) /
+                              Math.round(
+                                ingredient.gramConversion *
+                                  ingredient.quantity *
+                                  servs *
+                                  100
+                              ) /
                                 100 +
                               " " +
                               ingredient.engLabel
                             }`
-                          : `${Math.round(ingredient.quantity * servs)}g`}
+                          : `${Math.round(ingredient.quantity * servs)} g`}
                       </div>
-                      {ingredient.engAmt || ingredient.userG
-                        ? ` (${Math.round(ingredient.quantity * servs)}g)`
+                      {ingredient.gramConversion || ingredient.userG
+                        ? ` (${Math.round(ingredient.quantity * servs)} g)`
                         : ""}
                       {` ${ingredient.description}`}{" "}
                       {`- $${(
@@ -200,14 +234,18 @@ export default function Recipe() {
                       type="number"
                       id="servings"
                       min="0"
-                      value={servings}
+                      value={servings ?? recipe.servings}
                       onChange={(event) => setServings(event.target.value)}
                       style={{ width: "3rem" }}
                       className="me-2"
                     />
                   </p>
                 </header>
-                {nutrition ? <NutritionFacts nutrition={nutrition} /> : null}
+                {nutrition.data ? (
+                  <NutritionFacts nutrition={nutrition.data} />
+                ) : (
+                  <Loading />
+                )}
               </section>
             </>
           </Col>

@@ -6,9 +6,14 @@ import { savePrice } from "../../db/queries";
 
 export default function AddDensityPopup(props) {
   const i = props.ingredient;
+  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
   const [show, setShow] = useState(false);
-  const [grams, setGrams] = useState(0);
-  const [packageDescription, setPackageDescription] = useState(i.unitOfMeasure);
+  const [grams, setGrams] = useState(
+    i.quantity / (i.gramConversion * i.quantity)
+  );
+  const [packageDescription, setPackageDescription] = useState(
+    i.unitOfMeasure ? i.unitOfMeasure : i.engLabel
+  );
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -16,23 +21,34 @@ export default function AddDensityPopup(props) {
   };
 
   function handleSave() {
-    props.callback(grams, packageDescription);
+    setUpdatedRecipe({
+      ...updatedRecipe,
+      ingredients: updatedRecipe.ingredients.map((ingredient) => {
+        if (ingredient.id == i.id) {
+          return {
+            ...ingredient,
+            userG: 1 / grams,
+            userLabel: packageDescription,
+            gramConversion: 1 / grams,
+          };
+        } else {
+          return { ...ingredient };
+        }
+      }),
+    });
+
     handleClose();
   }
 
   function handleCancel() {
     handleClose();
-    setGrams(i.quantity / i.gramConversion);
-    setPackageDescription(i.unitOfMeasure);
+    setGrams(i.quantity / (i.gramConversion * i.quantity));
+    setPackageDescription(i.unitOfMeasure ? i.unitOfMeasure : i.engLabel);
   }
 
   return (
     <>
-      <ScaleIcon
-        onClick={handleShow}
-        color={props.color}
-        htmlColor={props.htmlColor}
-      />
+      <ScaleIcon onClick={handleShow} style={{ color: props.color }} />
       <Modal
         {...props}
         size="lg"

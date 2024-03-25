@@ -6,23 +6,23 @@ export function ImportSelector(props) {
   const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
   const ingredient = updatedRecipe.ingredients[origIdx];
 
-  function setDensity(grams, description) {
-    setUpdatedRecipe({
-      ...updatedRecipe,
-      ingredients: updatedRecipe.ingredients.map((ingredient) => {
-        if (ingredient.id === origIdx) {
-          return {
-            ...ingredient,
-            userGrams: 1 / grams,
-            userMeasure: description,
-            gramConversion: 1 / grams,
-          };
-        } else {
-          return { ...ingredient };
-        }
-      }),
-    });
-  }
+  // function setDensity(grams, description) {
+  //   setUpdatedRecipe({
+  //     ...updatedRecipe,
+  //     ingredients: updatedRecipe.ingredients.map((ingredient) => {
+  //       if (ingredient.id === origIdx) {
+  //         return {
+  //           ...ingredient,
+  //           userGrams: 1 / grams,
+  //           userMeasure: description,
+  //           gramConversion: 1 / grams,
+  //         };
+  //       } else {
+  //         return { ...ingredient };
+  //       }
+  //     }),
+  //   });
+  // }
 
   return (
     <div>
@@ -41,14 +41,14 @@ export function ImportSelector(props) {
         onChange={(e) => {
           setUpdatedRecipe({
             ...updatedRecipe,
-            ingredients: updatedRecipe.ingredients.map((ingredient) => {
-              if (ingredient.id === origIdx) {
+            ingredients: updatedRecipe.ingredients.map((i) => {
+              if (i.id === ingredient.id) {
                 return {
-                  ...ingredient,
+                  ...i,
                   quantity: parseFloat(e.target.value),
                 };
               } else {
-                return { ...ingredient };
+                return { ...i };
               }
             }),
           });
@@ -56,13 +56,16 @@ export function ImportSelector(props) {
       />
 
       <select
+        value={ingredient.id}
         key={`selector${origIdx}`}
         onChange={(e) =>
           setUpdatedRecipe({
             ...updatedRecipe,
-            ingredients: updatedRecipe.ingredients.map((ingredient) => {
-              if (ingredient.id === origIdx) {
-                return ingredientChoices[e.target.value];
+            ingredients: updatedRecipe.ingredients.map((ingredient, idx) => {
+              if (idx === origIdx) {
+                return ingredientChoices.find(
+                  (choice) => choice.id == e.target.value
+                );
               } else {
                 return { ...ingredient };
               }
@@ -76,19 +79,27 @@ export function ImportSelector(props) {
         {ingredientChoices.map((choice, idx) => (
           <>
             <option
-              value={idx}
+              value={choice.id}
+              index={idx}
               key={`${origIdx}${idx}`}
-              id={origIdx}
+              id={idx}
               style={{ color: choice.gramConversion ? "green" : "black" }}
             >
               {`${
-                choice.matchedMeasure
+                ingredient.userLabel
+                  ? ingredient.userLabel
+                  : choice.matchedMeasure
                   ? choice.matchedMeasure
                   : choice.unitOfMeasure
                   ? choice.unitOfMeasure
                   : ""
               } ${choice.description} ${
-                choice.gramConversion
+                updatedRecipe.ingredients[origIdx].userG
+                  ? `(${
+                      ingredient.quantity /
+                      updatedRecipe.ingredients[origIdx].userG
+                    }g)`
+                  : choice.gramConversion
                   ? `${choice.fdc_id} (${parseInt(
                       ingredient.quantity / choice.gramConversion
                     )}g )`
@@ -101,8 +112,8 @@ export function ImportSelector(props) {
       {
         <AddDensityPopup
           ingredient={ingredient}
-          callback={setDensity}
-          htmlColor={ingredient.gramConversion ? "black" : "red"}
+          updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
+          color={ingredient.gramConversion ? "black" : "red"}
         />
       }
     </div>

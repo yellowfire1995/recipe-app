@@ -103,3 +103,47 @@
     border-bottom: 1px solid black;
   }
   
+.login {
+  background-Image: url("/images/bg-login.jpg");
+  background-size: cover;
+  background-position: right 0;
+
+}
+
+.login-card {
+  background-color: rgba(255, 255, 255, .3);
+  // position:relative;
+  width:100%;
+  height: 30vh;
+  min-height:200px;
+  max-height: 400px;
+  // right: 18vw;
+
+}
+
+body {
+  $font-family-sans-serif:
+  // Cross-platform generic font family (default user interface font)
+  system-ui,
+  // Safari for macOS and iOS (San Francisco)
+  -apple-system,
+  // Windows
+  "Segoe UI",
+  // Android
+  Roboto,
+  // older macOS and iOS
+  "Helvetica Neue"
+  // Linux
+  "Noto Sans",
+  "Liberation Sans",
+  // Basic web fallback
+  Arial,
+  // Sans serif fallback
+  sans-serif,
+  // Emoji fonts
+  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+
+}
+#loginbtn{
+  background-color: rgba(255, 255, 255, .3);
+}

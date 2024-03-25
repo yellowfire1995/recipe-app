@@ -5,7 +5,8 @@ import db from "../../database/db.js";
 router.get("/", async (req, res) => {
   let data;
   try {
-    data = await db.query(`
+    data = await db.query(
+      `
       SELECT recipes.* ,
   (
          Select COALESCE(JSON_AGG(json_build_object(
@@ -20,10 +21,20 @@ router.get("/", async (req, res) => {
      
                   FROM recipes
               GROUP BY recipes.recipe_id
-           
-              ;`);
+              ORDER BY recipes.recipe_id DESC
+              OFFSET $1
+              LIMIT 5
 
-    res.json(data.rows);
+
+           
+              ;`,
+      [req.query.page]
+    );
+
+    var cursor = 4 + parseInt(req.query.page);
+    data.rows.length < 5 ? (cursor = null) : data.rows.pop();
+
+    res.json({ data: data.rows, cursor: cursor });
   } catch (error) {
     console.error(error);
   }

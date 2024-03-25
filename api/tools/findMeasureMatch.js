@@ -1,32 +1,68 @@
 const foodMeasurements = [
   {
-    measurement: /^on?(unce)?z?s?/i,
-    conversionFactor: 0.035273,
+    measurement: /t(ea)?sp(oon)?s?/i,
+    conversionFactor: 0.0208333,
+    type: "volume",
   },
   {
-    measurement: /^pounds?/i,
-    conversionFactor: 0.00220462442,
+    measurement: /ta?b(le)?sp(oon)?s?/i,
+    conversionFactor: 0.0625,
+    type: "volume",
   },
-  { measurement: /^g(ram)?s?/i, conversionFactor: 1, type: "weight" },
+  { measurement: /c(up)?s?/i, conversionFactor: 1, type: "volume" },
+  { measurement: /o(unce)?z?s?/i, conversionFactor: 28.3495, type: "weight" },
   {
-    measurement: /^m(illi)?g(ram)?s?/i,
-    conversionFactor: 1000,
+    measurement: /pounds?/i,
+    conversionFactor: 453.592,
     type: "weight",
   },
-  { measurement: /^k(ilo)?g(ram)?s?/i, conversionFactor: 1000, type: "weight" },
+  { measurement: /g(ram)?s?/i, conversionFactor: 1, type: "weight" },
   {
-    measurement: /^lbs?/i,
-    conversionFactor: 0.00220462442,
+    measurement: /m(illi)?g(ram)?s?/i,
+    conversionFactor: 0.001,
+    type: "weight",
+  },
+  { measurement: /k(ilo)?g(ram)?s?/i, conversionFactor: 1000, type: "weight" },
+
+  {
+    measurement: /lbs?/i,
+    conversionFactor: 453.592,
+    type: "weight",
+  },
+  {
+    measurement: /g(ram)?s?/i,
+    conversionFactor: 1,
+    type: "weight",
   },
 ];
 
-export async function findMeasureMatch(unitOfMeasure) {
+export async function findMeasureMatch(
+  userMeasure,
+  dbMeasure,
+  gramsPerDbMeasure
+) {
   try {
-    const conversion = foodMeasurements.find((m) =>
-      m.measurement.test(unitOfMeasure)
+    const userMeasureMatch = foodMeasurements.find((m) =>
+      m.measurement.test(userMeasure)
     );
 
-    return conversion.conversionFactor;
+    const dbMeasureMatch = foodMeasurements.find((m) =>
+      m.measurement.test(dbMeasure)
+    );
+
+    if (userMeasureMatch.type == "weight") {
+      return userMeasureMatch.conversionFactor;
+    } else if (
+      userMeasureMatch.type == "volume" &&
+      dbMeasureMatch.type == "volume"
+    ) {
+      return (
+        (dbMeasureMatch.conversionFactor / userMeasureMatch.conversionFactor) *
+        gramsPerDbMeasure
+      );
+    } else {
+      return null;
+    }
   } catch (error) {
     return null;
   }

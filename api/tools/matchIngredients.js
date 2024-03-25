@@ -2,6 +2,7 @@ import { findMeasureMatch } from "./findMeasureMatch.js";
 import "dotenv/config";
 import db from "../database/db.js";
 import { searchSolr } from "./searchSolr.js";
+import { v4 as uuidv4 } from "uuid";
 
 export async function matchIngredients(ingredients) {
   const ingredientArray = await Promise.all(
@@ -30,7 +31,11 @@ export async function matchIngredients(ingredients) {
                 case 
                 	when food.data_type = 'sr_legacy_food'
                 	then fp.id
-                end as sr_id                
+                end as sr_id,
+                case 
+                when food.data_type = 'branded_food' 
+                  then coalesce(bf.branded_food_category, null) 
+                end as category
                   from food
                   left join branded_food bf on bf.fdc_id = food.fdc_id
                   left join food_portion fp on fp.fdc_id = food.fdc_id
@@ -45,13 +50,26 @@ export async function matchIngredients(ingredients) {
 
             //Test to see if there is a match between original measurement and database measurement to convert into grams
             const weightConversion = await findMeasureMatch(
-              ingredient.unitOfMeasure
+              ingredient.unitOfMeasure,
+              data.rows[0].gram_label,
+              data.rows[0].gram_amt
             );
 
             //Create final ingredient structure
             const finalIngredient = {
               ...ingredient,
-              id: idx,
+              category: data.rows[0].category,
+              quantity:
+                Math.round(
+                  (ingredient.quantity /
+                    (weightConversion
+                      ? weightConversion
+                      : data.rows[0].gram_amt
+                      ? data.rows[0].gram_amt
+                      : 1)) *
+                    100
+                ) / 100,
+              id: uuidv4(),
               description: data.rows[0].description.toLowerCase(),
               fdc_id: data.rows[0].fdc_id,
               sr_id: data.rows[0].sr_id,

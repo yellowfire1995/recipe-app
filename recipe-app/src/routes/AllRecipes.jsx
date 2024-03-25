@@ -1,10 +1,10 @@
 import RecipeCards from "../Components/RecipeCards";
 import Sidebar from "../Components/Sidebar";
 import { getSidebarCuisines } from "../../db/queries";
-import { getMyRecipeCards } from "../../db/queries";
+import { getRecipeCards } from "../../db/queries";
 import Col from "react-bootstrap/esm/Col.js";
 
-export default function MyRecipes() {
+export default function AllRecipes() {
   return (
     <>
       <Col className="col-2 user-select-none">
@@ -12,7 +12,7 @@ export default function MyRecipes() {
       </Col>
 
       <Col style={{ minWidth: "100px" }}>
-        <RecipeCards fetcher={getMyRecipeCards} queryKey="MyRecipes" />
+        <RecipeCards fetcher={getRecipeCards} queryKey="AllRecipes" />
       </Col>
     </>
   );
