@@ -12,7 +12,7 @@ export default function AddDensityPopup(props) {
     i.quantity / (i.gramConversion * i.quantity)
   );
   const [packageDescription, setPackageDescription] = useState(
-    i.unitOfMeasure ? i.unitOfMeasure : i.engLabel
+    i.userLabel ? i.userLabel : i.unitOfMeasure ? i.unitOfMeasure : i.engLabel
   );
 
   const handleClose = () => setShow(false);

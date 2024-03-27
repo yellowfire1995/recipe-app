@@ -147,3 +147,59 @@ body {
 #loginbtn{
   background-color: rgba(255, 255, 255, .3);
 }
+
+.mainSearchBox{
+  background-color: rgb(87, 87, 87);
+}
+
+.recipecardimg{
+  border-radius: 30px;
+  height: 15vh;
+  
+}
+
+
+@keyframes recipeCardPop {
+  0% {
+    
+  }
+
+  100% {
+   
+    box-shadow: none;
+  }
+}
+
+@keyframes recipeCardUnpop {
+  0% {
+    box-shadow: none;
+  }
+
+  100% {
+   
+    box-shadow:  0 .5rem 1rem rgba(black, .15);
+  }
+}
+
+
+
+.recipecard:hover {
+    animation: recipeCardPop .5s forwards;
+}
+
+.border{
+  background-color: white;
+  background-image: none;
+}
+
+.recipecard {
+  animation: recipeCardUnpop .3s both;
+  box-shadow:  0 .5rem 1rem rgba(black, .15);
+}
+
+body{
+  background-color: #fffcfc;
+background-image: url("https://www.transparenttextures.com/patterns/circles.png");
+/* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+}
+

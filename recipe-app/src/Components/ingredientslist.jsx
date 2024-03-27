@@ -147,6 +147,7 @@ export default function IngredientsList(props) {
           id="search"
           type="textbox"
           placeholder="Enter new ingredient (e.g. 1 cup flour)"
+          value={search}
           onChange={(e) => setSearch(e.target.value)}
         ></input>{" "}
         <button

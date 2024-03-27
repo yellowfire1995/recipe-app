@@ -22,7 +22,7 @@ def scrape():
         print("blueapron")
         return "blueapron"
     elif re.match(".*samsungfood.*", request.form['url']):
-        driver = webdriver.Firefox
+        driver = webdriver.Firefox()
         driver.get(request.form['url'])
         WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.s13303")))
         html = driver.page_source

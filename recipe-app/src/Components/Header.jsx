@@ -1,11 +1,16 @@
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
+import Nav from "react-bootstrap/Nav";
+import Offcanvas from "react-bootstrap/Offcanvas";
+import Form from "react-bootstrap/Form";
+import SearchIcon from "@mui/icons-material/Search";
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { auth0Audience } from "../../env/env";
+import Col from "react-bootstrap/esm/Col";
 
 function Header() {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -36,20 +41,38 @@ function Header() {
   }, [getAccessTokenSilently]);
 
   return (
-    <Navbar
-      bg="dark"
-      data-bs-theme="dark"
-      className="justify-content-left d-flex-wrap"
-    >
-      <Container>
-        <Navbar.Brand>myRecipe</Navbar.Brand>
-        <Link to="/recipes">All Recipes</Link>
-        <Link to="/myrecipes">Your Recipes</Link>
-        <Link to="/importrecipe">Add Recipe </Link>
+    <Navbar expand="md" bg="dark" data-bs-theme="dark" sticky="top">
+      <Container fluid>
+        <Navbar.Toggle aria-controls="header" />
+        <Navbar.Offcanvas id="header" placement="start">
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title id={`offcanvasMenu`}>Menu</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body className="justify-content-center">
+            <Navbar.Brand>myRecipe</Navbar.Brand>
+            <Nav className="">
+              <Nav.Link href="/recipes">All Recipes</Nav.Link>
+              <Nav.Link href="/myrecipes">Your Recipes</Nav.Link>
+              <Nav.Link href="/importrecipe">Add Recipe </Nav.Link>
+            </Nav>
+            <Col md={2} lg={4}>
+              <Form className="d-flex flex-shrink-1">
+                <Form.Control
+                  type="search"
+                  placeholder="Search"
+                  className="mainSearchBox "
+                  aria-label="Search"
+                  bg="light"
+                />
+                <SearchIcon fontSize="large" className="align-self-end" />
+              </Form>
+            </Col>
 
-        <Navbar.Text>
-          Signed in as: <Link to="/profile">{userData?.nickname} </Link>
-        </Navbar.Text>
+            <Navbar.Text>
+              Signed in as: <Link to="/profile">{userData?.nickname} </Link>
+            </Navbar.Text>
+          </Offcanvas.Body>
+        </Navbar.Offcanvas>
       </Container>
     </Navbar>
   );

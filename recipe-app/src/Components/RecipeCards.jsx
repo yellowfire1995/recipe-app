@@ -3,6 +3,8 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import Loading from "./Loading.jsx";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
+import Container from "react-bootstrap/esm/Container.js";
+import Col from "react-bootstrap/esm/Col.js";
 
 export default function RecipeCards(props) {
   const { ref, inView } = useInView();
@@ -31,9 +33,14 @@ export default function RecipeCards(props) {
       {cardsQuery.isLoading ? (
         <Loading />
       ) : (
-        <>
+        <Col
+          md={9}
+          lg={8}
+          xxl={7}
+          className="d-flex flex-wrap justify-content-center"
+        >
           <RecipeCardData pages={cardsQuery.data.pages} />
-        </>
+        </Col>
       )}
       <div ref={ref}></div>
     </>

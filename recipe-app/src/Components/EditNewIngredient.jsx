@@ -127,7 +127,6 @@ export function EditSelector(props) {
         htmlFor={origIdx}
         onClick={(e) => {
           e.preventDefault();
-          console.log(ingredient);
           setUpdatedRecipe({
             ...updatedRecipe,
             ingredients: [...updatedRecipe.ingredients, ingredient],

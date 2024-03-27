@@ -30,6 +30,7 @@ import {
   auth0Redirect,
 } from "../env/env.js";
 import AllRecipes from "./routes/AllRecipes.jsx";
+import Index from "./routes/Index.jsx";
 
 export const queryClient = new QueryClient();
 
@@ -43,8 +44,8 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         action: filterAction,
         children: [
+          { index: true, element: <Index /> },
           {
-            index: true,
             path: "recipes",
             element: <AllRecipes />,
           },

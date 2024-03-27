@@ -75,7 +75,16 @@ export default function Recipe() {
 
   return (
     <>
-      <Container style={{ width: "100%" }} className="border shadow ">
+      <Col md={10} lg={7} className="border shadow mx-auto ">
+        <Row>
+          {" "}
+          <CardImg
+            as="img"
+            src={recipe.img_url}
+            // style={{ height: "15vh" }}
+            className="object-fit-cover my-1 recipecardimg"
+          />
+        </Row>
         <Row>
           <Button
             variant="outline-primary"
@@ -86,19 +95,12 @@ export default function Recipe() {
             {`< Back`}
           </Button>
         </Row>
-        <Row>
-          {" "}
-          <CardImg
-            src={recipe.img_url}
-            style={{ width: "100%", height: "200px" }}
-            className="object-fit-cover"
-          />
-        </Row>
         <Row className="pt-3">
-          <Col>
+          <Col lg={10}>
             <h2>
-              {recipe.name} ${recipePrice} (
-              {(recipePrice / servings).toFixed(2)}/serving){" "}
+              {recipe.name} - ${recipePrice} ($
+              {(recipePrice / (servings ?? recipe.servings)).toFixed(2)}
+              /serving){" "}
               {user.sub === recipe.author ? (
                 <Link to={`/recipes/${recipe.recipe_id}/edit`}>
                   <Button className="p-1">Edit Recipe</Button>
@@ -111,6 +113,7 @@ export default function Recipe() {
             <br />
             {recipe.nickname}'s recipe
           </Col>
+          <hr />
         </Row>
         <Row>
           {" "}
@@ -133,8 +136,8 @@ export default function Recipe() {
           </Stack>
         </Row>
         <Row>
-          <Col>
-            <ListGroup className="">
+          <Col lg="8" className="flex-shrink-1 ">
+            <ListGroup>
               <span className="h3">
                 {" "}
                 Ingredients <br />{" "}
@@ -208,8 +211,7 @@ export default function Recipe() {
                 );
               })}
             </ListGroup>
-          </Col>
-          <Col>
+
             <ListGroup variant="flush">
               <span className="h3"> Directions </span>
               <ol>
@@ -223,7 +225,7 @@ export default function Recipe() {
               </ol>
             </ListGroup>
           </Col>
-          <Col>
+          <Col lg>
             <>
               <section className="performance-facts">
                 <header className="performance-facts__header">
@@ -250,7 +252,7 @@ export default function Recipe() {
             </>
           </Col>
         </Row>
-      </Container>
+      </Col>
     </>
   );
 }
