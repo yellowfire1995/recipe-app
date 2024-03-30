@@ -33,14 +33,9 @@ export default function RecipeCards(props) {
       {cardsQuery.isLoading ? (
         <Loading />
       ) : (
-        <Col
-          md={9}
-          lg={8}
-          xxl={7}
-          className="d-flex flex-wrap justify-content-center"
-        >
+        <Container className="d-flex flex-wrap justify-content-center">
           <RecipeCardData pages={cardsQuery.data.pages} />
-        </Col>
+        </Container>
       )}
       <div ref={ref}></div>
     </>

@@ -50,10 +50,12 @@ export async function matchIngredients(ingredients) {
 
             //Test to see if there is a match between original measurement and database measurement to convert into grams
             const weightConversion = await findMeasureMatch(
-              ingredient.unitOfMeasure,
-              data.rows[0].gram_label,
+              ingredient.unitOfMeasure?.trim(),
+              data.rows[0].gram_label?.trim(),
               data.rows[0].gram_amt
             );
+
+            console.log(weightConversion);
 
             //Create final ingredient structure
             const finalIngredient = {
@@ -83,6 +85,8 @@ export async function matchIngredients(ingredients) {
                 : data.rows[0].gram_label
                 ? data.rows[0].gram_label
                 : null,
+              userLabel: weightConversion ? ingredient.unitOfMeasure : null,
+              userG: weightConversion ? weightConversion : null,
               // quantity2:
               //   type == "weight"
               //     ? Math.round(ingredient.quantity * measurement)

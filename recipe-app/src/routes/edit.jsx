@@ -69,7 +69,7 @@ export default function Edit() {
   } else if (user.sub == updatedRecipe.author && isAuthenticated) {
     return (
       <>
-        <Container style={{ width: "100%" }} className="border shadow ">
+        <Container fluid="lg" className="border shadow ">
           <Row>
             <Button
               variant="outline-primary"

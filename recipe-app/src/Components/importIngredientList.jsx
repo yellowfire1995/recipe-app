@@ -12,8 +12,7 @@ export default function ImportIngredientsList(props) {
   return (
     <Container>
       <ListGroup>
-        <span className="h3"> Ingredients </span>
-        <InputGroup name="ingredients" className="d-flex flex-column pb-5">
+        <InputGroup name="ingredients" className="d-flex flex-column py-4">
           {ingredientList.map((ingredientChoices, idx) => {
             return (
               <ImportSelector

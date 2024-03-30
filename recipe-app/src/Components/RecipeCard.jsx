@@ -1,6 +1,7 @@
 import Image from "react-bootstrap/Image";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
+import Container from "react-bootstrap/esm/Container";
 
 export default function RecipeCardData(props) {
   let pages = props.pages;
@@ -13,23 +14,29 @@ export default function RecipeCardData(props) {
             <Link
               to={`/recipes/${recipe.recipe_id}`}
               key={recipe.recipe_id}
-              className="d-flex p-2 text-decoration-none"
+              className="d-flex p-2 text-decoration-none rounded flex-wrap text-body"
             >
-              <Card
-                className={`text-center border-1 recipecard align-self-stretch`}
-                style={{ width: "15rem" }}
+              <Container
+                className=" d-flex text-center recipecard align-self-stretch  justify-content-center flex-wrap align-content-start"
+                style={{ width: "15rem", height: "17rem" }}
               >
-                <Image
-                  src={recipe.img_url}
-                  roundedCircle
-                  className="object-fit-cover mx-auto pt-2"
-                  style={{ height: "200px", width: "200px" }}
-                />
-
-                <Card.Body>
-                  <Card.Title className="pb-2">{recipe.name}</Card.Title>
-                </Card.Body>
-              </Card>
+                <Card
+                  className="d-flex border-0 shadow"
+                  style={{
+                    backgroundImage: `url(${recipe.img_url})`,
+                    backgroundPosition: "50% 50%",
+                    backgroundSize: "cover",
+                    width: "15rem",
+                    height: "13rem",
+                  }}
+                ></Card>
+                <p
+                  className="d-flex align-self-start pt-1 text-secondary-subtle"
+                  // style={{color: "#48423C"}}
+                >
+                  {recipe.name}
+                </p>
+              </Container>
             </Link>
           );
         });

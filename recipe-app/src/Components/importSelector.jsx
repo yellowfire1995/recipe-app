@@ -1,4 +1,5 @@
 import AddDensityPopup from "./AddWeightModal.jsx";
+import Form from "react-bootstrap/Form";
 
 export function ImportSelector(props) {
   const ingredientChoices = props.ingredients;
@@ -6,38 +7,28 @@ export function ImportSelector(props) {
   const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
   const ingredient = updatedRecipe.ingredients[origIdx];
 
-  // function setDensity(grams, description) {
-  //   setUpdatedRecipe({
-  //     ...updatedRecipe,
-  //     ingredients: updatedRecipe.ingredients.map((ingredient) => {
-  //       if (ingredient.id === origIdx) {
-  //         return {
-  //           ...ingredient,
-  //           userGrams: 1 / grams,
-  //           userMeasure: description,
-  //           gramConversion: 1 / grams,
-  //         };
-  //       } else {
-  //         return { ...ingredient };
-  //       }
-  //     }),
-  //   });
-  // }
-
   return (
-    <div>
-      <input
+    <div className="d-inline-flex align-items-center">
+      <Form.Control
         required
         key={`input${origIdx}`}
         id={ingredient.description}
         type="number"
         min="0"
         step=".01"
-        className="form-check-label"
+        className="form-check-label py-1 pe-2"
         htmlFor={ingredient.id}
         style={{ width: "5rem" }}
         name={ingredient.description}
-        value={updatedRecipe.ingredients[origIdx]?.quantity}
+        value={
+          ingredient.userG
+            ? Math.round(ingredient.userG * ingredient.quantity * 100) / 100
+            : ingredient.gramConversion
+            ? Math.round(
+                ingredient.quantity * ingredient.gramConversion * 100
+              ) / 100
+            : ingredient.quantity
+        }
         onChange={(e) => {
           setUpdatedRecipe({
             ...updatedRecipe,
@@ -45,7 +36,9 @@ export function ImportSelector(props) {
               if (i.id === ingredient.id) {
                 return {
                   ...i,
-                  quantity: parseFloat(e.target.value),
+                  quantity:
+                    e.target.valueAsNumber /
+                    (ingredient.userG || ingredient.gramConversion),
                 };
               } else {
                 return { ...i };
@@ -55,7 +48,7 @@ export function ImportSelector(props) {
         }}
       />
 
-      <select
+      <Form.Select
         value={ingredient.id}
         key={`selector${origIdx}`}
         onChange={(e) =>
@@ -72,9 +65,7 @@ export function ImportSelector(props) {
             }),
           })
         }
-        style={{
-          width: "60%",
-        }}
+        className="py-1"
       >
         {ingredientChoices.map((choice, idx) => (
           <>
@@ -94,21 +85,20 @@ export function ImportSelector(props) {
                   ? choice.unitOfMeasure
                   : ""
               } ${choice.description} ${
-                updatedRecipe.ingredients[origIdx].userG
-                  ? `(${
-                      ingredient.quantity /
-                      updatedRecipe.ingredients[origIdx].userG
-                    }g)`
-                  : choice.gramConversion
-                  ? `${choice.fdc_id} (${parseInt(
-                      ingredient.quantity / choice.gramConversion
-                    )}g )`
-                  : ""
+                choice.userG || choice.gramConversion
+                  ? Math.round(
+                      ((ingredient.quantity * ingredient.gramConversion) /
+                        (choice.userG || choice.gramConversion)) *
+                        100
+                    ) /
+                      100 +
+                    "g"
+                  : "(No density information)"
               }`}
             </option>
           </>
         ))}
-      </select>
+      </Form.Select>
       {
         <AddDensityPopup
           ingredient={ingredient}

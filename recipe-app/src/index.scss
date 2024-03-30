@@ -1,3 +1,8 @@
+
+@import "../node_modules/bootswatch/dist/litera/variables";
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../node_modules/bootswatch/dist/litera/bootswatch";
+
 .performance-facts {
     border: 1px solid black;
     margin: 20px;
@@ -111,7 +116,7 @@
 }
 
 .login-card {
-  background-color: rgba(255, 255, 255, .3);
+  // background-color: rgba(255, 255, 255, .3);
   // position:relative;
   width:100%;
   height: 30vh;
@@ -144,62 +149,137 @@ body {
   "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
 
 }
-#loginbtn{
-  background-color: rgba(255, 255, 255, .3);
-}
 
-.mainSearchBox{
-  background-color: rgb(87, 87, 87);
-}
-
-.recipecardimg{
-  border-radius: 30px;
-  height: 15vh;
-  
-}
-
-
-@keyframes recipeCardPop {
-  0% {
-    
-  }
-
-  100% {
-   
-    box-shadow: none;
-  }
-}
-
-@keyframes recipeCardUnpop {
-  0% {
-    box-shadow: none;
-  }
-
-  100% {
-   
-    box-shadow:  0 .5rem 1rem rgba(black, .15);
-  }
-}
-
+// #loginbtn{
+//   background-color: rgba(255, 255, 255, .3);
+// }
 
 
 .recipecard:hover {
-    animation: recipeCardPop .5s forwards;
+    transform: scale(1.1);
 }
 
-.border{
-  background-color: white;
-  background-image: none;
-}
+// .border{
+//   background-color: white;
+//   background-image: none;
+// }
 
 .recipecard {
-  animation: recipeCardUnpop .3s both;
-  box-shadow:  0 .5rem 1rem rgba(black, .15);
+  transition: transform .5s;
 }
 
-body{
-  background-color: #fffcfc;
-background-image: url("https://www.transparenttextures.com/patterns/circles.png");
-/* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+// body{
+//   // background-color: #f3f1ee;
+// // background-image: url("https://www.transparenttextures.com/patterns/circles.png");
+// /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+// }
+
+// [data-bs-theme="light"] {
+//   // --bs-body-color: black;
+//   --bs-body-bg: #f3f1ee;
+//   // --bs-body-bg-rgb: #f3f1ee;
+//   // --bs-tertiary-bg: #f3f1ee;
+//   // --bs-link-color: black;
+// }
+
+.btn{
+  border-radius: 0%;
+}
+
+
+.break {
+  flex-basis: 100%;
+  height: 0;
+}
+
+@mixin color-scheme($name) {
+  @media (prefers-color-scheme: #{$name}) {
+    @content;
+  }
+}
+
+
+[data-bs-theme=dark] .btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #c4361e;
+  --bs-btn-border-color: #c4361e;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #b3321b;
+  --bs-btn-hover-border-color: #b3321b;
+  --bs-btn-focus-shadow-rgb: 97, 149, 239;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #a12d18;
+  --bs-btn-active-border-color: #a12d18;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #a33f2d;
+  --bs-btn-disabled-border-color: #a33f2d;
+}
+
+[data-bs-theme=light] .btn-primary{
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #c4361e;
+  --bs-btn-border-color: #c4361e;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #b3321b;
+  --bs-btn-hover-border-color: #b3321b;
+  --bs-btn-focus-shadow-rgb: 97, 149, 239;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #a12d18;
+  --bs-btn-active-border-color: #a12d18;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #a33f2d;
+  --bs-btn-disabled-border-color: #a33f2d;
+}
+
+
+[data-bs-theme=light] .bg-nav{
+  background-color: #c4361e ;
+  --bs-heading-color: #fff4ee;
+
+}
+
+[data-bs-theme=light] a.nav-drop.dropdown-item{
+  -color: #1b1b1b !important;
+
+}
+
+.nav-text a{
+  color: #fff4ee;
+  --bs-navbar-active-color: #d8cfcb;
+
+
+}
+
+[data-bs-theme=light] .nav-text a.nav-drop{
+  color: black;
+  --bs-navbar-active-color: black;
+   
+
+}
+
+.nav-text 
+a:hover{
+  color: #d8cfcb;
+
+}
+
+
+
+
+[data-bs-theme=dark] .bg-nav {
+  background-color:#c4361e ;
+}
+
+
+
+
+
+[data-bs-theme=light] body{
+  // background-image: linear-gradient(to left bottom, #ede9d0, #f3e7d2, #f6e5d5, #f8e4d9, #f8e4de, #f8e4df, #f8e4e0, #f8e4e1, #fae4df, #fce5dd, #fee5da, #ffe6d8);  margin: 0;
+  background-color:#FDEFDE;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 

@@ -50,8 +50,7 @@ export default function DirectionsList(props) {
   const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
 
   return (
-    <Container>
-      <span className="h3"> Directions </span>
+    <>
       <ol className="d-flex flex-column">
         {updatedRecipe.directions.map((direction) => {
           return (
@@ -93,6 +92,6 @@ export default function DirectionsList(props) {
       >
         Add New Step
       </Button>
-    </Container>
+    </>
   );
 }

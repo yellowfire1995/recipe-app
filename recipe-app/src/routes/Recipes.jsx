@@ -74,27 +74,18 @@ export default function Recipe() {
   }
 
   return (
-    <>
-      <Col md={10} lg={7} className="border shadow mx-auto ">
+    <Container md fluid="lg" className="d-flex mt-4">
+      <Col className=" ">
         <Row>
           {" "}
           <CardImg
             as="img"
             src={recipe.img_url}
-            // style={{ height: "15vh" }}
+            style={{ height: "12rem" }}
             className="object-fit-cover my-1 recipecardimg"
           />
         </Row>
-        <Row>
-          <Button
-            variant="outline-primary"
-            onClick={() => {
-              navigate(-1);
-            }}
-          >
-            {`< Back`}
-          </Button>
-        </Row>
+
         <Row className="pt-3">
           <Col lg={10}>
             <h2>
@@ -253,6 +244,6 @@ export default function Recipe() {
           </Col>
         </Row>
       </Col>
-    </>
+    </Container>
   );
 }

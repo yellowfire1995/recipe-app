@@ -4,7 +4,7 @@ import Row from "react-bootstrap/esm/Row";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useState, useEffect } from "react";
 import httpClient from "../../db/axiosConfig";
-import { Button } from "bootstrap";
+import Button from "react-bootstrap/esm/Button";
 import LogoutButton from "../utils/LogoutButton";
 import { auth0Audience, server } from "../../env/env";
 
@@ -55,12 +55,12 @@ export default function Profile() {
             style={{ height: "50px", width: "50px" }}
           />{" "}
           <br />
-          <button
+          <Button
             onClick={async () => console.log(await handleClick(userData))}
           >
             {" "}
             Save
-          </button>{" "}
+          </Button>{" "}
           <br />
           <LogoutButton />
         </Col>

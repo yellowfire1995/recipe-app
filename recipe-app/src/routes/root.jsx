@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { addAccessTokenInterceptor } from "../../db/axiosConfig.js";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../Components/Loading.jsx";
+import useLocalStorage from "use-local-storage";
 
 export async function action({ params, request }) {
   return redirect(`/`);
@@ -21,6 +22,19 @@ export default function App() {
   //   queryKey: [`AccessToken`],
   //   queryFn: addAccessTokenInterceptor(getAccessTokenSilently),
   // });
+
+  const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const [theme, setTheme] = useLocalStorage(
+    "theme",
+    defaultDark ? "dark" : "light"
+  );
+  const switchTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+  };
+  useEffect(() => {
+    document.documentElement.setAttribute("data-bs-theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -45,12 +59,9 @@ export default function App() {
 
   return (
     <>
-      <Header />
-      <Container fluid>
-        <Row className="justify-content-center">
-          <Outlet />
-        </Row>
-      </Container>
+      <Header switchTheme={switchTheme} currentTheme={theme} />
+
+      <Outlet />
     </>
   );
 }

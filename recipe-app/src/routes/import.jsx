@@ -1,4 +1,4 @@
-import { Form as ReactForm, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState, useEffect } from "react";
@@ -8,7 +8,7 @@ import DirectionsList from "../Components/directionslist";
 import CuisineSelector from "../Components/cuisineselector";
 import CategorySelector from "../Components/categoryselector";
 import Row from "react-bootstrap/esm/Row";
-import CardImg from "react-bootstrap/esm/CardImg";
+
 import { parseDirections, scrapeRecipe } from "../../db/queries";
 import { parseIngredients } from "../../db/queries";
 import Container from "react-bootstrap/esm/Container";
@@ -18,8 +18,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { auth0Audience } from "../../env/env";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../main";
-import { getMyRecipeCards } from "../../db/queries";
-import { getRecipeCards } from "../../db/queries";
+import InputGroup from "react-bootstrap/InputGroup";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import ImportRecipeModal from "../Components/ImportRecipeModal";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import "react-bootstrap-typeahead/css/Typeahead.css";
+import AddPhotoModal from "../Components/AddPhotoModal";
 
 export default function ImportRecipe() {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -110,59 +114,28 @@ export default function ImportRecipe() {
   }
 
   return (
-    <>
-      <Container style={{ width: "100%" }} className="border shadow ">
-        <ReactForm onSubmit={mutation.mutate}>
-          <Row>
-            <CardImg
-              src={updatedRecipe.img_url}
-              style={{ width: "100%", height: "200px" }}
-              className="object-fit-cover"
+    <Container md fluid="lg" className="d-flex mt-4">
+      <Container fluid>
+        <Row>
+          <Col className="px-3">
+            <ImportRecipeModal
+              updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
+              handleImport={handleImport}
             />
+          </Col>
+        </Row>
 
-            <input
-              required
-              type="text"
-              value={updatedRecipe.img_url}
-              placeholder="Enter img url..."
-              onChange={(e) =>
-                setUpdatedRecipe({
-                  ...updatedRecipe,
-                  img_url: e.target.value,
-                })
-              }
-            />
-            <input
-              type="text"
-              name="importURL"
-              value={updatedRecipe.url}
-              placeholder="Enter recipe url..."
-              onChange={(e) =>
-                setUpdatedRecipe({
-                  ...updatedRecipe,
-                  url: e.target.value,
-                })
-              }
-            />
-
-            <Button
-              size="sm"
-              onClick={async () =>
-                handleImport(await scrapeRecipe(updatedRecipe.url))
-              }
-            >
-              Import
-            </Button>
-          </Row>
-          <Row className="d-inline">
-            <Container>
-              <h2>
-                <input
+        <Row className="mt-1 justify-content-center mx-1 mb-1 ">
+          <AddPhotoModal updatedRecipe={[updatedRecipe, setUpdatedRecipe]} />
+          <Col md>
+            <Row className="mb-1">
+              <FloatingLabel label="Recipe name" className="p-0">
+                <Form.Control
+                  size="lg"
                   required
                   type="text"
                   // name="name"
                   value={updatedRecipe.name}
-                  placeholder="Enter recipe name"
                   onChange={(e) =>
                     setUpdatedRecipe({
                       ...updatedRecipe,
@@ -170,81 +143,137 @@ export default function ImportRecipe() {
                     })
                   }
                 />
+              </FloatingLabel>
+            </Row>
 
-                <Button type="submit" className="p-1">
-                  Save Recipe
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() => console.log(updatedRecipe.ingredients)}
-                  className="p-1"
+            <Row className="mb-1">
+              <FloatingLabel id="servings" label="Servings" className="p-0">
+                <Form.Control
+                  required
+                  type="number"
+                  id="servings"
+                  min="0"
+                  value={updatedRecipe.servings}
+                  onChange={(e) =>
+                    setUpdatedRecipe({
+                      ...updatedRecipe,
+                      servings: e.target.value,
+                    })
+                  }
+                />
+              </FloatingLabel>
+            </Row>
+            <Row className="d-flex">
+              <Col className="ps-0">
+                {" "}
+                <FloatingLabel id="Yield number" label="Yield (optional)">
+                  <Form.Control
+                    required
+                    type="number"
+                    id="servings"
+                    min="0"
+                    class
+                    value={updatedRecipe.servings}
+                    onChange={(e) =>
+                      setUpdatedRecipe({
+                        ...updatedRecipe,
+                        servings: e.target.value,
+                      })
+                    }
+                  />
+                </FloatingLabel>
+              </Col>
+              <Col xs={10} className="p-0">
+                {" "}
+                <FloatingLabel
+                  id="Yield Description"
+                  label="Yield Description (optional)"
+                  className="p-0"
                 >
-                  Test
-                </Button>
-              </h2>
-
-              <label id="servings">Default Servings </label>
-              <input
-                required
-                type="number"
-                id="servings"
-                min="0"
-                value={updatedRecipe.servings}
-                onChange={(e) =>
-                  setUpdatedRecipe({
-                    ...updatedRecipe,
-                    servings: e.target.value,
-                  })
-                }
-                style={{ width: "3rem" }}
-                className="me-2"
-                // name="servings"
-              />
-            </Container>
-          </Row>
-          <Row className="pt-3">
+                  <Form.Control
+                    required
+                    type="text"
+                    id="servings"
+                    min="0"
+                    value={updatedRecipe.servings}
+                    onChange={(e) =>
+                      setUpdatedRecipe({
+                        ...updatedRecipe,
+                        servings: e.target.value,
+                      })
+                    }
+                  />
+                </FloatingLabel>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+        <Row className="p-1">
+          <Col md className="">
             <CategorySelector
               updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
-            />{" "}
+            />
+          </Col>{" "}
+          <Col md className="">
             <CuisineSelector
               updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
             />
-          </Row>
-          <Row>
-            <Col>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea1"
-              >
-                <Form.Label>Enter recipe ingredients</Form.Label>
+          </Col>
+        </Row>
+
+        <Row className="mt-4">
+          <Col md>
+            <Row>
+              <Col>
+                <h3> Ingredients </h3>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                {" "}
                 <Form.Control
                   as="textarea"
+                  className="table-active"
                   rows={10}
                   value={ingredients}
                   onChange={(e) => setIngredients(e.target.value)}
-                  placeholder="Enter ingredient list - one ingredient per line"
+                  placeholder="Enter ingredients- one ingredient per line:&#10;1 cup flour&#10;2 ounces butter, softened "
                 />
+              </Col>
+            </Row>
+            <Row>
+              <Col className="d-flex">
                 <Button
+                  className="flex-grow-1 bg-color-red border-0"
                   variant="primary"
                   onClick={async () => {
                     console.log("importing...");
                     setIngredientList(await getIngredientChoices());
                   }}
                 >
-                  Import Ingredients
+                  Add Ingredients
                 </Button>
-              </Form.Group>
-              <ImportIngredientsList
-                ingredientList={[ingredientList, setIngredientList]}
-                updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
-              />
-            </Col>
-            <Col>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea1"
-              >
-                <Form.Label>Enter Recipe Directions</Form.Label>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                {updatedRecipe.ingredients.length > 0 ? (
+                  <ImportIngredientsList
+                    ingredientList={[ingredientList, setIngredientList]}
+                    updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
+                  />
+                ) : null}
+              </Col>
+            </Row>
+          </Col>
+          <Col>
+            <Row>
+              <Col>
+                <h3> Directions </h3>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
                 <Form.Control
                   as="textarea"
                   rows={10}
@@ -252,8 +281,13 @@ export default function ImportRecipe() {
                   onChange={(e) => setDirections(e.target.value)}
                   placeholder="Enter directions"
                 />
+              </Col>
+            </Row>
+            <Row>
+              <Col className="d-flex">
                 <Button
                   variant="primary"
+                  className="flex-grow-1"
                   onClick={async () => {
                     setUpdatedRecipe({
                       ...updatedRecipe,
@@ -261,16 +295,42 @@ export default function ImportRecipe() {
                     });
                   }}
                 >
-                  Import Directions
+                  Add Directions
                 </Button>
-              </Form.Group>
-              <DirectionsList
-                updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
-              />
-            </Col>
-          </Row>
-        </ReactForm>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                {updatedRecipe.directions.length > 0 ? (
+                  <DirectionsList
+                    updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
+                  />
+                ) : null}
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+        <Row className="mt-3 mb-1">
+          <Col className="d-flex">
+            <Button
+              type="button"
+              onClick={mutation.mutate}
+              className="flex-grow-1"
+              style={{ height: "3rem" }}
+            >
+              Save Recipe
+            </Button>
+
+            <Button
+              type="button"
+              onClick={() => console.log(updatedRecipe)}
+              className="p-1"
+            >
+              Test
+            </Button>
+          </Col>
+        </Row>
       </Container>
-    </>
+    </Container>
   );
 }
