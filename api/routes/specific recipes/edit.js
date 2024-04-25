@@ -2,8 +2,17 @@ import express from "express";
 const router = express.Router();
 import db from "../../database/db.js";
 import axios from "axios";
+import multer from "multer";
+import {
+  resizeAndUploadFileToS3,
+  uploadDualSizesUrlToS3,
+  uploadFileToS3,
+} from "../../tools/aws.js";
 
-async function checkAuth(req, res, next) {
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+export async function checkAuth(req, res, next) {
   try {
     let config = {
       method: "get",
@@ -16,15 +25,17 @@ async function checkAuth(req, res, next) {
     };
 
     const activeUser = await axios.request(config);
+    const recipe = JSON.parse(req.body.updatedRecipe);
 
     const query = {
       text: `SELECT author FROM RECIPES where recipe_id = $1`,
-      values: [req.body.recipe_id],
+      values: [recipe.recipe_id],
     };
 
     let data = await db.query(query);
 
     if (data.rows[0].author == activeUser.data.sub) {
+      console.log("authorized");
       next();
     } else {
       res.status(403).send("Unauthorized");
@@ -35,10 +46,19 @@ async function checkAuth(req, res, next) {
   }
 }
 
-router.post("/", checkAuth, async (req, res) => {
+router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
   try {
-    const recipe = req.body;
-    console.log(JSON.stringify(recipe.ingredients));
+    const recipe = JSON.parse(req.body.updatedRecipe);
+    let key = recipe.imgName;
+    let thumbnailKey;
+
+    if (req.file) {
+      key = await uploadFileToS3(req.file);
+      thumbnailKey = await resizeAndUploadFileToS3(req.file);
+    } else if (recipe.imgUrl != recipe.originalUrl) {
+      [key, thumbnailKey] = await uploadDualSizesUrlToS3(recipe.imgUrl);
+    }
+
     const query = {
       text: `WITH r AS
       (
@@ -46,7 +66,10 @@ router.post("/", checkAuth, async (req, res) => {
         SET name=$1,
           img_url= $2,
          servings=$3,
-         url=$5
+         url=$5,
+         yield_number=$10,
+         yield_description=$11,
+         thumbnail=$12
       WHERE recipes.recipe_id = $4 RETURNING recipe_id
       ),
       ddel AS 
@@ -86,7 +109,7 @@ router.post("/", checkAuth, async (req, res) => {
       from json_array_elements($9::json) t;`,
       values: [
         recipe.name,
-        recipe.img_url,
+        key,
         recipe.servings,
         recipe.recipe_id,
         recipe.url,
@@ -94,6 +117,9 @@ router.post("/", checkAuth, async (req, res) => {
         JSON.stringify(recipe.ingredients),
         JSON.stringify(recipe.cuisine),
         JSON.stringify(recipe.category),
+        isNaN(recipe.yieldNumber) ? null : recipe.yieldNumber,
+        recipe.yieldDescription == "" ? null : recipe.yieldDescription,
+        thumbnailKey,
       ],
     };
 

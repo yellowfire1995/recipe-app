@@ -22,10 +22,11 @@ export async function getCuisines() {
 }
 
 //Delete recipe from recipe page
-export async function deleteRecipe(recipeId) {
+export async function deleteRecipe(recipeId, recipe) {
   try {
     const deletedRecipe = await httpClient.delete(
-      `${server}/recipes/${recipeId}/delete`
+      `${server}/recipes/${recipeId}/delete`,
+      { data: recipe }
     );
 
     console.log(deletedRecipe);
@@ -38,7 +39,13 @@ export async function deleteRecipe(recipeId) {
 export async function editRecipe(e, updatedRecipe) {
   e.preventDefault();
   try {
-    const response = await httpClient.post(`${server}/edit`, updatedRecipe);
+    const formData = new FormData();
+    if (updatedRecipe.imgFile) {
+      formData.append("photo", updatedRecipe.imgFile);
+    }
+
+    formData.append("updatedRecipe", JSON.stringify(updatedRecipe));
+    const response = await httpClient.post(`${server}/edit`, formData);
   } catch (err) {
     console.error(1, err);
   }
@@ -47,16 +54,15 @@ export async function editRecipe(e, updatedRecipe) {
 //Create new recipe and return recipe ID created
 export async function newRecipe(updatedRecipe, userData) {
   try {
-    // console.log(userData);
-    const response = await httpClient.post(
-      `${server}/newrecipe`,
-      { updatedRecipe, userData },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const formData = new FormData();
+    if (updatedRecipe.imgFile) {
+      formData.append("photo", updatedRecipe.imgFile);
+    }
+
+    formData.append("updatedRecipe", JSON.stringify(updatedRecipe));
+    formData.append("userData", JSON.stringify(userData));
+
+    const response = await httpClient.post(`${server}/newrecipe`, formData);
     return response.data.recipe_id;
   } catch (err) {
     console.error(err);
@@ -147,18 +153,25 @@ export async function getRecipeById(recipeId) {
 }
 
 //Get all recipes for recipe cards on home page
-export async function getRecipeCards({ pageParam }) {
-  const recipeCards = await httpClient.get(
-    `${server}/recipecards?page=${pageParam}`
-  );
-  return recipeCards.data;
+export async function getRecipeCards({ page, search }) {
+  try {
+    const recipeCards = await httpClient.get(
+      `${server}/recipecards?page=${page}&search=${search}`
+    );
+
+    return recipeCards.data;
+  } catch (error) {
+    console.log(error);
+    return Promise.reject(404);
+  }
 }
 
 //Get all recipes for recipe cards on home page
-export async function getMyRecipeCards() {
+export async function getMyRecipeCards({ page, search }) {
   try {
-    const recipeCards = await httpClient.get(`${server}/myrecipes`);
-    console.log(recipeCards);
+    const recipeCards = await httpClient.get(
+      `${server}/myrecipes?page=${page}&search=${search}`
+    );
     return recipeCards.data;
   } catch (error) {
     console.log("ERROR!");

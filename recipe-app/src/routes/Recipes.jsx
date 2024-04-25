@@ -10,11 +10,10 @@ import Row from "react-bootstrap/esm/Row";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import Stack from "react-bootstrap/Stack";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 import { getRecipeById } from "../../db/queries";
 import { getNutritionInfo } from "../../db/queries";
-import AddPricePopup from "../Components/priceaddpopup";
+import AddPricePopup from "../Components/AddPriceModal.jsx";
 import { NutritionFacts } from "../Components/NutritionFacts";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../Components/Loading";
@@ -46,11 +45,11 @@ export default function Recipe() {
   const [activeModal, setActiveModal] = useState();
   const [servings, setServings] = useState();
 
-  if (recipeFetch.isError || nutrition.isError) {
+  if (recipeFetch.isError) {
     return <div>Recipe not found</div>;
   }
 
-  if (recipeFetch.isLoading || nutrition.isLoading) {
+  if (recipeFetch.isLoading) {
     return <Loading />;
   }
 
@@ -80,7 +79,7 @@ export default function Recipe() {
           {" "}
           <CardImg
             as="img"
-            src={recipe.img_url}
+            src={recipe.imgUrl}
             style={{ height: "12rem" }}
             className="object-fit-cover my-1 recipecardimg"
           />
@@ -136,11 +135,6 @@ export default function Recipe() {
               {recipe.ingredients.map((ingredient) => {
                 return (
                   <div className="form-check" key={ingredient.id}>
-                    <AddPricePopup
-                      show={activeModal == ingredient.id ? true : false}
-                      onHide={() => setActiveModal()}
-                      ingredient={ingredient}
-                    />
                     <input
                       className="form-check-input"
                       type="checkbox"
@@ -191,13 +185,7 @@ export default function Recipe() {
                         ) / 100
                       ).toFixed(2)}`}{" "}
                     </label>
-                    <AttachMoneyIcon
-                      type="button"
-                      onClick={() => setActiveModal(ingredient.id)}
-                      style={{
-                        color: `${ingredient.package_cost ? "black" : "red"}`,
-                      }}
-                    />
+                    <AddPricePopup ingredient={ingredient} />
                   </div>
                 );
               })}
@@ -217,30 +205,17 @@ export default function Recipe() {
             </ListGroup>
           </Col>
           <Col lg>
-            <>
-              <section className="performance-facts">
-                <header className="performance-facts__header">
-                  <h1 className="performance-facts__title">Nutrition Facts</h1>
-                  <p>
-                    Servings per Recipe
-                    <input
-                      type="number"
-                      id="servings"
-                      min="0"
-                      value={servings ?? recipe.servings}
-                      onChange={(event) => setServings(event.target.value)}
-                      style={{ width: "3rem" }}
-                      className="me-2"
-                    />
-                  </p>
-                </header>
-                {nutrition.data ? (
-                  <NutritionFacts nutrition={nutrition.data} />
-                ) : (
-                  <Loading />
-                )}
-              </section>
-            </>
+            {recipe.ingredients.length < 1 ? (
+              ""
+            ) : nutrition.data ? (
+              <NutritionFacts
+                nutrition={nutrition.data}
+                recipe={recipe}
+                servings={[servings, setServings]}
+              />
+            ) : (
+              <Loading />
+            )}
           </Col>
         </Row>
       </Col>

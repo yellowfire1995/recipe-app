@@ -1,6 +1,10 @@
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import { Link } from "react-router-dom";
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import Form from "react-bootstrap/Form";
@@ -11,13 +15,33 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { auth0Audience } from "../../env/env";
 import Col from "react-bootstrap/esm/Col";
-import Button from "react-bootstrap/esm/Button";
+
 import NavbarText from "react-bootstrap/esm/NavbarText";
 import Row from "react-bootstrap/esm/Row";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import useLocalStorage from "use-local-storage";
 
 function Header(props) {
+  const { logout } = useAuth0();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search");
+
+  const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const [theme, setTheme] = useLocalStorage(
+    "theme",
+    defaultDark ? "dark" : "light"
+  );
+  const switchTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+  };
+  useEffect(() => {
+    document.documentElement.setAttribute("data-bs-theme", theme);
+  }, [theme]);
+
+  const navigate = useNavigate();
+
   // const { user, isAuthenticated, isLoading } = useAuth0();
   // const { getAccessTokenSilently } = useAuth0();
   // const [userData, setUserData] = useState();
@@ -71,12 +95,24 @@ function Header(props) {
               <Navbar.Brand className="d-md-none ps-1">myR</Navbar.Brand>
             </Col>
             <Col className="d-flex">
-              <Form className="d-inline-flex ms-auto ms-md-0 flex-grow-1">
+              <Form
+                className="d-inline-flex ms-auto ms-md-0 flex-grow-1"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  navigate(
+                    `/recipes?search=${
+                      document.getElementById("searchBox").value
+                    }`
+                  );
+                }}
+              >
                 <Form.Control
                   type="search"
+                  id="searchBox"
                   placeholder="Search"
                   className="mainSearchBox"
                   aria-label="Search"
+                  defaultValue={searchQuery ? searchQuery : ""}
                 />
                 <SearchIcon
                   className="align-self-md-center my-auto text-secondary"
@@ -106,18 +142,25 @@ function Header(props) {
                   {" "}
                   <DarkModeIcon />
                   Dark Mode
-                  <Form.Check
+                  <input
                     className="ms-1"
-                    type="switch"
+                    type="checkbox"
                     id="theme-switcher"
-                    checked={props.currentTheme === "dark" ? true : false}
-                    onClick={props.switchTheme}
+                    checked={theme === "dark" ? true : false}
+                    onClick={switchTheme}
                   />
                 </NavDropdown.Item>
 
                 <hr />
 
-                <NavDropdown.Item className="nav-drop mt-0 pt-0">
+                <NavDropdown.Item
+                  className="nav-drop mt-0 pt-0"
+                  onClick={() =>
+                    logout({
+                      logoutParams: { returnTo: window.location.origin },
+                    })
+                  }
+                >
                   Log Out
                 </NavDropdown.Item>
               </NavDropdown>

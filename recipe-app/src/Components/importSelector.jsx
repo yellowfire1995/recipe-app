@@ -1,11 +1,10 @@
-import AddDensityPopup from "./AddWeightModal.jsx";
+import AddWeightModal from "./AddWeightModal.jsx";
 import Form from "react-bootstrap/Form";
 
 export function ImportSelector(props) {
-  const ingredientChoices = props.ingredients;
+  const ingredientList = props.ingredientList;
   const origIdx = props.origIdx;
-  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
-  const ingredient = updatedRecipe.ingredients[origIdx];
+  const [ingredient, setIngredient] = props.ingredient;
 
   return (
     <div className="d-inline-flex align-items-center">
@@ -30,20 +29,11 @@ export function ImportSelector(props) {
             : ingredient.quantity
         }
         onChange={(e) => {
-          setUpdatedRecipe({
-            ...updatedRecipe,
-            ingredients: updatedRecipe.ingredients.map((i) => {
-              if (i.id === ingredient.id) {
-                return {
-                  ...i,
-                  quantity:
-                    e.target.valueAsNumber /
-                    (ingredient.userG || ingredient.gramConversion),
-                };
-              } else {
-                return { ...i };
-              }
-            }),
+          setIngredient({
+            ...ingredient,
+            quantity:
+              e.target.valueAsNumber /
+              (ingredient.userG || ingredient.gramConversion),
           });
         }}
       />
@@ -52,29 +42,22 @@ export function ImportSelector(props) {
         value={ingredient.id}
         key={`selector${origIdx}`}
         onChange={(e) =>
-          setUpdatedRecipe({
-            ...updatedRecipe,
-            ingredients: updatedRecipe.ingredients.map((ingredient, idx) => {
-              if (idx === origIdx) {
-                return ingredientChoices.find(
-                  (choice) => choice.id == e.target.value
-                );
-              } else {
-                return { ...ingredient };
-              }
-            }),
-          })
+          setIngredient(
+            ingredientList.find((choice) => choice.id == e.target.value)
+          )
         }
         className="py-1"
       >
-        {ingredientChoices.map((choice, idx) => (
-          <>
+        {ingredientList.map((choice, idx) => {
+          return (
             <option
               value={choice.id}
               index={idx}
               key={`${origIdx}${idx}`}
               id={idx}
-              style={{ color: choice.gramConversion ? "green" : "black" }}
+              style={{
+                color: choice.gramConversion ? "green" : "black",
+              }}
             >
               {`${
                 ingredient.userLabel
@@ -84,10 +67,16 @@ export function ImportSelector(props) {
                   : choice.unitOfMeasure
                   ? choice.unitOfMeasure
                   : ""
-              } ${choice.description} ${
+              } ${
+                choice.id == ingredient.id
+                  ? ingredient.description
+                  : choice.description
+              } ${
                 choice.userG || choice.gramConversion
                   ? Math.round(
-                      ((ingredient.quantity * ingredient.gramConversion) /
+                      ((ingredient.quantity * ingredient.gramConversion ||
+                        ingredient.userG ||
+                        1) /
                         (choice.userG || choice.gramConversion)) *
                         100
                     ) /
@@ -96,16 +85,9 @@ export function ImportSelector(props) {
                   : "(No density information)"
               }`}
             </option>
-          </>
-        ))}
+          );
+        })}
       </Form.Select>
-      {
-        <AddDensityPopup
-          ingredient={ingredient}
-          updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
-          color={ingredient.gramConversion ? "black" : "red"}
-        />
-      }
     </div>
   );
 }

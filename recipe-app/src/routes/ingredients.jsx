@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/esm/Button";
-import AddPricePopup from "../Components/priceaddpopup.jsx";
 import { server } from "../../env/env.js";
 
 export default function Ingredients() {

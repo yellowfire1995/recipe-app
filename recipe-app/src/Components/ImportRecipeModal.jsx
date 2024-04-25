@@ -21,34 +21,34 @@ function ImportRecipeModal(props) {
         <Modal.Header closeButton>
           <Modal.Title>Import Recipe</Modal.Title>
         </Modal.Header>
-        <Form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setUpdatedRecipe({
-              ...updatedRecipe,
-              url: e.target.importURL.value,
-            });
-            props.handleImport(await scrapeRecipe(updatedRecipe.url));
-            handleClose();
-          }}
-        >
-          <Modal.Body>
-            <Form.Control
-              className=""
-              type="text"
-              name="importURL"
-              placeholder="Enter URL"
-            />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button variant="primary" type="submit">
-              Import
-            </Button>
-          </Modal.Footer>
-        </Form>
+
+        <Modal.Body>
+          <Form.Control
+            className=""
+            type="text"
+            id="importURL"
+            placeholder="Enter URL"
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button
+            variant="primary"
+            type="button"
+            onClick={async (e) => {
+              setUpdatedRecipe({
+                ...updatedRecipe,
+                url: document.getElementById("importURL").value,
+              });
+              props.handleImport(await scrapeRecipe(updatedRecipe.url));
+              handleClose();
+            }}
+          >
+            Import
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

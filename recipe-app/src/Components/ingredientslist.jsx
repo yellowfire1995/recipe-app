@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import InputGroup from "react-bootstrap/InputGroup";
 import _, { update } from "lodash";
 import axios from "axios";
-import AddPricePopup from "../Components/priceaddpopup.jsx";
+import AddPricePopup from "../Components/AddPriceModal.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { ingredientSearch } from "../../db/queries.js";
-import AddDensityPopup from "./AddWeightModal.jsx";
+import AddWeightModal from "./AddWeightModal.jsx";
 import { parseIngredients } from "../../db/queries";
 import { parse } from "dotenv";
 import { EditSelector } from "./EditNewIngredient.jsx";
+import Button from "react-bootstrap/esm/Button.js";
+import { v4 as uuidv4 } from "uuid";
 
 function deleteIngredient(updatedRecipe, e) {
   const buttonId = e.target.id ? e.target.id : e.target.viewportElement.id;
@@ -20,23 +22,6 @@ function deleteIngredient(updatedRecipe, e) {
     (ingredient) => ingredient.id == buttonId
   );
 
-  return { ...updatedRecipe };
-}
-
-function addNewIngredient(updatedRecipe, idNum, name) {
-  const currentLastingredient =
-    updatedRecipe.ingredients.length > 0
-      ? _.last(updatedRecipe.ingredients).id
-      : 0;
-
-  const ingredient = {
-    recipe_id: updatedRecipe.recipe_id,
-    id: 1 + currentLastingredient,
-    quantity: 10,
-    description: name,
-    fdc_id: idNum,
-  };
-  const finalRecipe = { ...updatedRecipe.ingredients.push(ingredient) };
   return { ...updatedRecipe };
 }
 
@@ -59,32 +44,26 @@ function handleIngredientUpdate(updatedRecipe, e) {
 }
 
 export default function IngredientsList(props) {
-  const [search, setSearch] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
+  const [searchList, setSearchList] = props.searchList;
   const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
-  const [activeModal, setActiveModal] = useState();
+  const [ingredientList, setIngredientList] = props.ingredientList;
 
   return (
     <Container>
       <ListGroup>
         <span className="h3"> Ingredients </span>
-        <InputGroup name="ingredients" className="d-flex flex-column">
-          {updatedRecipe.ingredients.map((ingredient) => {
+        <InputGroup name="ingredients" className="d-flex flex-column ">
+          {updatedRecipe.ingredients.map((ingredient, index) => {
             return (
-              <div className="form-check" key={ingredient.id}>
-                <AddPricePopup
-                  show={activeModal == ingredient.id ? true : false}
-                  onHide={() => setActiveModal()}
-                  ingredient={ingredient}
-                />
+              <div className="form-check ps-1" key={ingredient.id}>
                 <input
                   id={ingredient.description}
                   type="number"
                   min="0"
-                  step=".1"
+                  step=".01"
                   className="form-check-label"
                   htmlFor={ingredient.description}
-                  style={{ width: "5rem" }}
+                  style={{ width: "3rem" }}
                   name={ingredient.description}
                   value={
                     ingredient.userG
@@ -108,13 +87,22 @@ export default function IngredientsList(props) {
                   : "g"}{" "}
                 {ingredient.description}{" "}
                 {`(${
-                  ingredient.gramConversion
+                  ingredient.gramConversion || ingredient.userG
                     ? parseInt(ingredient.quantity) + "g"
                     : ""
                 } )`}
-                <AttachMoneyIcon
-                  type="button"
-                  onClick={() => setActiveModal(ingredient.id)}
+                <AddPricePopup ingredient={ingredient} />
+                <AddWeightModal
+                  ingredient={ingredient}
+                  updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
+                  color={
+                    ingredient.gramConversion || ingredient.userG
+                      ? "black"
+                      : "red"
+                  }
+                  ingredientList={[ingredientList, setIngredientList]}
+                  searchList={[searchList, setSearchList]}
+                  origIdx={index}
                 />
                 <DeleteIcon
                   id={ingredient.id}
@@ -123,53 +111,38 @@ export default function IngredientsList(props) {
                   type="button"
                   onClick={(e) => {
                     setUpdatedRecipe(deleteIngredient(updatedRecipe, e));
+                    setIngredientList(
+                      ingredientList.filter((ingredient, i) => i !== index)
+                    );
                   }}
                   className="pt-0 mb-0"
-                />
-                <AddDensityPopup
-                  ingredient={ingredient}
-                  updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
-                  color={ingredient.gramConversion ? "black" : "red"}
                 />
                 <span style={{ color: "red" }}>
                   {" "}
                   {ingredient.fdc_id
                     ? null
-                    : `Ingredient did not match - please try again`}
+                    : `Ingredient needs information - please edit`}
                 </span>
               </div>
             );
           })}
         </InputGroup>
       </ListGroup>
-      <div>
-        <input
-          id="search"
-          type="textbox"
-          placeholder="Enter new ingredient (e.g. 1 cup flour)"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        ></input>{" "}
-        <button
-          id="search"
-          type="button"
-          onClick={async (e) => setSearchResult(await parseIngredients(search))}
-        >
-          {" "}
-          Search{" "}
-        </button>
-      </div>
-      <ol>
-        {searchResult.length > 0 ? (
-          <EditSelector
-            updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
-            ingredients={[searchResult, setSearchResult]}
-            origIdx={0}
-          />
-        ) : (
-          "No Results"
-        )}
-      </ol>
+      <Button
+        type="button"
+        className="w-100"
+        onClick={() => {
+          setUpdatedRecipe({
+            ...updatedRecipe,
+            ingredients: [
+              ...updatedRecipe.ingredients,
+              { description: "New Ingredient", id: uuidv4() },
+            ],
+          });
+        }}
+      >
+        Add ingredient
+      </Button>
     </Container>
   );
 }

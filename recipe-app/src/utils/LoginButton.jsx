@@ -14,17 +14,12 @@ function LoginButton() {
     //   </Card.Body>
     // </Card>
     <div className="d-grid gap-2">
-      <Button
-        variant="outline-dark"
-        id="loginbtn"
-        size="lg"
-        onClick={() => loginWithPopup()}
-      >
+      <Button id="loginbtn" size="lg" onClick={() => loginWithPopup()}>
         Log In
       </Button>
       <br />
       <Button
-        variant="dark"
+        className="btn-secondary"
         size="lg"
         onClick={() =>
           loginWithPopup({ authorizationParams: { screen_hint: "signup" } })

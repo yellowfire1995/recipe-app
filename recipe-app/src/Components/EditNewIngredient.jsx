@@ -1,5 +1,5 @@
 import Button from "react-bootstrap/esm/Button.js";
-import AddDensityPopup from "./AddWeightModal.jsx";
+import AddWeightModal from "./AddWeightModal.jsx";
 import { useState } from "react";
 
 export function EditSelector(props) {

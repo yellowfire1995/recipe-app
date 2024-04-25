@@ -8,10 +8,11 @@ export async function matchIngredients(ingredients) {
   const ingredientArray = await Promise.all(
     ingredients.map(async (ingredient, idx) => {
       try {
+        console.log(ingredient.description);
         //Search on SOLR to find best match
         const searchResult = await searchSolr(
           ingredient.description,
-          ingredient.unitOfMeasure
+          ingredient.unitOfMeasureID
         );
 
         //Obtain ingredient information from database using search result
@@ -50,12 +51,10 @@ export async function matchIngredients(ingredients) {
 
             //Test to see if there is a match between original measurement and database measurement to convert into grams
             const weightConversion = await findMeasureMatch(
-              ingredient.unitOfMeasure?.trim(),
+              ingredient.unitOfMeasureID?.trim(),
               data.rows[0].gram_label?.trim(),
               data.rows[0].gram_amt
             );
-
-            console.log(weightConversion);
 
             //Create final ingredient structure
             const finalIngredient = {

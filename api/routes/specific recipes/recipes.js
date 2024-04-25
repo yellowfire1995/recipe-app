@@ -2,6 +2,21 @@ import express from "express";
 const router = express.Router();
 import db from "../../database/db.js";
 import axios from "axios";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { deleteFromS3 } from "../../tools/aws.js";
+
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accessKey = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const S3 = new S3Client({
+  credentials: {
+    secretAccessKey: secretAccessKey,
+    accessKeyId: accessKey,
+  },
+  region: bucketRegion,
+});
 
 async function checkAuth(req, res, next) {
   try {
@@ -37,9 +52,8 @@ async function checkAuth(req, res, next) {
 
 router.get("/:recipeId", async (req, res) => {
   try {
-    let data;
     const query = {
-      text: `SELECT recipes.* ,
+      text: `SELECT recipe_id, name, img_url as "imgUrl", img_url as "imgName", thumbnail, servings, url, author, nickname, create_date, yield_number as "yieldNumber", yield_description as "yieldDescription",
     (
            Select COALESCE(JSON_AGG(json_build_object(
                 'id',  recipe_cuisines.id, 
@@ -72,8 +86,7 @@ router.get("/:recipeId", async (req, res) => {
                 'userG', coalesce(ingredients.alt_g_conv, null),
                 'userLabel', coalesce(ingredients.alt_label, null), 
                 'quantity', amt, 
-                'description', SPLIT_PART(food.description, ',', 1),
-                'niceName', nice_name,
+                'description', coalesce(user_ingredient_name, SPLIT_PART(food.description, ',', 1)),
                 'fdc_id', ingredients.fdc_id,
                 'sr_id', ingredients.sr_id,
                 'gramConversion', case 
@@ -121,7 +134,13 @@ router.get("/:recipeId", async (req, res) => {
       values: [req.params.recipeId],
     };
 
-    data = await db.query(query);
+    let data = await db.query(query);
+    if (!data.rows[0].imgUrl.match(/.*(http).*/g)) {
+      data.rows[0].imgUrl =
+        "d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
+      data.rows[0].originalUrl =
+        "d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
+    }
 
     res.send(data.rows);
   } catch (error) {
@@ -132,11 +151,14 @@ router.get("/:recipeId", async (req, res) => {
 
 router.delete("/:recipeId/delete", checkAuth, async (req, res) => {
   try {
+    console.log(req.body);
     const query = {
       text: `DELETE FROM recipes WHERE recipe_id = $1;
       `,
       values: [req.params.recipeId],
     };
+    await deleteFromS3(req.body.imgName);
+    await deleteFromS3(req.body.thumbnail);
     await db.query(query);
 
     res.send(`Recipe has been deleted`);

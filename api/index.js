@@ -18,12 +18,13 @@ import auth0Route from "./routes/auth/auth0.js";
 import myRecipesRoute from "./routes/specific recipes/myrecipes.js";
 import getPriceRoute from "./routes/specific recipes/getprice.js";
 import scrapeRecipeRoute from "./routes/import/scrapeRecipe.js";
+import uploadPhotoRoute from "./routes/specific recipes/photos.js";
 
-const _ = process.env;
+const ENV = process.env;
 const app = express();
-const port = _.SERVER_PORT;
+const port = ENV.SERVER_PORT;
 
-var whitelist = [_.HOST];
+var whitelist = [ENV.HOST];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -33,6 +34,7 @@ var corsOptions = {
     }
   },
 };
+app.use(express.static("public"));
 
 app.use(cors(corsOptions));
 app.use(helmet());
@@ -53,7 +55,8 @@ app.use("/import", scrapeRecipeRoute);
 app.use("/profile", auth0Route);
 app.use("/myrecipes", myRecipesRoute);
 app.use("/getPrice", getPriceRoute);
+app.use("/photo/upload", uploadPhotoRoute);
 
-app.listen(port, _.SERVER_HOST, () => {
+app.listen(port, ENV.SERVER_HOST, () => {
   console.log(`Server is running on port ${port}`);
 });

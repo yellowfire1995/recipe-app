@@ -18,13 +18,14 @@ app = Flask(__name__)
 
 @app.route("/api/v1/scrape/", methods=['POST'])
 def scrape():
+    print(request.form['url'])
     if re.match(".*blueapron.*", request.form['url']):
         print("blueapron")
         return "blueapron"
     elif re.match(".*samsungfood.*", request.form['url']):
         driver = webdriver.Firefox()
         driver.get(request.form['url'])
-        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.s13303")))
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.s13324")))
         html = driver.page_source
         driver.quit()
         soup = BeautifulSoup(html, "html.parser")
@@ -49,6 +50,7 @@ def scrape():
         soup = BeautifulSoup(html, 'html.parser')
         raw_recipe = soup.find(type="application/ld+json")
         loaded_recipe = json.loads(raw_recipe.text)
+
         
         if isinstance(loaded_recipe, list):
             recipe = loaded_recipe[0]
@@ -61,12 +63,17 @@ def scrape():
                     else:
                         continue
         else:
+            print(loaded_recipe)
             recipe = loaded_recipe
-            if loaded_recipe['@graph']:
+            if '@graph' in recipe:
                 for graph in loaded_recipe['@graph']:
                     if graph['@type'] == 'Recipe':
                         return graph
                     else:
                         continue
+            elif '@type' in recipe and recipe['@type'] == 'Recipe':
+                return recipe
+                
+            
               
                 

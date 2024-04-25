@@ -13,6 +13,7 @@ export default function DeleteButton(props) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const navigate = useNavigate();
+  const recipe = props.recipe;
 
   const queryCache = new QueryCache({
     onError: (error) => {
@@ -28,7 +29,7 @@ export default function DeleteButton(props) {
 
   const deleter = useMutation({
     mutationFn: () => {
-      return deleteRecipe(props.recipeId);
+      return deleteRecipe(props.recipeId, recipe);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({

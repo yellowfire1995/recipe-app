@@ -4,11 +4,18 @@ import db from "../../database/db.js";
 import { getUserId } from "../../tools/getUserId.js";
 
 router.get("/", getUserId, async (req, res) => {
-  let data;
+  console.log(req.query);
+
   try {
-    data = await db.query(
-      `
-      SELECT recipes.* ,
+    const sqlSearch =
+      req.query.search == "null"
+        ? "%"
+        : "%" + req.query.search.toLowerCase() + "%";
+
+    console.log(sqlSearch);
+    const query = {
+      text: `
+      SELECT recipe_id, name, thumbnail, servings, url, author, nickname, create_date,
   (
          Select COALESCE(JSON_AGG(json_build_object(
               'id',  recipe_cuisines.id, 
@@ -19,27 +26,40 @@ router.get("/", getUserId, async (req, res) => {
           JOIN cuisines ON cuisines.id = recipe_cuisines.cuisine_id
   WHERE recipes.recipe_id = recipe_cuisines.recipe_id
         ) as cuisine
-     
                   FROM recipes
-                  WHERE author = $1
+                  WHERE lower(recipes.name) LIKE $2 and author = $3
               GROUP BY recipes.recipe_id
-              ORDER BY recipes.recipe_id
-              OFFSET $2
-              LIMIT 5
-
-
-           
+              ORDER BY recipes.recipe_id DESC
+              LIMIT 16
+              Offset $1
               ;`,
-      [req.user, req.query.page]
-    );
+      values: [
+        req.query.page == "null" ? 0 : (parseInt(req.query.page) - 1) * 15,
+        sqlSearch,
+        req.user,
+      ],
+    };
 
-    var cursor = 4 + parseInt(req.query.page);
-    data.rows.length < 5 ? (cursor = null) : data.rows.pop();
+    const data = await db.query(query);
 
-    res.json({ data: data.rows, cursor: cursor });
+    let lastPage = false;
+
+    data.rows.length < 16 ? (lastPage = true) : data.rows.pop();
+
+    const getThumbnailUrls = data.rows.map(async (recipe) => {
+      return {
+        ...recipe,
+        thumbnail: recipe.thumbnail
+          ? "https://d30b48eq3arkah.cloudfront.net/" + recipe.thumbnail
+          : null,
+      };
+    });
+
+    const cardData = await Promise.all(getThumbnailUrls);
+
+    res.json({ data: cardData, lastPage: lastPage });
   } catch (error) {
     console.error(error);
-    res.status(401).send("Unable to load user data");
   }
 });
 

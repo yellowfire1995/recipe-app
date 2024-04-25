@@ -1,12 +1,16 @@
 import express from "express";
 const router = express.Router();
-import parseIngredients from "../../tools/parseIngredients.js";
+import preprocessIngredients from "../../tools/preprocessIngredients.js";
 import { matchIngredients } from "../../tools/matchIngredients.js";
 import { parseIngredient } from "parse-ingredient";
 
 router.post("/ingredients", async (req, res) => {
   try {
-    const matchedIngredientList = parseIngredient(req.body.ingredients);
+    const prefilteredIngredientList = preprocessIngredients(
+      req.body.ingredients
+    );
+    console.log(prefilteredIngredientList);
+    const matchedIngredientList = parseIngredient(prefilteredIngredientList);
     const ingredientArray = await matchIngredients(matchedIngredientList);
     res.json(ingredientArray);
   } catch (error) {

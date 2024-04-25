@@ -7,13 +7,7 @@ import Col from "react-bootstrap/esm/Col.js";
 export default function MyRecipes() {
   return (
     <>
-      <Col className="col-2 user-select-none">
-        <Sidebar fetcher={getSidebarCuisines} />
-      </Col>
-
-      <Col style={{ minWidth: "100px" }}>
-        <RecipeCards fetcher={getMyRecipeCards} queryKey="MyRecipes" />
-      </Col>
+      <RecipeCards fetcher={getMyRecipeCards} queryKey="MyRecipes" />
     </>
   );
 }

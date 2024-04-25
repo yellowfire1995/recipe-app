@@ -9,6 +9,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./routes/root";
 import RecipeCards from "./Components/RecipeCards.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import "./index.scss";
 import ErrorPage from "./errorpage";
 import { action as filterAction } from "./routes/root.jsx";
