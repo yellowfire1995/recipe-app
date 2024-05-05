@@ -3,15 +3,12 @@ const router = express.Router();
 import db from "../../database/db.js";
 
 router.get("/", async (req, res) => {
-  console.log(req.query);
-
   try {
     const sqlSearch =
       req.query.search == "null"
         ? "%"
         : "%" + req.query.search.toLowerCase() + "%";
 
-    console.log(sqlSearch);
     const query = {
       text: `
       SELECT recipe_id, name, thumbnail, servings, url, author, nickname, create_date,
@@ -26,7 +23,7 @@ router.get("/", async (req, res) => {
   WHERE recipes.recipe_id = recipe_cuisines.recipe_id
         ) as cuisine
                   FROM recipes
-                  WHERE lower(recipes.name) LIKE $2
+                  WHERE lower(recipes.name) LIKE $2 and (recipes.public OR recipes.author = $2 )
               GROUP BY recipes.recipe_id
               ORDER BY recipes.recipe_id DESC
               LIMIT 16
@@ -49,7 +46,7 @@ router.get("/", async (req, res) => {
         ...recipe,
         thumbnail: recipe.thumbnail
           ? "https://d30b48eq3arkah.cloudfront.net/" + recipe.thumbnail
-          : null,
+          : "https://www.svgrepo.com/show/118464/plate-and-utensils-top-view.svg",
       };
     });
 

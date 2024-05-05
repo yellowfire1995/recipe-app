@@ -4,8 +4,6 @@ import db from "../../database/db.js";
 import { getUserId } from "../../tools/getUserId.js";
 
 router.get("/", getUserId, async (req, res) => {
-  console.log(req.query);
-
   try {
     const sqlSearch =
       req.query.search == "null"
@@ -36,7 +34,7 @@ router.get("/", getUserId, async (req, res) => {
       values: [
         req.query.page == "null" ? 0 : (parseInt(req.query.page) - 1) * 15,
         sqlSearch,
-        req.user,
+        req.user.sub,
       ],
     };
 

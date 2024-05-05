@@ -69,7 +69,8 @@ router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
          url=$5,
          yield_number=$10,
          yield_description=$11,
-         thumbnail=$12
+         thumbnail=$12,
+         public=$13
       WHERE recipes.recipe_id = $4 RETURNING recipe_id
       ),
       ddel AS 
@@ -120,6 +121,7 @@ router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
         isNaN(recipe.yieldNumber) ? null : recipe.yieldNumber,
         recipe.yieldDescription == "" ? null : recipe.yieldDescription,
         thumbnailKey,
+        recipe.public,
       ],
     };
 

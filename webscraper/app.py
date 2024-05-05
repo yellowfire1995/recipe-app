@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 import httpx
 from flask import Flask, request, jsonify
@@ -8,11 +7,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import json
-from flask_cors import CORS, cross_origin
 import os
 
-
-load_dotenv()
 app = Flask(__name__)
 
 
@@ -72,8 +68,5 @@ def scrape():
                     else:
                         continue
             elif '@type' in recipe and recipe['@type'] == 'Recipe':
-                return recipe
-                
-            
-              
-                
+                return recipe             
+

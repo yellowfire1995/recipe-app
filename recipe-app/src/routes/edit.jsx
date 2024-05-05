@@ -12,7 +12,7 @@ import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
 import Button from "react-bootstrap/Button";
 import _ from "lodash";
-import IngredientsList from "../Components/ingredientslist";
+import IngredientsList from "../Components/IngredientsList";
 import DirectionsList from "../Components/directionslist";
 import CuisineSelector from "../Components/cuisineselector";
 import CategorySelector from "../Components/categoryselector";
@@ -25,10 +25,10 @@ import Loading from "../Components/Loading";
 import Form from "react-bootstrap/Form";
 import AddPhotoModal from "../Components/AddPhotoModal";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
+import { NutritionFacts } from "../Components/NutritionFacts";
 
 export default function Edit() {
   const params = useParams();
-  const [searchList, setSearchList] = useState([]);
   const [ingredientList, setIngredientList] = useState([]);
   const [updatedRecipe, setUpdatedRecipe] = useState();
   const navigate = useNavigate();
@@ -82,6 +82,14 @@ export default function Edit() {
             }}
             encType="multipart/form-data"
           >
+            <Row className="mt-3 d-flex">
+              <Col className="d-flex justify-content-end">
+                <DeleteButton
+                  recipe={updatedRecipe}
+                  recipeId={params.recipeId}
+                />
+              </Col>
+            </Row>
             <Row className="mt-1 justify-content-center mx-1 mb-1 ">
               <AddPhotoModal
                 updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
@@ -135,7 +143,9 @@ export default function Edit() {
                         onChange={(e) =>
                           setUpdatedRecipe({
                             ...updatedRecipe,
-                            yieldNumber: e.target.valueAsNumber,
+                            yieldNumber: isNaN(e.target.valueAsNumber)
+                              ? null
+                              : e.target.valueAsNumber,
                           })
                         }
                       />
@@ -165,7 +175,8 @@ export default function Edit() {
                 </Row>
               </Col>
             </Row>
-            <Row className="p-1">
+
+            <Row className="">
               <Col md className="">
                 <CategorySelector
                   updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
@@ -177,7 +188,35 @@ export default function Edit() {
                 />
               </Col>
             </Row>
-
+            <Row className="px-0 py-2">
+              <Col className="align-content-center d-flex">
+                <h5 className="pe-2">Visibility: </h5>
+                <Form.Check
+                  inline
+                  type="checkbox"
+                  checked={updatedRecipe.public}
+                  onClick={(e) =>
+                    setUpdatedRecipe({
+                      ...updatedRecipe,
+                      public: true,
+                    })
+                  }
+                  label="Public"
+                />
+                <Form.Check
+                  inline
+                  type="checkbox"
+                  checked={!updatedRecipe.public}
+                  onClick={(e) =>
+                    setUpdatedRecipe({
+                      ...updatedRecipe,
+                      public: false,
+                    })
+                  }
+                  label="Private"
+                />
+              </Col>
+            </Row>
             <Row className="mt-4">
               <Col md>
                 <Row>
@@ -186,7 +225,6 @@ export default function Edit() {
                       <IngredientsList
                         updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
                         ingredientList={[ingredientList, setIngredientList]}
-                        searchList={[searchList, setSearchList]}
                       />
                     ) : null}
 
@@ -207,19 +245,12 @@ export default function Edit() {
                   >
                     Save Recipe
                   </Button>
-
-                  <Button
-                    type="button"
-                    onClick={() => console.log(updatedRecipe)}
-                    className="p-1"
-                  >
-                    Test
-                  </Button>
-                  <DeleteButton
-                    recipe={updatedRecipe}
-                    recipeId={params.recipeId}
-                  />
                 </Container>
+              </Col>
+            </Row>
+            <Row className="justify-content-center">
+              <Col lg={6}>
+                <NutritionFacts recipe={updatedRecipe} header={false} />
               </Col>
             </Row>
           </Form>

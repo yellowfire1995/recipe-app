@@ -15,31 +15,9 @@ export async function action({ params, request }) {
 export default function App() {
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
-  // const query = useQuery({
-  //   queryKey: [`AccessToken`],
-  //   queryFn: addAccessTokenInterceptor(getAccessTokenSilently),
-  // });
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      addAccessTokenInterceptor(getAccessTokenSilently);
-    }
-  }, [getAccessTokenSilently, isAuthenticated]);
-
-  // if (query.isLoading) {
-  //   return (
-  //     <div>
-  //       <Row className="">
-  //         <Header />
-  //       </Row>
-  //       <Container className="pt-3">
-  //         <Row>
-  //           <Loading />
-  //         </Row>
-  //       </Container>
-  //     </div>
-  //   );
-  // }
+  if (isAuthenticated) {
+    addAccessTokenInterceptor(getAccessTokenSilently);
+  }
 
   return (
     <>

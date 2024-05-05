@@ -24,14 +24,14 @@ function AddPhotoModal(props) {
     <>
       <Container
         style={{
-          width: "12rem",
+          width: "10rem",
           height: "12rem",
         }}
         onClick={() => setShow(true)}
-        className="photo-add"
+        className="photo-add ps-2"
       >
         <Row>
-          <Col className="text-center">
+          <Col className="text-start p-0">
             <img
               src={updatedRecipe.imgUrl}
               style={{
@@ -44,7 +44,7 @@ function AddPhotoModal(props) {
           </Col>
         </Row>
         <Row className="">
-          <Col className="text-center ">
+          <Col className="text-start p-0">
             <Button size="sm" style={{ width: "9rem" }}>
               <CameraAltIcon /> Add photo
             </Button>

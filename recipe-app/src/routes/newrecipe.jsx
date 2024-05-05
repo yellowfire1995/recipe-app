@@ -1,38 +1,18 @@
 import { Form as ReactForm, useNavigate } from "react-router-dom";
 import CardImg from "react-bootstrap/esm/CardImg";
 import Container from "react-bootstrap/esm/Container";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
 import Button from "react-bootstrap/Button";
 import _ from "lodash";
-import axios from "axios";
-import IngredientsList from "../Components/ingredientslist";
+import IngredientsList from "../Components/IngredientsList";
 import DirectionsList from "../Components/directionslist";
 import CuisineSelector from "../Components/cuisineselector";
 import CategorySelector from "../Components/categoryselector";
 import { newRecipe } from "../../db/queries";
-import httpClient from "../../db/axiosConfig";
-import { useAuth0 } from "@auth0/auth0-react";
 
 export default function NewRecipe() {
-  const { user, isAuthenticated, isLoading } = useAuth0();
-  const { getAccessTokenSilently } = useAuth0();
-  const [userData, setUserData] = useState();
-
-  useEffect(() => {
-    (async () => {
-      try {
-        let response = await httpClient.get(
-          `https://dev-8oxkv6xzy7mdml3z.us.auth0.com/api/v2/users/${user.sub}`
-        );
-        setUserData(response.data);
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  }, [getAccessTokenSilently]);
-
   const recipe = {
     name: "",
     img_url: "",

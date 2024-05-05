@@ -98,7 +98,7 @@ router.post("/price", getUserId, async (req, res) => {
         ;
   
         `,
-      values: [i.fdc_id, i.pkgGrms, i.pkgCost, i.url, req.user],
+      values: [i.fdc_id, i.pkgGrms, i.pkgCost, i.url, req.user.sub],
     };
     data = await db.query(query);
 

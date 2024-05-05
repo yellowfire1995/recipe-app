@@ -5,28 +5,28 @@ import { savePrice } from "../../db/queries";
 import StoreButtons from "./storesearchbuttons";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
-export default function AddPricePopup(props) {
-  const i = props.ingredient;
+export default function AddPriceModal(props) {
+  const ingredient = props.ingredient;
   const [show, setShow] = useState(false);
-  const [pkgGrms, setPkgGrms] = useState(i.package_grams);
-  const [pkgCost, setPkgCost] = useState(i.package_cost);
-  const [url, setUrl] = useState(i.url);
+  const [pkgGrms, setPkgGrms] = useState(ingredient.package_grams);
+  const [pkgCost, setPkgCost] = useState(ingredient.package_cost);
+  const [url, setUrl] = useState(ingredient.url);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   function handleSave() {
-    savePrice(pkgGrms, pkgCost, url, i.fdc_id);
+    savePrice(pkgGrms, pkgCost, url, ingredient.fdc_id);
     handleClose();
   }
 
   return (
     <>
-      <AttachMoneyIcon onClick={handleShow} />
+      <AttachMoneyIcon onClick={handleShow} className="svg-icon" />
       <Modal show={show} onHide={handleClose} animation={false} size="lg">
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Add price for {i.description.toLowerCase()}
+            Add price for {ingredient.description.toLowerCase()}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -61,7 +61,7 @@ export default function AddPricePopup(props) {
               style={{ width: "100%" }}
             />
           </form>
-          Search: <StoreButtons ingredient={i.ingredient} />
+          Search: <StoreButtons ingredient={ingredient.ingredient} />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={() => handleSave()}>Save</Button>

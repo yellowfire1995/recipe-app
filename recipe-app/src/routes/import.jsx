@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { useState, useEffect } from "react";
 import Col from "react-bootstrap/esm/Col";
 import ImportIngredientsList from "../Components/importIngredientList";
-import IngredientsList from "../Components/ingredientslist";
+import IngredientsList from "../Components/IngredientsList";
 import DirectionsList from "../Components/directionslist";
 import CuisineSelector from "../Components/cuisineselector";
 import CategorySelector from "../Components/categoryselector";
@@ -23,6 +23,7 @@ import ImportRecipeModal from "../Components/ImportRecipeModal";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import AddPhotoModal from "../Components/AddPhotoModal";
+import { NutritionFacts } from "../Components/NutritionFacts";
 
 export default function ImportRecipe() {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -46,7 +47,6 @@ export default function ImportRecipe() {
   const [ingredients, setIngredients] = useState("");
   const [directions, setDirections] = useState("");
   const [ingredientList, setIngredientList] = useState([]);
-  const [searchList, setSearchList] = useState([]);
   const [updatedRecipe, setUpdatedRecipe] = useState({
     name: "",
     imgUrl: "",
@@ -55,6 +55,7 @@ export default function ImportRecipe() {
     ingredients: [],
     directions: [],
     category: [],
+    public: true,
   });
 
   const mutation = useMutation({
@@ -108,7 +109,6 @@ export default function ImportRecipe() {
       ...updatedRecipe,
       ingredients: choices.map((choice) => choice[0]),
     });
-    console.log(choices);
 
     return choices;
   }
@@ -124,7 +124,7 @@ export default function ImportRecipe() {
           encType="multipart/form-data"
         >
           <Row>
-            <Col className="px-3">
+            <Col className="">
               <ImportRecipeModal
                 updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
                 handleImport={handleImport}
@@ -215,7 +215,8 @@ export default function ImportRecipe() {
               </Row>
             </Col>
           </Row>
-          <Row className="p-1">
+
+          <Row className="">
             <Col md className="">
               <CategorySelector
                 updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
@@ -227,8 +228,36 @@ export default function ImportRecipe() {
               />
             </Col>
           </Row>
-
-          <Row className="mt-4">
+          <Row className="px-0 py-2">
+            <Col className="align-content-center d-flex">
+              <h5 className="pe-2">Visibility: </h5>
+              <Form.Check
+                inline
+                type="checkbox"
+                checked={updatedRecipe.public}
+                onClick={(e) =>
+                  setUpdatedRecipe({
+                    ...updatedRecipe,
+                    public: true,
+                  })
+                }
+                label="Public"
+              />
+              <Form.Check
+                inline
+                type="checkbox"
+                checked={!updatedRecipe.public}
+                onClick={(e) =>
+                  setUpdatedRecipe({
+                    ...updatedRecipe,
+                    public: false,
+                  })
+                }
+                label="Private"
+              />
+            </Col>
+          </Row>
+          <Row className="">
             <Col md>
               <Row>
                 <Col>
@@ -255,7 +284,6 @@ export default function ImportRecipe() {
                     className="flex-grow-1 bg-color-red border-0"
                     variant="primary"
                     onClick={async () => {
-                      console.log("importing...");
                       setIngredientList(await getIngredientChoices());
                     }}
                   >
@@ -269,7 +297,6 @@ export default function ImportRecipe() {
                     <IngredientsList
                       updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
                       ingredientList={[ingredientList, setIngredientList]}
-                      searchList={[searchList, setSearchList]}
                     />
                   ) : null}
                 </Col>
@@ -329,14 +356,11 @@ export default function ImportRecipe() {
               >
                 Save Recipe
               </Button>
-
-              <Button
-                type="button"
-                onClick={() => newRecipe(updatedRecipe)}
-                className="p-1"
-              >
-                Test
-              </Button>
+            </Col>
+          </Row>
+          <Row className="justify-content-center">
+            <Col lg={6}>
+              <NutritionFacts recipe={updatedRecipe} header={false} />
             </Col>
           </Row>
         </Form>

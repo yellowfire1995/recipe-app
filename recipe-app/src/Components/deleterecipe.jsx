@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteRecipe } from "../../db/queries";
 import { queryClient } from "../main";
 import { QueryCache, useMutation } from "@tanstack/react-query";
-import { getMyRecipeCards } from "../../db/queries";
-import { getRecipeCards } from "../../db/queries";
+import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
 
 export default function DeleteButton(props) {
   const [show, setShow] = useState(false);
@@ -48,9 +47,13 @@ export default function DeleteButton(props) {
 
   return (
     <>
-      <Button variant="danger" onClick={handleShow}>
+      <DeleteSharpIcon
+        fontSize="large"
+        onClick={handleShow}
+        className="svg-icon"
+      >
         Delete
-      </Button>
+      </DeleteSharpIcon>
 
       <Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>

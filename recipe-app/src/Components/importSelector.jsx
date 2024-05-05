@@ -1,4 +1,4 @@
-import AddWeightModal from "./AddWeightModal.jsx";
+import EditIngredientModal from "./EditIngredientModal.jsx";
 import Form from "react-bootstrap/Form";
 
 export function ImportSelector(props) {

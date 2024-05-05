@@ -2,7 +2,6 @@ import axios from "axios";
 
 export async function getUserId(req, res, next) {
   try {
-    console.log(req.headers?.authorization);
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -10,13 +9,14 @@ export async function getUserId(req, res, next) {
       headers: {
         Accept: "application/json",
         Authorization: `${req.headers.authorization}`,
+        scope: "openid profile email",
       },
     };
 
     const activeUser = await axios.request(config);
 
     if (activeUser.data.sub) {
-      req.user = activeUser.data.sub;
+      req.user = activeUser.data;
       next();
     } else {
       res.status(401).send("Unauthorized");

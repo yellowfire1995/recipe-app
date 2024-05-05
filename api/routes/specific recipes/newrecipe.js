@@ -7,17 +7,17 @@ import {
   uploadFileToS3,
 } from "../../tools/aws.js";
 import multer from "multer";
+import { getUserId } from "../../tools/getUserId.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-router.post("/", upload.single("photo"), async (req, res) => {
+router.post("/", getUserId, upload.single("photo"), async (req, res) => {
   try {
-    console.log(req.body);
+    console.log(req.user);
     const recipe = JSON.parse(req.body.updatedRecipe);
-    const userData = JSON.parse(req.body.userData);
-    var key = "food.jpg";
-    let thumbnailKey;
+    var key = null;
+    var thumbnailKey = null;
 
     if (req.file) {
       key = await uploadFileToS3(req.file);
@@ -65,8 +65,8 @@ router.post("/", upload.single("photo"), async (req, res) => {
         JSON.stringify(recipe.directions),
         JSON.stringify(recipe.ingredients),
         JSON.stringify(recipe.category),
-        userData.user_id,
-        userData.nickname,
+        req.user.sub,
+        req.user.nickname,
         recipe.yieldNumber,
         recipe.yieldDescription,
         thumbnailKey, //$13

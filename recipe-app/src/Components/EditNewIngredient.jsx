@@ -1,5 +1,5 @@
 import Button from "react-bootstrap/esm/Button.js";
-import AddWeightModal from "./AddWeightModal.jsx";
+import EditIngredientModal from "./EditIngredientModal.jsx";
 import { useState } from "react";
 
 export function EditSelector(props) {

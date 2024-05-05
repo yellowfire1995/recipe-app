@@ -13,10 +13,10 @@ import Stack from "react-bootstrap/Stack";
 
 import { getRecipeById } from "../../db/queries";
 import { getNutritionInfo } from "../../db/queries";
-import AddPricePopup from "../Components/AddPriceModal.jsx";
-import { NutritionFacts } from "../Components/NutritionFacts";
+import AddPriceModal from "../Components/AddPriceModal.jsx";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../Components/Loading";
+import { NutritionFacts } from "../Components/NutritionFacts.jsx";
 
 export async function loader({ params }) {
   const activeRecipe = await getRecipeById(params.recipeId);
@@ -27,10 +27,6 @@ export async function loader({ params }) {
 
 export default function Recipe() {
   const params = useParams();
-  const nutrition = useQuery({
-    queryKey: [`Nutrition${params.recipeId}`],
-    queryFn: () => getNutritionInfo(params.recipeId),
-  });
 
   const recipeFetch = useQuery({
     queryKey: [`Recipe${params.recipeId}`],
@@ -73,9 +69,9 @@ export default function Recipe() {
   }
 
   return (
-    <Container md fluid="lg" className="d-flex mt-4">
+    <Container fluid="lg" className="d-flex mt-4">
       <Col className=" ">
-        <Row>
+        <Row className={`${recipe.imgUrl ? "" : "d-none"}`}>
           {" "}
           <CardImg
             as="img"
@@ -185,7 +181,7 @@ export default function Recipe() {
                         ) / 100
                       ).toFixed(2)}`}{" "}
                     </label>
-                    <AddPricePopup ingredient={ingredient} />
+                    <AddPriceModal ingredient={ingredient} />
                   </div>
                 );
               })}
@@ -205,16 +201,14 @@ export default function Recipe() {
             </ListGroup>
           </Col>
           <Col lg>
-            {recipe.ingredients.length < 1 ? (
-              ""
-            ) : nutrition.data ? (
+            {recipe.ingredients.length > 0 ? (
               <NutritionFacts
-                nutrition={nutrition.data}
                 recipe={recipe}
+                header={true}
                 servings={[servings, setServings]}
               />
             ) : (
-              <Loading />
+              ""
             )}
           </Col>
         </Row>

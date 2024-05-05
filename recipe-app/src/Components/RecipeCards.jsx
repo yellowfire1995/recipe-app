@@ -11,6 +11,7 @@ import Row from "react-bootstrap/esm/Row";
 import Container from "react-bootstrap/esm/Container.js";
 import Col from "react-bootstrap/esm/Col.js";
 import Button from "react-bootstrap/esm/Button";
+import { getCollectionRecipes } from "../../db/queries.js";
 
 export default function RecipeCards(props) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -62,7 +63,7 @@ export default function RecipeCards(props) {
         <Container>
           <Row>
             <Col className="d-flex flex-wrap justify-content-center">
-              <RecipeCardData cards={cardsQuery.data} />
+              <RecipeCardData cards={cardsQuery.data.data} />
             </Col>
           </Row>
           <Row className="w-100">
@@ -81,6 +82,7 @@ export default function RecipeCards(props) {
               >
                 Next page
               </Button>
+              <Button onClick={getCollectionRecipes}> Test</Button>
             </Col>
           </Row>
         </Container>

@@ -52,7 +52,7 @@ export async function editRecipe(e, updatedRecipe) {
 }
 
 //Create new recipe and return recipe ID created
-export async function newRecipe(updatedRecipe, userData) {
+export async function newRecipe(updatedRecipe) {
   try {
     const formData = new FormData();
     if (updatedRecipe.imgFile) {
@@ -60,7 +60,6 @@ export async function newRecipe(updatedRecipe, userData) {
     }
 
     formData.append("updatedRecipe", JSON.stringify(updatedRecipe));
-    formData.append("userData", JSON.stringify(userData));
 
     const response = await httpClient.post(`${server}/newrecipe`, formData);
     return response.data.recipe_id;
@@ -173,6 +172,17 @@ export async function getMyRecipeCards({ page, search }) {
       `${server}/myrecipes?page=${page}&search=${search}`
     );
     return recipeCards.data;
+  } catch (error) {
+    console.log("ERROR!");
+    return Promise.reject(401);
+  }
+}
+
+//Get recipes by collection
+export async function getCollectionRecipes() {
+  try {
+    const collectionRecipes = await httpClient.get(`${server}/collections`);
+    return collectionRecipes.data;
   } catch (error) {
     console.log("ERROR!");
     return Promise.reject(401);

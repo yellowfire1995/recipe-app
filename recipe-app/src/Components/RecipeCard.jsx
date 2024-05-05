@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
 
 export default function RecipeCardData(props) {
-  const cards = props.cards.data;
+  const cards = props.cards;
 
   if (cards.length < 1) {
     return <div>No Recipes found.</div>;

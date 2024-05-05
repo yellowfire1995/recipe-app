@@ -8,18 +8,19 @@ import { parseIngredients } from "../../db/queries";
 import Form from "react-bootstrap/Form";
 import { Container } from "@mui/material";
 
-export default function AddWeightModal(props) {
+export default function EditIngredientModal(props) {
   const origIdx = props.origIdx;
   const useElement = (id) => document.getElementById(id);
-  const [ingredientList] = props.ingredientList;
+  const [ingredientList, setIngredientList] = props.ingredientList;
   const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
   const [ingredient, setIngredient] = useState(props.ingredient);
   const [show, setShow] = useState(false);
-  const [searchList, setSearchList] = props.searchList;
+  const [searchList, setSearchList] = useState([]);
 
   const handleClose = () => {
     setShow(false);
     setIngredient(props.ingredient);
+    setSearchList([]);
   };
 
   const handleShow = () => {
@@ -30,7 +31,6 @@ export default function AddWeightModal(props) {
   useEffect(() => {
     if (searchList.length > 0) {
       setIngredient(searchList[0][0]);
-      console.log(ingredient);
     }
   }, [searchList]);
 
@@ -46,12 +46,22 @@ export default function AddWeightModal(props) {
       }),
     });
 
+    setIngredientList(
+      ingredientList.map((ingredient, index) => {
+        if (index == origIdx) {
+          return searchList[0];
+        } else {
+          return [...ingredient];
+        }
+      })
+    );
+
     handleClose();
   }
 
   return (
     <>
-      <EditIcon onClick={handleShow} style={{ color: props.color }} />
+      <EditIcon onClick={handleShow} className="svg-icon" />
       <Modal
         {...props}
         size="lg"
@@ -63,7 +73,7 @@ export default function AddWeightModal(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Set density for {ingredient.description}
+            Set density for {ingredient.description} {origIdx}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -157,19 +167,12 @@ export default function AddWeightModal(props) {
           ) : (
             ""
           )}
-          {/* <ImportSelector
-            ingredient={[ingredient, setIngredient]}
-            ingredientList={
-              searchList.length > 0 ? searchList[0] : ingredientList
-            }
-            origIdx={origIdx}
-          /> */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={() => console.log(searchList)}>Test</Button>
+
           <Button
             variant="primary"
             onClick={() => {

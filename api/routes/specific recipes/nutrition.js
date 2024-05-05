@@ -17,9 +17,9 @@ async function getNutrition(recipeId) {
 		from ingredients i
 		left join lateral (select nutrient_id, amount  from food_nutrient fn where i.fdc_id = fn.fdc_id and i.recipe_id = %s) as fn on true
 		join recipes r on i.recipe_id = r.recipe_id 
-		where nutrient_id in (1110, 1004, 2000, 1093, 1003, 1089, 1079, 1008, 1253, 1005, 1087, 1326, 1162)	
+		where nutrient_id in (1110, 1004, 2000, 1093, 1003, 1089, 1079, 1008, 1253, 1005, 1087, 1258, 1162)	
 		group by fn.nutrient_id, i.recipe_id', $1::int),
-  'values (1110), (1004), (2000), (1093), (1003), (1089), (1079), (1008), (1253), (1005), (1087), (1326), (1162)') 
+  'values (1110), (1004), (2000), (1093), (1003), (1089), (1079), (1008), (1253), (1005), (1087), (1258), (1162)') 
   as (id int,
   vit_d real,
   tot_fat real,
@@ -61,5 +61,7 @@ async function getNutrition(recipeId) {
     console.error(error);
   }
 }
+
+router.get("/import", async (req, res) => {});
 
 export default router;

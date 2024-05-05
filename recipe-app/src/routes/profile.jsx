@@ -8,32 +8,21 @@ import Button from "react-bootstrap/esm/Button";
 import LogoutButton from "../utils/LogoutButton";
 import { auth0Audience, server } from "../../env/env";
 
-async function handleClick(userData) {
-  try {
-    let response = await httpClient.patch(`${server}/profile`, userData);
-    return response.data;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 export default function Profile() {
-  const { user, isAuthenticated, isLoading } = useAuth0();
-  const { getAccessTokenSilently } = useAuth0();
-  const [userData, setUserData] = useState();
+  async function handleClick() {
+    try {
+      let response = await httpClient.patch(`${server}/profile`, {
+        nickname: nickname,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  useEffect(() => {
-    (async () => {
-      try {
-        let response = await httpClient.get(
-          `${auth0Audience}users/${user.sub}`
-        );
-        setUserData(response.data);
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  }, [getAccessTokenSilently]);
+  const { user } = useAuth0();
+  const [nickname, setNickname] = useState(user.nickname);
+
+  console.log(user);
 
   return (
     <Container style={{ width: "100%" }} className="border shadow text-center">
@@ -43,24 +32,10 @@ export default function Profile() {
           Display Name:{" "}
           <input
             type="text"
-            value={userData?.nickname}
-            onChange={(e) =>
-              setUserData({ ...userData, nickname: e.target.value })
-            }
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
           />
-          <br />
-          Profile Pic:{" "}
-          <img
-            src={userData?.picture}
-            style={{ height: "50px", width: "50px" }}
-          />{" "}
-          <br />
-          <Button
-            onClick={async () => console.log(await handleClick(userData))}
-          >
-            {" "}
-            Save
-          </Button>{" "}
+          <Button onClick={async () => await handleClick()}> Save</Button>{" "}
           <br />
           <LogoutButton />
         </Col>

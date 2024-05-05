@@ -19,6 +19,7 @@ import myRecipesRoute from "./routes/specific recipes/myrecipes.js";
 import getPriceRoute from "./routes/specific recipes/getprice.js";
 import scrapeRecipeRoute from "./routes/import/scrapeRecipe.js";
 import uploadPhotoRoute from "./routes/specific recipes/photos.js";
+import collectionsRoute from "./routes/all recipes/collections.js";
 
 const ENV = process.env;
 const app = express();
@@ -56,6 +57,7 @@ app.use("/profile", auth0Route);
 app.use("/myrecipes", myRecipesRoute);
 app.use("/getPrice", getPriceRoute);
 app.use("/photo/upload", uploadPhotoRoute);
+app.use("/collections", collectionsRoute);
 
 app.listen(port, ENV.SERVER_HOST, () => {
   console.log(`Server is running on port ${port}`);

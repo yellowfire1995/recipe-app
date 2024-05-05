@@ -4,6 +4,8 @@ import db from "../../database/db.js";
 import axios from "axios";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { deleteFromS3 } from "../../tools/aws.js";
+import e from "express";
+import { getUserId } from "../../tools/getUserId.js";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -50,96 +52,115 @@ async function checkAuth(req, res, next) {
   }
 }
 
-router.get("/:recipeId", async (req, res) => {
+router.get("/:recipeId", getUserId, async (req, res) => {
   try {
     const query = {
-      text: `SELECT recipe_id, name, img_url as "imgUrl", img_url as "imgName", thumbnail, servings, url, author, nickname, create_date, yield_number as "yieldNumber", yield_description as "yieldDescription",
-    (
-           Select COALESCE(JSON_AGG(json_build_object(
-                'id',  recipe_cuisines.id, 
-                'cuisine', cuisines.cuisine, 
-                'recipe_id', recipe_cuisines.recipe_id,
-                'cuisine_id', recipe_cuisines.cuisine_id             
-              )), '[]') 
-          from recipe_cuisines
-            JOIN cuisines ON cuisines.id = recipe_cuisines.cuisine_id
-            WHERE recipe_id = $1
-          ) as cuisine,
-          
-   (
-           Select COALESCE(JSON_AGG(json_build_object(
-                'id',  recipe_categories.id, 
-                'category', food_categories.food_category, 
-                'recipe_id', recipe_categories.recipe_id,
-                'category_id', recipe_categories.category_id             
-              )), '[]') 
-          from recipe_categories
-            JOIN food_categories ON food_categories.id = recipe_categories.category_id
-            WHERE recipe_id = $1
-          ) as category,
-    
-          (
-            Select COALESCE(JSON_AGG( json_build_object
-              (
-               'recipe_id', ingredients.recipe_id, 
-                'id', ingredients.id,
-                'userG', coalesce(ingredients.alt_g_conv, null),
-                'userLabel', coalesce(ingredients.alt_label, null), 
-                'quantity', amt, 
-                'description', coalesce(user_ingredient_name, SPLIT_PART(food.description, ',', 1)),
-                'fdc_id', ingredients.fdc_id,
-                'sr_id', ingredients.sr_id,
-                'gramConversion', case 
-                                when food.data_type = 'branded_food' 
-                                then coalesce(bf.gram_modifier, 1/um.grams)
-                                when food.data_type = 'sr_legacy_food' 
-                                    then fp.gram_modifier end,
-                 'engLabel', case 
-                                when food.data_type = 'branded_food' 
-                                    then coalesce(bf.alt_label, um.description)
-                                when food.data_type = 'sr_legacy_food' 
-                                    then fp.modifier  end,
-                                    
-                'price', coalesce(fps.price_g, 0),
-                'package_grams', coalesce(fps.package_grams, 0),
-                'package_cost', coalesce(fps.package_cost, 0),
-                'url', fps.url              
+      text: ` SELECT   recipe_id,
+      NAME,
+      img_url AS "imgUrl",
+      img_url AS "imgName",
+      thumbnail,
+      thumbnail AS "thumbnailName",
+      servings,
+      url,
+      author,
+      nickname,
+      create_date,
+      yield_number      AS "yieldNumber",
+      yield_description AS "yieldDescription",
+      public,
+      (
+             SELECT COALESCE(Json_agg(Json_build_object( 'id', recipe_cuisines.id, 'cuisine', cuisines.cuisine, 'recipe_id', recipe_cuisines.recipe_id, 'cuisine_id', recipe_cuisines.cuisine_id )), '[]')
+             FROM   recipe_cuisines
+             JOIN   cuisines
+             ON     cuisines.id = recipe_cuisines.cuisine_id
+             WHERE  recipe_id = $1 ) AS cuisine,
+      (
+             SELECT COALESCE(Json_agg(Json_build_object( 'id', recipe_categories.id, 'category', food_categories.food_category, 'recipe_id', recipe_categories.recipe_id, 'category_id', recipe_categories.category_id )), '[]')
+             FROM   recipe_categories
+             JOIN   food_categories
+             ON     food_categories.id = recipe_categories.category_id
+             WHERE  recipe_id = $1 ) AS category,
+      (
+                SELECT    COALESCE(Json_agg( Json_build_object ( 'recipe_id', ingredients.recipe_id, 'nutrients', (select json_agg(json_build_object(fn.nutrient_id, fn.amount, 'name', n."name"))
+from food_nutrient fn 
+		join nutrient n on fn.nutrient_id = n.id 
+		where nutrient_id in (1110, 1004, 2000, 1093, 1003, 1089, 1079, 1008, 1253, 1005, 1087, 1258, 1162) and fn.fdc_id =  food.fdc_id) , 'id', ingredients.id, 'userG', COALESCE(ingredients.alt_g_conv, NULL), 'userLabel', COALESCE(ingredients.alt_label, NULL), 'quantity', amt, 'description', COALESCE(user_ingredient_name, Split_part(food.description, ',', 1)), 'fdc_id', ingredients.fdc_id, 'sr_id', ingredients.sr_id, 'gramConversion',
+                          CASE
+                                    WHEN food.data_type = 'branded_food' THEN COALESCE(bf.gram_modifier, 1/um.grams)
+                                    WHEN food.data_type = 'sr_legacy_food' THEN fp.gram_modifier
+                          END, 'engLabel',
+                          CASE
+                                    WHEN food.data_type = 'branded_food' THEN COALESCE(bf.alt_label, um.description)
+                                    WHEN food.data_type = 'sr_legacy_food' THEN fp.modifier
+                          END, 'price', COALESCE(fps.price_g, 0), 'package_grams', COALESCE(fps.package_grams, 0), 'package_cost', COALESCE(fps.package_cost, 0), 'url', fps.url )), '[]')
+                FROM      ingredients
+                JOIN      food
+                ON        ingredients.fdc_id = food.fdc_id
+                JOIN      recipes
+                ON        ingredients.recipe_id = recipes.recipe_id
+                LEFT JOIN branded_food bf
+                ON        bf.fdc_id = food.fdc_id
+                LEFT JOIN lateral
+                          (
+                                   select   modifier,
+                                            gram_modifier,
+                                            fdc_id,
+                                            min(id) AS id
+                                   FROM     food_portion fp
+                                   WHERE    fp.id = ingredients.sr_id
+                                   GROUP BY modifier,
+                                            gram_modifier,
+                                            fdc_id limit 1) AS fp
+                ON        fp.fdc_id = ingredients.fdc_id
+                LEFT JOIN lateral
+                          (
+                                   SELECT   fdc_id,
+                                            package_grams,
+                                            package_cost,
+                                            url,
+                                            max(date),
+                                            price_g,
+                                            user_id
+                                   FROM     food_prices fps
+                                   WHERE    fps.fdc_id = ingredients.fdc_id and fps.user_id = $2
+                                   GROUP BY package_grams,
+                                            fdc_id,
+                                            package_cost,
+                                            url,
+                                            price_g,
+                                            user_id limit 1 ) AS fps
+                ON        fps.fdc_id = ingredients.fdc_id
+                LEFT JOIN user_measures um
+                ON        um.fdc_id = ingredients.fdc_id
+                WHERE     recipes.recipe_id = $1 ) AS ingredients,
+      (
+               SELECT   COALESCE(json_agg(d.* ORDER BY step_num ASC), '[]')
+               FROM     directions d
+               JOIN     recipes r
+               ON       d.recipe_id = r.recipe_id
+               WHERE    r.recipe_id = $1 ) AS directions
+FROM     recipes
+WHERE    recipes.recipe_id = $1 and (recipes.public OR recipes.author = $2 )
+GROUP BY recipes.recipe_id ; `,
 
-              )), '[]') 
-   from ingredients
-     JOIN food ON ingredients.fdc_id = food.fdc_id 
-     JOIN recipes ON ingredients.recipe_id = recipes.recipe_id
-     left join branded_food bf on bf.fdc_id = food.fdc_id
-     left join lateral (select modifier, gram_modifier, fdc_id, min(id) as id from food_portion fp where fp.id = ingredients.sr_id group by modifier, gram_modifier, fdc_id limit 1) as fp on fp.fdc_id = ingredients.fdc_id
-     left join lateral (select fdc_id, package_grams, package_cost, url, max(date), price_g from food_prices fps where fps.fdc_id = ingredients.fdc_id group by package_grams, fdc_id, package_cost, url, price_g limit 1  ) as fps on fps.fdc_id = ingredients.fdc_id
-     left join user_measures um on um.fdc_id = ingredients.fdc_id 
-     --need to make this a lateral join
-     WHERE recipes.recipe_id = $1
-          ) as ingredients,
-          (
-            Select coalesce(JSON_AGG(d.* order by step_num asc), '[]') 
-            from directions d 
-            JOIN recipes r ON d.recipe_id = r.recipe_id
-              WHERE r.recipe_id = $1
-          ) as directions
-                                  FROM recipes
-              
-             
-                
-                WHERE recipes.recipe_id = $1
-                GROUP BY recipes.recipe_id
-             
-                ;`,
-
-      values: [req.params.recipeId],
+      values: [req.params.recipeId, req.user.sub],
     };
 
     let data = await db.query(query);
-    if (!data.rows[0].imgUrl.match(/.*(http).*/g)) {
+
+    if (data.rows.length < 1) {
+      throw new Error("Recipe not found or is private");
+    }
+
+    if (
+      data.rows[0].imgUrl !== null &&
+      !data.rows[0].imgUrl.match(/.*(http).*/g)
+    ) {
       data.rows[0].imgUrl =
-        "d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
+        "https://d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
       data.rows[0].originalUrl =
-        "d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
+        "https://d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
     }
 
     res.send(data.rows);
@@ -157,8 +178,17 @@ router.delete("/:recipeId/delete", checkAuth, async (req, res) => {
       `,
       values: [req.params.recipeId],
     };
-    await deleteFromS3(req.body.imgName);
-    await deleteFromS3(req.body.thumbnail);
+
+    if (
+      req.body.imgUrl !== null &&
+      req.body.thumbnail !== null &&
+      req.body.imgUrl.match(/.*(cloudfront).*/g) &&
+      req.body.thumbnail.match(/.*(cloudfront).*/g)
+    ) {
+      await deleteFromS3(req.body.imgName);
+      await deleteFromS3(req.body.thumbnailName);
+    }
+
     await db.query(query);
 
     res.send(`Recipe has been deleted`);

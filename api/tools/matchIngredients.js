@@ -19,7 +19,11 @@ export async function matchIngredients(ingredients) {
         const ingredients = await Promise.all(
           searchResult.map(async (doc) => {
             const query = {
-              text: `SELECT food.description, food.fdc_id, case 
+              text: `SELECT (select json_agg(json_build_object(fn.nutrient_id, fn.amount, 'name', n."name"))
+              from food_nutrient fn 
+                  join nutrient n on fn.nutrient_id = n.id 
+                  where nutrient_id in (1110, 1004, 2000, 1093, 1003, 1089, 1079, 1008, 1253, 1005, 1087, 1258, 1162) and fn.fdc_id =  food.fdc_id) as nutrients,              
+              food.description, food.fdc_id, case 
               when food.data_type = 'branded_food' 
                 then coalesce(bf.gram_modifier, um.grams)
               when food.data_type = 'sr_legacy_food' 
@@ -86,6 +90,7 @@ export async function matchIngredients(ingredients) {
                 : null,
               userLabel: weightConversion ? ingredient.unitOfMeasure : null,
               userG: weightConversion ? weightConversion : null,
+              nutrients: data.rows[0].nutrients ?? null,
               // quantity2:
               //   type == "weight"
               //     ? Math.round(ingredient.quantity * measurement)

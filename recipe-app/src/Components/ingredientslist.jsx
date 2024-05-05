@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import InputGroup from "react-bootstrap/InputGroup";
 import _, { update } from "lodash";
 import axios from "axios";
-import AddPricePopup from "../Components/AddPriceModal.jsx";
+import AddPriceModal from "./AddPriceModal.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { ingredientSearch } from "../../db/queries.js";
-import AddWeightModal from "./AddWeightModal.jsx";
-import { parseIngredients } from "../../db/queries";
+import EditIngredientModal from "./EditIngredientModal.jsx";
+import { parseIngredients } from "../../db/queries.js";
 import { parse } from "dotenv";
 import { EditSelector } from "./EditNewIngredient.jsx";
 import Button from "react-bootstrap/esm/Button.js";
@@ -44,7 +44,6 @@ function handleIngredientUpdate(updatedRecipe, e) {
 }
 
 export default function IngredientsList(props) {
-  const [searchList, setSearchList] = props.searchList;
   const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
   const [ingredientList, setIngredientList] = props.ingredientList;
 
@@ -91,8 +90,8 @@ export default function IngredientsList(props) {
                     ? parseInt(ingredient.quantity) + "g"
                     : ""
                 } )`}
-                <AddPricePopup ingredient={ingredient} />
-                <AddWeightModal
+                <AddPriceModal ingredient={ingredient} />
+                <EditIngredientModal
                   ingredient={ingredient}
                   updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
                   color={
@@ -101,7 +100,6 @@ export default function IngredientsList(props) {
                       : "red"
                   }
                   ingredientList={[ingredientList, setIngredientList]}
-                  searchList={[searchList, setSearchList]}
                   origIdx={index}
                 />
                 <DeleteIcon
@@ -115,7 +113,7 @@ export default function IngredientsList(props) {
                       ingredientList.filter((ingredient, i) => i !== index)
                     );
                   }}
-                  className="pt-0 mb-0"
+                  className="pt-0 mb-0 svg-icon"
                 />
                 <span style={{ color: "red" }}>
                   {" "}
@@ -136,7 +134,11 @@ export default function IngredientsList(props) {
             ...updatedRecipe,
             ingredients: [
               ...updatedRecipe.ingredients,
-              { description: "New Ingredient", id: uuidv4() },
+              {
+                description: "New Ingredient",
+                id: uuidv4(),
+                nutrients: [],
+              },
             ],
           });
         }}

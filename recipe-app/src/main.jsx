@@ -33,6 +33,7 @@ import {
 } from "../env/env.js";
 import AllRecipes from "./routes/AllRecipes.jsx";
 import Index from "./routes/Index.jsx";
+import Collections from "./routes/Collections.jsx";
 
 export const queryClient = new QueryClient();
 
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
           {
             path: "recipes",
             element: <AllRecipes />,
+          },
+          {
+            path: "collections",
+            element: <Collections />,
           },
           {
             element: <MyRecipes />,
@@ -106,7 +111,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           authorizationParams={{
             redirect_uri: auth0Redirect,
             audience: auth0Audience,
-            scope: "read:current_user update:current_user_metadata",
+            scope:
+              "read:current_user update:current_user_metadata profile email",
           }}
         >
           <RouterProvider router={router} />
