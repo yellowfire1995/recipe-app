@@ -1,30 +1,23 @@
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
-import {
-  createSearchParams,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import Form from "react-bootstrap/Form";
 import SearchIcon from "@mui/icons-material/Search";
 
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { auth0Audience } from "../../env/env";
+import { useEffect } from "react";
 import Col from "react-bootstrap/esm/Col";
 
-import NavbarText from "react-bootstrap/esm/NavbarText";
 import Row from "react-bootstrap/esm/Row";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import useLocalStorage from "use-local-storage";
 
-function Header(props) {
+function Header() {
   const { logout } = useAuth0();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search");
 
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -42,33 +35,6 @@ function Header(props) {
 
   const navigate = useNavigate();
 
-  // const { user, isAuthenticated, isLoading } = useAuth0();
-  // const { getAccessTokenSilently } = useAuth0();
-  // const [userData, setUserData] = useState();
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const token = await getAccessTokenSilently({
-  //         authorizationParams: {
-  //           audience: auth0Audience, // Value in Identifier field for the API being called.
-  //           scope: "read:current_user update:current_user_metadata", // Scope that exists for the API being called. You can create these through the Auth0 Management API or through the Auth0 Dashboard in the Permissions view of your API.
-  //         },
-  //       });
-  //       const response = isLoading
-  //         ? null
-  //         : await axios.get(`${auth0Audience}users/${user.sub}`, {
-  //             headers: {
-  //               Authorization: `Bearer ${token}`,
-  //             },
-  //           });
-  //       setUserData(response.data);
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   })();
-  // }, [getAccessTokenSilently]);
-
   return (
     <Navbar expand="xl" sticky="top" className="shadow bg-nav">
       <Container fluid className="px-0 justify-content-center">
@@ -80,23 +46,22 @@ function Header(props) {
             <Nav>
               <Nav.Link href="/recipes">All Recipes</Nav.Link>
               <Nav.Link href="/myrecipes">Your Recipes</Nav.Link>
-              <Nav.Link href="/importrecipe">Add Recipe </Nav.Link>
-              <Nav.Link href="/profile"> Profile</Nav.Link>
+              <Nav.Link href="/newrecipe">Add Recipe </Nav.Link>
+              <Nav.Link href="/profile">Profile</Nav.Link>
+              <Nav.Link href="/collections">Collections</Nav.Link>
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
         <Row className="w-100 p-0">
           <Nav className="flex-row w-100 p-0">
-            <Col className="d-flex align-items-center flex-grow-1">
-              <Navbar.Toggle aria-controls="header" className="mx-1" />
-              <Navbar.Brand href="/recipes" className="d-none d-md-block ps-1">
-                <h3>myRecipe</h3>
+            <Col className="d-flex align-items-center flex-grow-1 p-0">
+              <Navbar.Brand href="/recipes" className="ps-1">
+                <img src="./calculator.svg" style={{ height: "4rem" }} />
               </Navbar.Brand>
-              <Navbar.Brand className="d-md-none ps-1">myR</Navbar.Brand>
             </Col>
             <Col className="d-flex">
               <Form
-                className="d-inline-flex ms-auto ms-md-0 flex-grow-1"
+                className="d-inline-flex ms-auto ms-md-0 flex-grow-1 my-3"
                 onSubmit={(e) => {
                   e.preventDefault();
                   navigate(
@@ -120,10 +85,15 @@ function Header(props) {
                 />
               </Form>
             </Col>
+            <Col className="d-xl-none d-flex align-items-center justify-content-end">
+              <Navbar.Toggle aria-controls="header" className="mx-1" />
+            </Col>
             <Col className=" d-none d-xl-inline-flex flex-grow-1 align-items-center justify-content-end nav-text">
               <Nav.Link href="/recipes">All Recipes</Nav.Link>
               <Nav.Link href="/myrecipes">Your Recipes</Nav.Link>
-              <Nav.Link href="/importrecipe">Add Recipe </Nav.Link>
+              <Nav.Link href="/collections">Collections</Nav.Link>
+              <Nav.Link href="/newrecipe">Add Recipe </Nav.Link>
+
               <NavDropdown
                 title="Settings"
                 id="settings"

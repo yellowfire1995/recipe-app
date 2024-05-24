@@ -181,8 +181,64 @@ export async function getMyRecipeCards({ page, search }) {
 //Get recipes by collection
 export async function getCollectionRecipes() {
   try {
-    const collectionRecipes = await httpClient.get(`${server}/collections`);
+    const collectionRecipes = await httpClient.get(
+      `${server}/collections/recipes`
+    );
+
     return collectionRecipes.data;
+  } catch (error) {
+    console.log("ERROR!");
+    return Promise.reject(401);
+  }
+}
+
+//Get collections for user
+export async function getCollectionNames() {
+  try {
+    const collectionNames = await httpClient.get(`${server}/collections/names`);
+    console.log(collectionNames.data);
+    return collectionNames.data;
+  } catch (error) {
+    console.log("ERROR!");
+    return Promise.reject(401);
+  }
+}
+
+//Add recipe to collection
+export async function addRecipeToCollection(recipeId, collection) {
+  try {
+    const collectionRecipes = await httpClient.post(
+      `${server}/collections/add/recipe/${recipeId}`,
+      { collection: collection }
+    );
+    console.log(collectionRecipes);
+  } catch (error) {
+    console.log("ERROR!");
+    return Promise.reject(401);
+  }
+}
+
+export async function deleteCollection(collection) {
+  try {
+    const deleteCollection = await httpClient.delete(
+      `${server}/collections/delete/collection/${collection.id}`
+    );
+    return deleteCollection;
+  } catch (error) {
+    console.log("ERROR!");
+    return Promise.reject(401);
+  }
+}
+
+export async function deleteCollectionRecipe(arrayOfRecipes) {
+  try {
+    const arrayOfIds = arrayOfRecipes.map((recipe) => recipe.key);
+    console.log(arrayOfIds);
+    const deleteCollectionRecipe = await httpClient.delete(
+      `${server}/collections/delete/recipe`,
+      { data: { ids: arrayOfIds } }
+    );
+    return deleteCollectionRecipe;
   } catch (error) {
     console.log("ERROR!");
     return Promise.reject(401);

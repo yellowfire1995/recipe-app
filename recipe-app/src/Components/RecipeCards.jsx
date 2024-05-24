@@ -82,7 +82,6 @@ export default function RecipeCards(props) {
               >
                 Next page
               </Button>
-              <Button onClick={getCollectionRecipes}> Test</Button>
             </Col>
           </Row>
         </Container>

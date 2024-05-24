@@ -1,10 +1,13 @@
-import RecipeCards from "../Components/RecipeCards";
-import Sidebar from "../Components/Sidebar";
 import { getCollectionRecipes } from "../../db/queries";
 import Col from "react-bootstrap/esm/Col.js";
-import { Button } from "bootstrap";
+import Row from "react-bootstrap/esm/Row";
+import Container from "react-bootstrap/esm/Container";
 import { useQuery } from "@tanstack/react-query";
-import RecipeCardData from "../Components/RecipeCard";
+import Loading from "../Components/Loading";
+import DeleteCollectionModal from "../Components/DeleteCollectionModal";
+import CollectionScroller from "../Components/CollectionScroller";
+import EditCollectionRecipes from "../Components/EditCollectionRecipes";
+import { Helmet } from "react-helmet";
 
 export default function Collections() {
   const collections = useQuery({
@@ -17,18 +20,38 @@ export default function Collections() {
     return <div>Recipe not found</div>;
   }
 
+  if (collections.isLoading) {
+    return <Loading />;
+  }
+
   if (!collections.isLoading) {
-    console.log(collections.data);
     return (
       <>
-        {collections.data.map((collection) => {
-          return (
-            <>
-              <h5 key={collection.id}>{collection.name}</h5>
-              <RecipeCardData cards={collection.recipes} />
-            </>
-          );
-        })}
+        <Helmet>
+          <title>CookbookCalc | Collections</title>
+        </Helmet>
+        <Container className="mt-3">
+          <Row>
+            <Col className="justify-content-center">
+              {collections.data.length > 0 ? (
+                collections.data.map((collection, index) => {
+                  return (
+                    <Row className="d-flex">
+                      <h5 key={collection.id}>
+                        {collection.name}{" "}
+                        <DeleteCollectionModal collection={collection} />
+                        <EditCollectionRecipes collection={collection} />
+                      </h5>
+                      <CollectionScroller collection={collection} />
+                    </Row>
+                  );
+                })
+              ) : (
+                <h2 className="text-center mt-2"> No Collections Found </h2>
+              )}
+            </Col>
+          </Row>
+        </Container>
       </>
     );
   }

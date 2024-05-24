@@ -1,5 +1,5 @@
-import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import ListGroup from "react-bootstrap/ListGroup";
@@ -17,6 +17,8 @@ import AddPriceModal from "../Components/AddPriceModal.jsx";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../Components/Loading";
 import { NutritionFacts } from "../Components/NutritionFacts.jsx";
+import AddRecipeToCollectionModal from "../Components/AddRecipeToCollectionModal.jsx";
+import { Helmet } from "react-helmet";
 
 export async function loader({ params }) {
   const activeRecipe = await getRecipeById(params.recipeId);
@@ -69,150 +71,156 @@ export default function Recipe() {
   }
 
   return (
-    <Container fluid="lg" className="d-flex mt-4">
-      <Col className=" ">
-        <Row className={`${recipe.imgUrl ? "" : "d-none"}`}>
-          {" "}
-          <CardImg
-            as="img"
-            src={recipe.imgUrl}
-            style={{ height: "12rem" }}
-            className="object-fit-cover my-1 recipecardimg"
-          />
-        </Row>
+    <>
+      <Helmet>
+        <title>{recipe.name}</title>
+      </Helmet>
+      <Container fluid="lg" className="d-flex mt-4">
+        <Col className=" ">
+          <Row className={`${recipe.imgUrl ? "" : "d-none"}`}>
+            {" "}
+            <CardImg
+              as="img"
+              src={recipe.imgUrl}
+              style={{ height: "12rem" }}
+              className="object-fit-cover my-1 recipecardimg"
+            />
+          </Row>
 
-        <Row className="pt-3">
-          <Col lg={10}>
-            <h2>
-              {recipe.name} - ${recipePrice} ($
-              {(recipePrice / (servings ?? recipe.servings)).toFixed(2)}
-              /serving){" "}
-              {user.sub === recipe.author ? (
-                <Link to={`/recipes/${recipe.recipe_id}/edit`}>
-                  <Button className="p-1">Edit Recipe</Button>
-                </Link>
-              ) : null}
-            </h2>
-          </Col>
-          <Col className="text-end">
-            <a href={recipe.url}>Original Recipe</a>
-            <br />
-            {recipe.nickname}'s recipe
-          </Col>
-          <hr />
-        </Row>
-        <Row>
-          {" "}
-          <Stack direction="horizontal" gap={1}>
-            {recipe.cuisine.map((cuisine) => {
-              return (
-                <Badge bg="primary" key={cuisine.id}>
-                  {cuisine.cuisine}
-                </Badge>
-              );
-            })}
-
-            {recipe.category.map((category) => {
-              return (
-                <Badge bg="primary" key={category.id}>
-                  {category.category}
-                </Badge>
-              );
-            })}
-          </Stack>
-        </Row>
-        <Row>
-          <Col lg="8" className="flex-shrink-1 ">
-            <ListGroup>
-              <span className="h3">
-                {" "}
-                Ingredients <br />{" "}
-              </span>
-              {recipe.ingredients.map((ingredient) => {
+          <Row className="pt-3">
+            <Col lg={10}>
+              <h2>
+                {recipe.name} - ${recipePrice} ($
+                {(recipePrice / (servings ?? recipe.servings)).toFixed(2)}
+                /serving){" "}
+                {user.sub === recipe.author ? (
+                  <Link to={`/recipes/${recipe.recipe_id}/edit`}>
+                    <Button className="p-1">Edit Recipe</Button>
+                  </Link>
+                ) : null}
+                <AddRecipeToCollectionModal params={params} />
+              </h2>
+            </Col>
+            <Col className="text-end">
+              <a href={recipe.url}>Original Recipe</a>
+              <br />
+              {recipe.nickname}'s recipe
+            </Col>
+            <hr />
+          </Row>
+          <Row>
+            {" "}
+            <Stack direction="horizontal" gap={1}>
+              {recipe.cuisine.map((cuisine) => {
                 return (
-                  <div className="form-check" key={ingredient.id}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id={ingredient.id}
-                      onClick={() => handleCheck(ingredient.id)}
-                    />
+                  <Badge bg="primary" key={cuisine.id}>
+                    {cuisine.cuisine}
+                  </Badge>
+                );
+              })}
 
-                    <label
-                      className={`form-check-label text-lowercase ${
-                        checkedArray.includes(ingredient.id)
-                          ? "text-decoration-line-through"
-                          : ""
-                      }`}
-                      htmlFor={ingredient.id}
-                    >
-                      <div className="d-inline fw-semibold">
-                        {ingredient.userG
-                          ? Math.round(
-                              ingredient.userG *
-                                ingredient.quantity *
-                                servs *
-                                100
-                            ) /
-                              100 +
-                            " " +
-                            ingredient.userLabel
-                          : ingredient.gramConversion
-                          ? `${
-                              Math.round(
-                                ingredient.gramConversion *
+              {recipe.category.map((category) => {
+                return (
+                  <Badge bg="primary" key={category.id}>
+                    {category.category}
+                  </Badge>
+                );
+              })}
+            </Stack>
+          </Row>
+          <Row>
+            <Col lg="8" className="flex-shrink-1 ">
+              <ListGroup>
+                <span className="h3">
+                  {" "}
+                  Ingredients <br />{" "}
+                </span>
+                {recipe.ingredients.map((ingredient) => {
+                  return (
+                    <div className="form-check" key={ingredient.id}>
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={ingredient.id}
+                        onClick={() => handleCheck(ingredient.id)}
+                      />
+
+                      <label
+                        className={`form-check-label text-lowercase ${
+                          checkedArray.includes(ingredient.id)
+                            ? "text-decoration-line-through"
+                            : ""
+                        }`}
+                        htmlFor={ingredient.id}
+                      >
+                        <div className="d-inline fw-semibold">
+                          {ingredient.userG
+                            ? Math.round(
+                                ingredient.userG *
                                   ingredient.quantity *
                                   servs *
                                   100
                               ) /
                                 100 +
                               " " +
-                              ingredient.engLabel
-                            }`
-                          : `${Math.round(ingredient.quantity * servs)} g`}
-                      </div>
-                      {ingredient.gramConversion || ingredient.userG
-                        ? ` (${Math.round(ingredient.quantity * servs)} g)`
-                        : ""}
-                      {` ${ingredient.description}`}{" "}
-                      {`- $${(
-                        Math.round(
-                          ingredient.price * ingredient.quantity * servs * 100
-                        ) / 100
-                      ).toFixed(2)}`}{" "}
-                    </label>
-                    <AddPriceModal ingredient={ingredient} />
-                  </div>
-                );
-              })}
-            </ListGroup>
-
-            <ListGroup variant="flush">
-              <span className="h3"> Directions </span>
-              <ol>
-                {recipe.directions.map((direction) => {
-                  return (
-                    <p key={direction.id}>
-                      <li>{`${direction.step}`}</li>
-                    </p>
+                              ingredient.userLabel
+                            : ingredient.gramConversion
+                            ? `${
+                                Math.round(
+                                  ingredient.gramConversion *
+                                    ingredient.quantity *
+                                    servs *
+                                    100
+                                ) /
+                                  100 +
+                                " " +
+                                ingredient.engLabel
+                              }`
+                            : `${Math.round(ingredient.quantity * servs)} g`}
+                        </div>
+                        {ingredient.gramConversion || ingredient.userG
+                          ? ` (${Math.round(ingredient.quantity * servs)} g)`
+                          : ""}
+                        {` ${ingredient.description}`}{" "}
+                        {`- $${(
+                          Math.round(
+                            ingredient.price * ingredient.quantity * servs * 100
+                          ) / 100
+                        ).toFixed(2)}`}{" "}
+                      </label>
+                      <AddPriceModal ingredient={ingredient} />
+                    </div>
                   );
                 })}
-              </ol>
-            </ListGroup>
-          </Col>
-          <Col lg>
-            {recipe.ingredients.length > 0 ? (
-              <NutritionFacts
-                recipe={recipe}
-                header={true}
-                servings={[servings, setServings]}
-              />
-            ) : (
-              ""
-            )}
-          </Col>
-        </Row>
-      </Col>
-    </Container>
+              </ListGroup>
+
+              <ListGroup variant="flush">
+                <span className="h3"> Directions </span>
+                <ol>
+                  {recipe.directions.map((direction) => {
+                    return (
+                      <p key={direction.id}>
+                        <li>{`${direction.step}`}</li>
+                      </p>
+                    );
+                  })}
+                </ol>
+              </ListGroup>
+            </Col>
+            <Col lg>
+              {recipe.ingredients.length > 0 ? (
+                <NutritionFacts
+                  recipe={recipe}
+                  header={true}
+                  servings={[servings, setServings]}
+                />
+              ) : (
+                ""
+              )}
+            </Col>
+          </Row>
+        </Col>
+      </Container>
+    </>
   );
 }

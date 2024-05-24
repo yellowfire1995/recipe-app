@@ -1,13 +1,13 @@
 import RecipeCards from "../Components/RecipeCards";
-import Sidebar from "../Components/Sidebar";
-import { getCollectionRecipes, getSidebarCuisines } from "../../db/queries";
 import { getMyRecipeCards } from "../../db/queries";
-import Col from "react-bootstrap/esm/Col.js";
-import { Button } from "bootstrap";
+import { Helmet } from "react-helmet";
 
 export default function MyRecipes() {
   return (
     <>
+      <Helmet>
+        <title>CookbookCalc | My Recipes</title>
+      </Helmet>
       <RecipeCards fetcher={getMyRecipeCards} queryKey="MyRecipes" />
     </>
   );

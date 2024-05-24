@@ -109,10 +109,10 @@
   }
   
 .login {
-  background-Image: url("/images/bg-login.jpg");
-  background-size: cover;
-  background-position: right 0;
-
+  background-color: rgb(41, 40, 40, .1);
+  border-radius: 10px;
+  max-width: 30rem;
+  
 }
 
 .login-card {
@@ -367,3 +367,18 @@ input[type=number] {
   accent-color:#681e11;
 }
 
+.scrollbar{
+  overflow-x: hidden;
+  overflow-y:hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  
+  
+
+}
+
+.scrollable{
+  scroll-snap-align: center ;
+}

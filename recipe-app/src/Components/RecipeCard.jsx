@@ -12,16 +12,19 @@ export default function RecipeCardData(props) {
 
   return (
     <>
-      {cards.map((recipe) => {
+      {cards.map((recipe, index) => {
         return (
           <Link
             to={`/recipes/${recipe.recipe_id}`}
-            key={recipe.recipe_id}
             className="d-flex p-2 text-decoration-none rounded flex-wrap text-body"
           >
             <Container
-              className=" d-flex text-center recipecard align-self-stretch  justify-content-center flex-wrap align-content-start"
+              className="  scrollable d-flex text-center recipecard align-self-stretch  justify-content-center flex-wrap align-content-start"
               style={{ width: "15rem", height: "17rem" }}
+              key={recipe.key || recipe.recipe_id}
+              id={`slide-${
+                props.collection ? props.collection.id : ""
+              }-${index}`}
             >
               <Card
                 className="d-flex border-0 shadow"

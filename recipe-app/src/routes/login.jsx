@@ -1,11 +1,10 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/esm/Col";
 import LoginButton from "../utils/LoginButton";
+import { Helmet } from "react-helmet";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,16 +16,29 @@ export default function Login() {
   }, [isAuthenticated]);
 
   return (
-    <div className="login">
-      <Container fluid className="vh-100 text-center">
-        <Row className="align-items-center vh-100">
-          <Col md></Col>
-          <Col md lg={2}>
-            <LoginButton />
-          </Col>
-          <Col md lg={2}></Col>
-        </Row>
-      </Container>
-    </div>
+    <>
+      <Helmet>
+        <title>CookbookCalc | Login</title>
+      </Helmet>
+      <Row className="align-items-center vh-100 justify-content-center mx-2">
+        <Col
+          className="d-flex text-center login p-4 align-items-center"
+          style={{ height: "20rem" }}
+        >
+          <Row className="w-100">
+            <Col
+              className="d-flex align-items-center justify-content-center w-100"
+              xs="auto"
+            >
+              <img src="./logo.svg" className="" style={{ height: "2rem" }} />
+              <img src="./calculator.svg" style={{ height: "9rem" }} />
+            </Col>
+            <Col className="">
+              <LoginButton />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </>
   );
 }

@@ -1,13 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./routes/root";
-import RecipeCards from "./Components/RecipeCards.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -17,10 +12,8 @@ import { action as filterAction } from "./routes/root.jsx";
 import Recipe from "./routes/Recipes.jsx";
 import Edit from "./routes/edit.jsx";
 import Ingredients from "./routes/ingredients.jsx";
-import NewRecipe from "./routes/newrecipe.jsx";
-import ImportRecipe from "./routes/import.jsx";
+import AddRecipe from "./routes/import.jsx";
 import Login from "./routes/login.jsx";
-import SignUp from "./routes/signup.jsx";
 import PrivateRoutes from "./utils/PrivateRoutes.jsx";
 import { Auth0Provider } from "@auth0/auth0-react";
 import Profile from "./routes/profile.jsx";
@@ -73,12 +66,8 @@ const router = createBrowserRouter([
             path: "/ingredients",
           },
           {
-            element: <NewRecipe />,
+            element: <AddRecipe />,
             path: "/newrecipe",
-          },
-          {
-            element: <ImportRecipe />,
-            path: "/importrecipe",
           },
           {
             element: <Profile />,
@@ -91,11 +80,6 @@ const router = createBrowserRouter([
   {
     element: <Login />,
     path: "/login",
-    errorElement: <ErrorPage />,
-  },
-  {
-    element: <SignUp />,
-    path: "/signup",
     errorElement: <ErrorPage />,
   },
 ]);
