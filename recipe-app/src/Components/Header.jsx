@@ -36,7 +36,7 @@ function Header() {
   const navigate = useNavigate();
 
   return (
-    <Navbar expand="xl" sticky="top" className="shadow bg-nav">
+    <Navbar expand="xl" sticky="top" className="shadow bg-nav p-0 ">
       <Container fluid className="px-0 justify-content-center">
         <Navbar.Offcanvas id="header" placement="start" className="d-xl-none">
           <Offcanvas.Header closeButton>
@@ -47,19 +47,49 @@ function Header() {
               <Nav.Link href="/recipes">All Recipes</Nav.Link>
               <Nav.Link href="/myrecipes">Your Recipes</Nav.Link>
               <Nav.Link href="/newrecipe">Add Recipe </Nav.Link>
-              <Nav.Link href="/profile">Profile</Nav.Link>
+
               <Nav.Link href="/collections">Collections</Nav.Link>
+              <hr />
+              <h5>Settings</h5>
+              <Nav.Item className="my-1">
+                <label htmlFor="theme-switcherPopout">Dark Mode</label>
+                <input
+                  className="ms-1"
+                  type="checkbox"
+                  id="theme-switcherPopout"
+                  checked={theme === "dark" ? true : false}
+                  onClick={switchTheme}
+                />
+              </Nav.Item>
+              <Nav.Link href="/profile">Profile</Nav.Link>
+              <Nav.Link
+                className="nav-drop mt-0 pt-0"
+                onClick={() =>
+                  logout({
+                    logoutParams: { returnTo: window.location.origin },
+                  })
+                }
+              >
+                Log Out
+              </Nav.Link>
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
         <Row className="w-100 p-0">
           <Nav className="flex-row w-100 p-0">
-            <Col className="d-flex align-items-center flex-grow-1 p-0">
+            <Col className="d-flex align-items-center p-0" xs="auto">
               <Navbar.Brand href="/recipes" className="ps-1">
                 <img src="./calculator.svg" style={{ height: "4rem" }} />
               </Navbar.Brand>
             </Col>
-            <Col className="d-flex">
+
+            <Col className=" d-none d-xl-inline-flex flex-grow-1 align-items-center justify-content-evenly nav-text">
+              <Nav.Link href="/recipes">All Recipes</Nav.Link>
+              <Nav.Link href="/myrecipes">Your Recipes</Nav.Link>
+              <Nav.Link href="/collections">Collections</Nav.Link>
+              <Nav.Link href="/newrecipe">Add Recipe </Nav.Link>
+            </Col>
+            <Col className="d-flex justify-content-center">
               <Form
                 className="d-inline-flex ms-auto ms-md-0 flex-grow-1 my-3"
                 onSubmit={(e) => {
@@ -75,31 +105,31 @@ function Header() {
                   type="search"
                   id="searchBox"
                   placeholder="Search"
-                  className="mainSearchBox"
+                  className="mainSearchBox me-2"
                   aria-label="Search"
                   defaultValue={searchQuery ? searchQuery : ""}
                 />
-                <SearchIcon
+                {/* <SearchIcon
                   className="align-self-md-center my-auto text-secondary"
                   fontSize="large"
-                />
+                /> */}
               </Form>
             </Col>
-            <Col className="d-xl-none d-flex align-items-center justify-content-end">
+            <Col
+              className="d-xl-none d-flex align-items-center justify-content-end"
+              xs="auto"
+            >
               <Navbar.Toggle aria-controls="header" className="mx-1" />
             </Col>
-            <Col className=" d-none d-xl-inline-flex flex-grow-1 align-items-center justify-content-end nav-text">
-              <Nav.Link href="/recipes">All Recipes</Nav.Link>
-              <Nav.Link href="/myrecipes">Your Recipes</Nav.Link>
-              <Nav.Link href="/collections">Collections</Nav.Link>
-              <Nav.Link href="/newrecipe">Add Recipe </Nav.Link>
-
+            <Col
+              xs="auto"
+              className=" d-none d-xl-inline-flex  align-items-center nav-text"
+            >
               <NavDropdown
                 title="Settings"
                 id="settings"
-                drop="down-center"
-                align={{ xs: "start" }}
-                className="nav-drop"
+                align="end"
+                className="nav-drop me-1"
               >
                 <NavDropdown.Item href="/profile" className="nav-drop">
                   Profile{" "}

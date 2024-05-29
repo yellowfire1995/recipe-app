@@ -1,4 +1,3 @@
-import Image from "react-bootstrap/Image";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
@@ -17,11 +16,11 @@ export default function RecipeCardData(props) {
           <Link
             to={`/recipes/${recipe.recipe_id}`}
             className="d-flex p-2 text-decoration-none rounded flex-wrap text-body"
+            key={recipe.key || recipe.recipe_id}
           >
             <Container
               className="  scrollable d-flex text-center recipecard align-self-stretch  justify-content-center flex-wrap align-content-start"
               style={{ width: "15rem", height: "17rem" }}
-              key={recipe.key || recipe.recipe_id}
               id={`slide-${
                 props.collection ? props.collection.id : ""
               }-${index}`}

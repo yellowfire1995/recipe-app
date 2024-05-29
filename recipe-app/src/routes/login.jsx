@@ -5,6 +5,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/esm/Col";
 import LoginButton from "../utils/LoginButton";
 import { Helmet } from "react-helmet";
+import useLocalStorage from "use-local-storage";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -14,6 +15,15 @@ export default function Login() {
   useEffect(() => {
     isAuthenticated ? navigate("/recipes") : null;
   }, [isAuthenticated]);
+
+  const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const [theme, setTheme] = useLocalStorage(
+    "theme",
+    defaultDark ? "dark" : "light"
+  );
+  useEffect(() => {
+    document.documentElement.setAttribute("data-bs-theme", theme);
+  }, [theme]);
 
   return (
     <>
@@ -26,14 +36,12 @@ export default function Login() {
           style={{ height: "20rem" }}
         >
           <Row className="w-100">
-            <Col
-              className="d-flex align-items-center justify-content-center w-100"
-              xs="auto"
-            >
-              <img src="./logo.svg" className="" style={{ height: "2rem" }} />
+            <Col className="d-flex flex-wrap align-items-center justify-content-center">
               <img src="./calculator.svg" style={{ height: "9rem" }} />
+
+              <img src="./logo.svg" className="" style={{ height: "2rem" }} />
             </Col>
-            <Col className="">
+            <Col className="my-auto">
               <LoginButton />
             </Col>
           </Row>

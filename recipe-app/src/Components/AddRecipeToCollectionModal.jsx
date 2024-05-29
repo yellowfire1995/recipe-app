@@ -1,13 +1,8 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import {
-  addRecipeToCollection,
-  getCollectionNames,
-  savePrice,
-} from "../../db/queries";
-import StoreButtons from "./storesearchbuttons";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { addRecipeToCollection, getCollectionNames } from "../../db/queries";
+
 import { Typeahead } from "react-bootstrap-typeahead";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "./Loading";
