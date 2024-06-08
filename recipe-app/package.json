@@ -19,7 +19,7 @@
     "@tanstack/react-query": "^5.17.10",
     "@tanstack/react-query-devtools": "^5.17.10",
     "axios": "^1.6.5",
-    "bootstrap": "^5.3.2",
+    "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "bootswatch": "^5.3.3",
     "downshift": "^9.0.0",
@@ -44,7 +44,6 @@
     "react-router-dom": "^6.21.2",
     "react-scripts": "^5.0.1",
     "react-select": "^5.8.0",
-    "sass": "^1.70.0",
     "slick-carousel": "^1.8.1",
     "use-immer": "^0.9.0",
     "use-local-storage": "^3.0.0",
@@ -59,6 +58,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "sass": "^1.77.2",
     "vite": "^5.1.5"
   }
 }

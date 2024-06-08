@@ -282,6 +282,7 @@ export async function scrapeRecipe(url) {
         },
       }
     );
+    console.log(recipe);
     return recipe.data;
   } catch (error) {
     console.error(error);

@@ -3,176 +3,65 @@ import { NutritionFactsHeader } from "./NutritionFactsHeader";
 export function NutritionFacts(props) {
   const recipe = props.recipe;
 
-  const totalFat = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[1004] ? (nutrient[1004] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
+  var nutrientsPerServing = {
+    totalFat: 0,
+    vitaminD: 0,
+    protein: 0,
+    carbs: 0,
+    calories: 0,
+    fiber: 0,
+    calcium: 0,
+    iron: 0,
+    sodium: 0,
+    vitaminC: 0,
+    cholesterol: 0,
+    saturatedFat: 0,
+    sugar: 0,
+  };
 
-  const vitaminD = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
+  const nutrientLookup = {
+    totalFat: 1004,
+    vitaminD: 1110,
+    protein: 1003,
+    carbs: 1005,
+    calories: 1008,
+    fiber: 1079,
+    calcium: 1087,
+    iron: 1089,
+    sodium: 1093,
+    vitaminC: 1162,
+    cholesterol: 1253,
+    saturatedFat: 1258,
+    sugar: 2000,
+  };
+
+  function calculateNutrient(nutrientName) {
+    const nutrientId = nutrientLookup[nutrientName];
+    try {
+      return Math.round(
+        recipe.ingredients.reduce((total, ingredient) => {
           return (
-            sum +
-            (nutrient[1110] ? (nutrient[1110] / 100) * ingredient.quantity : 0)
+            total +
+            ingredient.nutrients.reduce((sum, nutrient) => {
+              return (
+                sum +
+                (nutrient[nutrientId]
+                  ? (nutrient[nutrientId] / 100) * ingredient.quantity
+                  : 0)
+              );
+            }, 0)
           );
-        }, 0)
+        }, 0) / recipe.servings
       );
-    }, 0) / recipe.servings
-  );
-  const protein = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[1003] ? (nutrient[1003] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
-  const carbs = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[1005] ? (nutrient[1005] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
-  const calories = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[1008] ? (nutrient[1008] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
-  const fiber = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[1079] ? (nutrient[1079] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
-  const calcium = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[1087] ? (nutrient[1087] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
-  const iron = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[1089] ? (nutrient[1089] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
-  const sodium = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[1093] ? (nutrient[1093] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
-  const vitaminC = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[1162] ? (nutrient[1162] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
-  const cholesterol = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[1253] ? (nutrient[1253] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
-  const saturatedFat = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[1258] ? (nutrient[1258] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
-  const sugar = Math.round(
-    recipe.ingredients.reduce((total, ingredient) => {
-      return (
-        total +
-        ingredient.nutrients.reduce((sum, nutrient) => {
-          return (
-            sum +
-            (nutrient[2000] ? (nutrient[2000] / 100) * ingredient.quantity : 0)
-          );
-        }, 0)
-      );
-    }, 0) / recipe.servings
-  );
+    } catch (error) {
+      console.log(error);
+      return 0;
+    }
+  }
+
+  Object.keys(nutrientsPerServing).forEach((nutrientName) => {
+    nutrientsPerServing[nutrientName] = calculateNutrient(nutrientName);
+  });
 
   return (
     <>
@@ -195,7 +84,7 @@ export function NutritionFacts(props) {
             <tr>
               <th colSpan={2}>
                 <b>Calories</b>
-                {calories}
+                {nutrientsPerServing.calories}
               </th>
               <td></td>
             </tr>
@@ -207,17 +96,19 @@ export function NutritionFacts(props) {
             <tr>
               <th colSpan={2}>
                 <b>Total Fat</b>
-                {` ${totalFat}g`}
+                {` ${nutrientsPerServing.totalFat}g`}
               </th>
               <td>
-                <b>{`${Math.round(totalFat / 0.65)}%`}</b>
+                <b>{`${Math.round(nutrientsPerServing.totalFat / 0.65)}%`}</b>
               </td>
             </tr>
             <tr>
               <td className="blank-cell"></td>
-              <th>Saturated Fat {` ${saturatedFat}g`}</th>
+              <th>Saturated Fat {` ${nutrientsPerServing.saturatedFat}g`}</th>
               <td>
-                <b>{` ${Math.round(saturatedFat / 0.2)}%`}</b>
+                <b>{` ${Math.round(
+                  nutrientsPerServing.saturatedFat / 0.2
+                )}%`}</b>
               </td>
             </tr>
             <tr>
@@ -228,47 +119,47 @@ export function NutritionFacts(props) {
             <tr>
               <th colSpan={2}>
                 <b>Cholesterol</b>
-                {` ${cholesterol}mg`}
+                {` ${nutrientsPerServing.cholesterol}mg`}
               </th>
               <td>
-                <b>{` ${Math.round(cholesterol / 3)}%`}</b>
+                <b>{` ${Math.round(nutrientsPerServing.cholesterol / 3)}%`}</b>
               </td>
             </tr>
 
             <tr>
               <th colSpan={2}>
                 <b>Sodium</b>
-                {` ${sodium}mg`}
+                {` ${nutrientsPerServing.sodium}mg`}
               </th>
               <td>
-                <b>{` ${Math.round(sodium / 24)}%`}</b>
+                <b>{` ${Math.round(nutrientsPerServing.sodium / 24)}%`}</b>
               </td>
             </tr>
             <tr>
               <th colSpan={2}>
                 <b>Total Carbohydrate</b>
-                {` ${carbs}g`}
+                {` ${nutrientsPerServing.carbs}g`}
               </th>
               <td>
-                <b>{` ${Math.round(carbs / 3)}%`}</b>
+                <b>{` ${Math.round(nutrientsPerServing.carbs / 3)}%`}</b>
               </td>
             </tr>
             <tr>
               <td className="blank-cell"></td>
-              <th>Dietary Fiber {` ${fiber}g`}</th>
+              <th>Dietary Fiber {` ${nutrientsPerServing.fiber}g`}</th>
               <td>
-                <b>{` ${fiber / 0.25}%`}</b>
+                <b>{` ${nutrientsPerServing.fiber / 0.25}%`}</b>
               </td>
             </tr>
             <tr>
               <td className="blank-cell"></td>
-              <th>Sugars {` ${sugar}g`}</th>
+              <th>Sugars {` ${nutrientsPerServing.sugar}g`}</th>
               <td></td>
             </tr>
             <tr className="thick-end">
               <th colSpan={2}>
                 <b>Protein</b>
-                {` ${protein}g`}
+                {` ${nutrientsPerServing.protein}g`}
               </th>
               <td></td>
             </tr>
@@ -278,13 +169,19 @@ export function NutritionFacts(props) {
           <tbody>
             <tr>
               <td colSpan={2}>
-                Vitamin D {` ${Math.round(vitaminD / 0.15)}%`}
+                Vitamin D{" "}
+                {` ${Math.round(nutrientsPerServing.vitaminD / 0.15)}%`}
               </td>
-              <td>Vitamin C {` ${Math.round(vitaminC / 0.85)}%`}</td>
+              <td>
+                Vitamin C{" "}
+                {` ${Math.round(nutrientsPerServing.vitaminC / 0.85)}%`}
+              </td>
             </tr>
             <tr className="thin-end">
-              <td colSpan={2}>Calcium {` ${Math.round(calcium / 10)}%`}</td>
-              <td>Iron {` ${Math.round(iron / 0.1)}%`}</td>
+              <td colSpan={2}>
+                Calcium {` ${Math.round(nutrientsPerServing.calcium / 10)}%`}
+              </td>
+              <td>Iron {` ${Math.round(nutrientsPerServing.iron / 0.1)}%`}</td>
             </tr>
           </tbody>
         </table>

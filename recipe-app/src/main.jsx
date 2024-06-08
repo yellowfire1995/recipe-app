@@ -6,7 +6,7 @@ import Root from "./routes/root";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "./index.scss";
+
 import ErrorPage from "./errorpage";
 import { action as filterAction } from "./routes/root.jsx";
 import Recipe from "./routes/Recipes.jsx";
@@ -27,7 +27,7 @@ import {
 import AllRecipes from "./routes/AllRecipes.jsx";
 import Index from "./routes/Index.jsx";
 import Collections from "./routes/Collections.jsx";
-
+import "./index.scss";
 export const queryClient = new QueryClient();
 
 const router = createBrowserRouter([

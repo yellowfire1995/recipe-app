@@ -79,7 +79,9 @@ export default function AddRecipe() {
   });
 
   async function handleImport(scrapedData) {
+    console.log(scrapedData);
     const ingredientString = scrapedData.recipeIngredient.join("\r\n");
+    console.log(ingredientString);
     const directionString =
       typeof scrapedData.recipeInstructions == "string"
         ? scrapedData.recipeInstructions
@@ -91,12 +93,24 @@ export default function AddRecipe() {
     setDirections(directionString);
     const choices = await parseIngredients(ingredientString);
     const directions = await parseDirections(directionString);
+
+    let servings = 1;
+
+    if (scrapedData.recipeYield.length > 0) {
+      try {
+        servings = parseInt(scrapedData.recipeYield[0]);
+      } catch (error) {
+        servings = 1;
+      }
+    }
+
     setUpdatedRecipe({
       ...updatedRecipe,
       directions: directions,
       img_url: scrapedData.image?.url,
       name: scrapedData.name ? scrapedData.name : "",
       ingredients: choices.map((choice) => choice[0]),
+      servings: servings,
     });
 
     setIngredientList(choices);

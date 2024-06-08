@@ -8,7 +8,6 @@ export async function matchIngredients(ingredients) {
   const ingredientArray = await Promise.all(
     ingredients.map(async (ingredient, idx) => {
       try {
-        console.log(ingredient.description);
         //Search on SOLR to find best match
         const searchResult = await searchSolr(
           ingredient.description,
@@ -90,15 +89,9 @@ export async function matchIngredients(ingredients) {
                 : null,
               userLabel: weightConversion ? ingredient.unitOfMeasure : null,
               userG: weightConversion ? weightConversion : null,
-              nutrients: data.rows[0].nutrients ?? null,
-              // quantity2:
-              //   type == "weight"
-              //     ? Math.round(ingredient.quantity * measurement)
-              //     : Math.round(
-              //         (ingredient.quantity / data.rows[0].gram_amt) *
-              //           measurement
-              //       ),
+              nutrients: data.rows[0].nutrients ?? [],
             };
+            console.log(finalIngredient);
             return finalIngredient;
           })
         );

@@ -42,7 +42,9 @@ function ImportRecipeModal(props) {
                 ...updatedRecipe,
                 url: document.getElementById("importURL").value,
               });
-              props.handleImport(await scrapeRecipe(updatedRecipe.url));
+              props.handleImport(
+                await scrapeRecipe(document.getElementById("importURL").value)
+              );
               handleClose();
             }}
           >

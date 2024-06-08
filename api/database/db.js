@@ -9,9 +9,9 @@ const db = new Pool({
   database: _.DB_DB,
   password: _.DB_PW,
   port: _.DB_PORT,
-  max: 20,
-  idleTimeoutMillis: 2000,
-  connectionTimeoutMillis: 2000,
+  max: 32,
+  idleTimeoutMillis: 36000000,
+  connectionTimeoutMillis: 10000,
 });
 
 export default db;

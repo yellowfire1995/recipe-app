@@ -11,7 +11,7 @@ function LoginButton() {
         <Col className="">
           <Button
             id="loginbtn"
-            className="w-100 "
+            className="w-100"
             size="lg"
             onClick={() => loginWithPopup()}
           >
