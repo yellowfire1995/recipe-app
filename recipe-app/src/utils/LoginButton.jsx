@@ -22,7 +22,7 @@ function LoginButton() {
       <Row className="justify-content-center">
         <Col className="w-100">
           <Button
-            className="btn-secondary w-100 "
+            className="btn-secondary w-100 text-nowrap "
             size="lg"
             onClick={() =>
               loginWithPopup({ authorizationParams: { screen_hint: "signup" } })

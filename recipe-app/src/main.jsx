@@ -28,11 +28,13 @@ import AllRecipes from "./routes/AllRecipes.jsx";
 import Index from "./routes/Index.jsx";
 import Collections from "./routes/Collections.jsx";
 import "./index.scss";
+import ErrorHandler from "./Components/Errors/NotFound.jsx";
 export const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
     element: <PrivateRoutes />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",

@@ -15,6 +15,7 @@ router.get("/", async (req, res) => {
     res.json(data.rows);
   } catch (error) {
     console.error(error);
+    throw new Error("Unable to find categories");
   }
 });
 

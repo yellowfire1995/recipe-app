@@ -19,6 +19,7 @@ import Loading from "../Components/Loading";
 import { NutritionFacts } from "../Components/NutritionFacts.jsx";
 import AddRecipeToCollectionModal from "../Components/AddRecipeToCollectionModal.jsx";
 import { Helmet } from "react-helmet";
+import ErrorHandler from "../Components/Errors/NotFound.jsx";
 
 export async function loader({ params }) {
   const activeRecipe = await getRecipeById(params.recipeId);
@@ -33,6 +34,7 @@ export default function Recipe() {
   const recipeFetch = useQuery({
     queryKey: [`Recipe${params.recipeId}`],
     queryFn: () => getRecipeById(params.recipeId),
+    retry: 1,
   });
 
   let recipe = [];
@@ -44,7 +46,7 @@ export default function Recipe() {
   const [servings, setServings] = useState();
 
   if (recipeFetch.isError) {
-    return <div>Recipe not found</div>;
+    return <ErrorHandler error={recipeFetch.error} />;
   }
 
   if (recipeFetch.isLoading) {

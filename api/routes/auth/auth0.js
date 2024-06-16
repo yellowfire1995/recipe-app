@@ -7,13 +7,22 @@ const router = express.Router();
 import db from "../../database/db.js";
 import { getUserId } from "../../tools/getUserId.js";
 
-// const refreshToken = await getManagementToken();
-// console.log(refreshToken.access_token);
+let refreshToken = {};
+
+if (_.ENV == "production") {
+  refreshToken = await getManagementToken();
+}
 
 router.patch("/", getUserId, async (req, res) => {
-  // console.log(req.body);
-  // const token = refreshToken.access_token;
-  // const token = _.AUTH0_DEV_MGT_TOKEN;
+  const token = _.AUTH0_DEV_MGT_TOKEN;
+
+  if (_.ENV == "production") {
+    try {
+      token = refreshToken.access_token;
+    } catch (error) {
+      console.log("Error obtaining auth0 access token.");
+    }
+  }
 
   try {
     const updateAuth0 = await axios.patch(

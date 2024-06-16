@@ -20,5 +20,6 @@ export default async function getManagementToken() {
     return response.data;
   } catch (error) {
     console.log(error);
+    return error.data;
   }
 }

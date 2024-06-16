@@ -1,6 +1,13 @@
 import axios from "axios";
+import { auth } from "express-oauth2-jwt-bearer";
+
+export const checkJwt = auth({
+  audience: [process.env.AUTH0_AUDIENCE, process.env.AUTH0_VERIFY],
+  issuerBaseURL: process.env.AUTH0_BASEURL,
+});
 
 export async function getUserId(req, res, next) {
+  console.log(req.headers);
   try {
     let config = {
       method: "get",

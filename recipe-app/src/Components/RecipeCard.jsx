@@ -29,12 +29,25 @@ export default function RecipeCardData(props) {
                 className="d-flex border-0 shadow"
                 style={{
                   backgroundImage: `url(${recipe.thumbnail})`,
+                  backgroundColor: "rgb(0,0,0,.2)",
                   backgroundPosition: "50% 50%",
                   backgroundSize: "cover",
                   width: "15rem",
                   height: "13rem",
                 }}
-              ></Card>
+              >
+                <Container
+                  className="justify-content-center text-center"
+                  style={{
+                    fontSize: "3rem",
+                    fontFamily: `"Lucida Handwriting", "Courier New", monospace, `,
+                    color: "rgb(0,0,0, .25)",
+                    overflow: "hidden",
+                  }}
+                >
+                  {recipe.thumbnail ? "" : recipe.name}
+                </Container>
+              </Card>
               <p
                 className="d-flex align-self-start pt-1 text-secondary-subtle"
                 // style={{color: "#48423C"}}

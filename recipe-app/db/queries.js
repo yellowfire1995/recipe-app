@@ -147,7 +147,7 @@ export async function getRecipeById(recipeId) {
     return recipe.data;
   } catch (error) {
     console.error(error);
-    Promise.reject(404);
+    throw error;
   }
 }
 
@@ -207,11 +207,11 @@ export async function getCollectionNames() {
 //Add recipe to collection
 export async function addRecipeToCollection(recipeId, collection) {
   try {
+    console.log(recipeId);
     const collectionRecipes = await httpClient.post(
       `${server}/collections/add/recipe/${recipeId}`,
       { collection: collection }
     );
-    console.log(collectionRecipes);
   } catch (error) {
     console.log("ERROR!");
     return Promise.reject(401);

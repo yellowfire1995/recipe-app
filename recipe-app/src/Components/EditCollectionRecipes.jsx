@@ -40,6 +40,7 @@ export default function EditCollectionRecipes(props) {
   const handleClose = () => {
     setShow(false);
     setItemsToRemove([]);
+    deleter.reset();
   };
   const handleShow = () => setShow(true);
 
@@ -63,7 +64,9 @@ export default function EditCollectionRecipes(props) {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={deleter.mutate}>Save</Button>
+          <Button onClick={deleter.mutate}>
+            {deleter.status != "idle" ? "Saving..." : "Save"}
+          </Button>
           <Button onClick={handleClose}>Cancel</Button>
         </Modal.Footer>
       </Modal>

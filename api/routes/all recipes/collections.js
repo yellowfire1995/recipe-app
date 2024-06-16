@@ -1,9 +1,9 @@
 import express from "express";
 const router = express.Router();
 import db from "../../database/db.js";
-import { getUserId } from "../../tools/getUserId.js";
+import { checkJwt, getUserId } from "../../tools/getUserId.js";
 
-router.get("/recipes", getUserId, async (req, res) => {
+router.get("/recipes", checkJwt, async (req, res) => {
   try {
     const query = {
       text: `select
@@ -53,7 +53,6 @@ router.get("/recipes", getUserId, async (req, res) => {
       };
     });
 
-    console.log(cardData);
     res.send(cardData);
   } catch (error) {
     console.log(error);
@@ -74,7 +73,7 @@ router.get("/names", getUserId, async (req, res) => {
   }
 });
 
-router.post("/add/recipe/:recipeId", getUserId, async (req, res) => {
+router.post("/add/recipe/:recipeId", checkJwt, async (req, res) => {
   try {
     if (req.body.collection.customOption) {
       const query = {
@@ -85,7 +84,11 @@ router.post("/add/recipe/:recipeId", getUserId, async (req, res) => {
         INSERT INTO recipe_collections
             (recipe_id, collection_id, "user")
             VALUES($1, (select id from update), $3) `,
-        values: [req.params.recipeId, req.body.collection.name, req.user.sub],
+        values: [
+          req.params.recipeId,
+          req.body.collection.name,
+          req.auth.payload.sub,
+        ],
       };
       const data = await db.query(query);
 
@@ -95,7 +98,11 @@ router.post("/add/recipe/:recipeId", getUserId, async (req, res) => {
         text: `INSERT INTO recipe_collections
       (recipe_id, collection_id, "user")
       VALUES($1, $2, $3)`,
-        values: [req.params.recipeId, req.body.collection.id, req.user.sub],
+        values: [
+          req.params.recipeId,
+          req.body.collection.id,
+          req.auth.payload.sub,
+        ],
       };
       const data = await db.query(query);
       res.send(data);
@@ -107,13 +114,13 @@ router.post("/add/recipe/:recipeId", getUserId, async (req, res) => {
 
 router.delete(
   "/delete/collection/:collectionId",
-  getUserId,
+  checkJwt,
   async (req, res) => {
     try {
       const query = {
         text: ` delete from collections 
       where id = $1 and "user" = $2`,
-        values: [req.params.collectionId, req.user.sub],
+        values: [req.params.collectionId, req.auth.payload.sub],
       };
       const deleter = await db.query(query);
 
@@ -124,13 +131,12 @@ router.delete(
   }
 );
 
-router.delete("/delete/recipe", getUserId, async (req, res) => {
+router.delete("/delete/recipe", checkJwt, async (req, res) => {
   try {
-    console.log(req.user.sub);
     const query = {
       text: `delete from recipe_collections 
     where id = any($1::int[]) and "user" = $2 `,
-      values: [req.body.ids, req.user.sub],
+      values: [req.body.ids, req.auth.payload.sub],
     };
     const deleter = await db.query(query);
     console.log(deleter);
@@ -140,7 +146,7 @@ router.delete("/delete/recipe", getUserId, async (req, res) => {
   }
 });
 
-router.post("/edit", getUserId, async (req, res) => {
+router.post("/edit", checkJwt, async (req, res) => {
   try {
   } catch (error) {
     console.log(error);

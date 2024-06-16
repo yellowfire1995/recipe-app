@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import { addRecipeToCollection, getCollectionNames } from "../../db/queries";
 
 import { Typeahead } from "react-bootstrap-typeahead";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Loading from "./Loading";
 
 export default function AddRecipeToCollectionModal(props) {
@@ -14,19 +14,26 @@ export default function AddRecipeToCollectionModal(props) {
     queryFn: () => getCollectionNames(),
   });
 
+  const addCollection = useMutation({
+    mutationFn: () =>
+      addRecipeToCollection(params.recipeId, activeCollection[0]),
+    onSuccess: () => setTimeout(handleClose, 1000),
+  });
+
   const [show, setShow] = useState(false);
   const handleClose = () => {
     setShow(false);
     setActiveCollection();
+    addCollection.reset();
   };
   const handleShow = () => setShow(true);
   const [activeCollection, setActiveCollection] = useState([]);
 
   function handleSave() {
     if (activeCollection.length > 0) {
-      console.log(activeCollection);
-      addRecipeToCollection(params.recipeId, activeCollection[0]);
-      handleClose();
+      addCollection.mutate(params.recipeId, activeCollection[0]);
+
+      // handleClose();
     } else {
       alert("Please choose a collection.");
     }
@@ -54,7 +61,12 @@ export default function AddRecipeToCollectionModal(props) {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => handleSave()}>Save</Button>
+          <div style={{ color: "green" }}>
+            {addCollection.isSuccess ? "Saved!" : ""}
+          </div>
+          <Button onClick={() => handleSave()}>
+            {addCollection.status != "idle" ? "Saving..." : "Save"}
+          </Button>
           <Button onClick={handleClose}>Cancel</Button>{" "}
         </Modal.Footer>
       </Modal>

@@ -1,16 +1,17 @@
 import express from "express";
 const router = express.Router();
 import db from "../../database/db.js";
-import { getUserId } from "../../tools/getUserId.js";
+import { checkJwt } from "../../tools/getUserId.js";
 
-router.get("/", getUserId, async (req, res) => {
+router.get("/", checkJwt, async (req, res) => {
+  console.log("authorized!");
+  const auth = req.auth;
   try {
     const sqlSearch =
       req.query.search == "null"
         ? "%"
         : "%" + req.query.search.toLowerCase() + "%";
 
-    console.log(sqlSearch);
     const query = {
       text: `
       SELECT recipe_id, name, thumbnail, servings, url, author, nickname, create_date,
@@ -34,7 +35,7 @@ router.get("/", getUserId, async (req, res) => {
       values: [
         req.query.page == "null" ? 0 : (parseInt(req.query.page) - 1) * 15,
         sqlSearch,
-        req.user.sub,
+        auth.payload.sub,
       ],
     };
 

@@ -1,8 +1,9 @@
 import express from "express";
 const router = express.Router();
 import db from "../../database/db.js";
+import { checkJwt } from "../../tools/getUserId.js";
 
-router.get("/", async (req, res) => {
+router.get("/", checkJwt, async (req, res) => {
   try {
     const sqlSearch =
       req.query.search == "null"
@@ -23,7 +24,7 @@ router.get("/", async (req, res) => {
   WHERE recipes.recipe_id = recipe_cuisines.recipe_id
         ) as cuisine
                   FROM recipes
-                  WHERE lower(recipes.name) LIKE $2 and (recipes.public OR recipes.author = $2 )
+                  WHERE lower(recipes.name) LIKE $2 and (recipes.public OR recipes.author = $3 )
               GROUP BY recipes.recipe_id
               ORDER BY recipes.recipe_id DESC
               LIMIT 16
@@ -32,6 +33,7 @@ router.get("/", async (req, res) => {
       values: [
         req.query.page == "null" ? 0 : (parseInt(req.query.page) - 1) * 15,
         sqlSearch,
+        req.auth.payload.sub,
       ],
     };
 
@@ -46,7 +48,7 @@ router.get("/", async (req, res) => {
         ...recipe,
         thumbnail: recipe.thumbnail
           ? "https://d30b48eq3arkah.cloudfront.net/" + recipe.thumbnail
-          : "https://www.svgrepo.com/show/118464/plate-and-utensils-top-view.svg",
+          : null,
       };
     });
 

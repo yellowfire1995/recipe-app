@@ -99,6 +99,7 @@ export default function AddRecipe() {
     if (scrapedData.recipeYield.length > 0) {
       try {
         servings = parseInt(scrapedData.recipeYield[0]);
+        console.log(servings);
       } catch (error) {
         servings = 1;
       }
