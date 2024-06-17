@@ -5,21 +5,23 @@ import { searchSolr } from "./searchSolr.js";
 import { v4 as uuidv4 } from "uuid";
 
 export async function matchIngredients(ingredients) {
-  console.log(ingredients);
   const ingredientArray = await Promise.all(
     ingredients.map(async (ingredient, idx) => {
-      try {
-        //Search on SOLR to find best match
-        const searchResult = await searchSolr(
-          ingredient.description,
-          ingredient.unitOfMeasureID
-        );
+      if (ingredient.isGroupHeader) {
+        return [{ ...ingredient, quantity: 0, nutrients: [] }];
+      } else {
+        try {
+          //Search on SOLR to find best match
+          const searchResult = await searchSolr(
+            ingredient.description,
+            ingredient.unitOfMeasureID
+          );
 
-        //Obtain ingredient information from database using search result
-        const ingredients = await Promise.all(
-          searchResult.map(async (doc) => {
-            const query = {
-              text: `SELECT (select json_agg(json_build_object(fn.nutrient_id, fn.amount, 'name', n."name"))
+          //Obtain ingredient information from database using search result
+          const ingredients = await Promise.all(
+            searchResult.map(async (doc) => {
+              const query = {
+                text: `SELECT (select json_agg(json_build_object(fn.nutrient_id, fn.amount, 'name', n."name"))
               from food_nutrient fn 
                   join nutrient n on fn.nutrient_id = n.id 
                   where nutrient_id in (1110, 1004, 2000, 1093, 1003, 1089, 1079, 1008, 1253, 1005, 1087, 1258, 1162) and fn.fdc_id =  food.fdc_id) as nutrients,              
@@ -49,58 +51,59 @@ export async function matchIngredients(ingredients) {
               food.fdc_id = $1 and (fp.id is null or fp.id = $2)
               ;
               `,
-              values: [doc.fdc_id, doc.sr_id],
-            };
-            const data = await db.query(query);
+                values: [doc.fdc_id, doc.sr_id],
+              };
+              const data = await db.query(query);
 
-            //Test to see if there is a match between original measurement and database measurement to convert into grams
-            const weightConversion = await findMeasureMatch(
-              ingredient.unitOfMeasureID?.trim(),
-              data.rows[0].gram_label?.trim(),
-              data.rows[0].gram_amt
-            );
+              //Test to see if there is a match between original measurement and database measurement to convert into grams
+              const weightConversion = await findMeasureMatch(
+                ingredient.unitOfMeasureID?.trim(),
+                data.rows[0].gram_label?.trim(),
+                data.rows[0].gram_amt
+              );
 
-            //Create final ingredient structure
-            const finalIngredient = {
-              ...ingredient,
-              category: data.rows[0].category,
-              quantity:
-                Math.round(
-                  (ingredient.quantity /
-                    (weightConversion
-                      ? weightConversion
-                      : data.rows[0].gram_amt
-                      ? data.rows[0].gram_amt
-                      : 1)) *
-                    100
-                ) / 100,
-              id: uuidv4(),
-              description: data.rows[0].description.toLowerCase(),
-              fdc_id: data.rows[0].fdc_id,
-              sr_id: data.rows[0].sr_id,
-              gramConversion: weightConversion
-                ? weightConversion
-                : data.rows[0].gram_amt
-                ? data.rows[0].gram_amt
-                : null,
-              matchedMeasure: weightConversion
-                ? ingredient.unitOfMeasure
-                : data.rows[0].gram_label
-                ? data.rows[0].gram_label
-                : null,
-              userLabel: weightConversion ? ingredient.unitOfMeasure : null,
-              userG: weightConversion ? weightConversion : null,
-              nutrients: data.rows[0].nutrients ?? [],
-            };
-            console.log(finalIngredient);
-            return finalIngredient;
-          })
-        );
+              //Create final ingredient structure
+              const finalIngredient = {
+                ...ingredient,
+                category: data.rows[0].category,
+                quantity:
+                  Math.round(
+                    (ingredient.quantity /
+                      (weightConversion
+                        ? weightConversion
+                        : data.rows[0].gram_amt
+                        ? data.rows[0].gram_amt
+                        : 1)) *
+                      100
+                  ) / 100,
+                id: uuidv4(),
+                description: data.rows[0].description.toLowerCase(),
+                fdc_id: data.rows[0].fdc_id,
+                sr_id: data.rows[0].sr_id,
+                gramConversion: weightConversion
+                  ? weightConversion
+                  : data.rows[0].gram_amt
+                  ? data.rows[0].gram_amt
+                  : null,
+                matchedMeasure: weightConversion
+                  ? ingredient.unitOfMeasure
+                  : data.rows[0].gram_label
+                  ? data.rows[0].gram_label
+                  : null,
+                userLabel: weightConversion ? ingredient.unitOfMeasure : null,
+                userG: weightConversion ? weightConversion : null,
+                nutrients: data.rows[0].nutrients ?? [],
+              };
+              console.log(finalIngredient);
+              return finalIngredient;
+            })
+          );
 
-        return ingredients;
-      } catch (error) {
-        console.log(error);
-        return { ...ingredient, amt: 1 };
+          return ingredients;
+        } catch (error) {
+          console.log(error);
+          return { ...ingredient, amt: 1 };
+        }
       }
     })
   );

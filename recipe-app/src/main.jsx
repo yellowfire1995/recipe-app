@@ -28,7 +28,8 @@ import AllRecipes from "./routes/AllRecipes.jsx";
 import Index from "./routes/Index.jsx";
 import Collections from "./routes/Collections.jsx";
 import "./index.scss";
-import ErrorHandler from "./Components/Errors/NotFound.jsx";
+import Planner from "./routes/Planner.jsx";
+
 export const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
         action: filterAction,
         children: [
           { index: true, element: <Index /> },
+          { path: "planner", element: <Planner /> },
           {
             path: "recipes",
             element: <AllRecipes />,

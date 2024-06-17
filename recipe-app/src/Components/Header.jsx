@@ -47,7 +47,7 @@ function Header() {
               <Nav.Link href="/recipes">All Recipes</Nav.Link>
               <Nav.Link href="/myrecipes">Your Recipes</Nav.Link>
               <Nav.Link href="/newrecipe">Add Recipe </Nav.Link>
-
+              <Nav.Link href="/planner">Planner </Nav.Link>
               <Nav.Link href="/collections">Collections</Nav.Link>
               <hr />
               <h5>Settings</h5>
@@ -87,6 +87,7 @@ function Header() {
               <Nav.Link href="/recipes">All Recipes</Nav.Link>
               <Nav.Link href="/myrecipes">Your Recipes</Nav.Link>
               <Nav.Link href="/collections">Collections</Nav.Link>
+              <Nav.Link href="/planner">Planner </Nav.Link>
               <Nav.Link href="/newrecipe">Add Recipe </Nav.Link>
             </Col>
             <Col className="d-flex justify-content-center">

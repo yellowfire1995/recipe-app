@@ -138,6 +138,13 @@ export default function Recipe() {
                   Ingredients <br />{" "}
                 </span>
                 {recipe.ingredients.map((ingredient) => {
+                  if (ingredient.isGroupHeader) {
+                    return (
+                      <h4 key={ingredient.id}>
+                        {ingredient.description.toUpperCase()}
+                      </h4>
+                    );
+                  }
                   return (
                     <div className="form-check" key={ingredient.id}>
                       <input

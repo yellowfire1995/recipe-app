@@ -7,6 +7,7 @@ import { ImportSelector } from "./importSelector";
 import { parseIngredients } from "../../db/queries";
 import Form from "react-bootstrap/Form";
 import { Container } from "@mui/material";
+import { NutritionFacts } from "./NutritionFacts";
 
 export default function EditIngredientModal(props) {
   const origIdx = props.origIdx;
@@ -17,6 +18,7 @@ export default function EditIngredientModal(props) {
   const [show, setShow] = useState(false);
   const [searchList, setSearchList] = useState([]);
 
+  console.log(ingredient);
   const handleClose = () => {
     setShow(false);
     setIngredient(props.ingredient);
@@ -167,6 +169,10 @@ export default function EditIngredientModal(props) {
           ) : (
             ""
           )}
+          <NutritionFacts
+            header={false}
+            recipe={{ ingredients: [ingredient], servings: 1 }}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

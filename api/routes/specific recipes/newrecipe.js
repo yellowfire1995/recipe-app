@@ -26,6 +26,7 @@ router.post("/", getUserId, upload.single("photo"), async (req, res) => {
       [key, thumbnailKey] = uploadDualSizesUrlToS3(recipe.imgUrl);
     }
 
+    console.log(recipe.ingredients);
     const query = {
       text: `WITH r AS
         (

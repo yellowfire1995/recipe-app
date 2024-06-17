@@ -54,86 +54,94 @@ export default function IngredientsList(props) {
         <span className="h3"> Ingredients </span>
         <InputGroup name="ingredients" className="d-flex flex-column ">
           {updatedRecipe.ingredients.map((ingredient, index) => {
-            try {
+            if (ingredient.isGroupHeader) {
               return (
-                <div className="form-check ps-1" key={ingredient.id}>
-                  <input
-                    id={ingredient.description}
-                    type="number"
-                    min="0"
-                    step=".01"
-                    className="form-check-label"
-                    htmlFor={ingredient.description}
-                    style={{ width: "3rem" }}
-                    name={ingredient.description}
-                    value={
-                      ingredient.userG
-                        ? Math.round(
-                            ingredient.userG * ingredient.quantity * 100
-                          ) / 100
-                        : ingredient.gramConversion
-                        ? Math.round(
-                            ingredient.quantity *
-                              ingredient.gramConversion *
-                              100
-                          ) / 100
-                        : ingredient.quantity
-                    }
-                    onChange={(e) => {
-                      setUpdatedRecipe(
-                        handleIngredientUpdate(updatedRecipe, e)
-                      );
-                    }}
-                  />
-                  {ingredient.userLabel
-                    ? ingredient.userLabel
-                    : ingredient.gramConversion
-                    ? ingredient.engLabel || ingredient.matchedMeasure
-                    : "g"}{" "}
-                  {ingredient.description}{" "}
-                  {`(${
-                    ingredient.gramConversion || ingredient.userG
-                      ? parseInt(ingredient.quantity) + "g"
-                      : ""
-                  } )`}
-                  <AddPriceModal ingredient={ingredient} />
-                  <EditIngredientModal
-                    ingredient={ingredient}
-                    updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
-                    color={
-                      ingredient.gramConversion || ingredient.userG
-                        ? "black"
-                        : "red"
-                    }
-                    ingredientList={[ingredientList, setIngredientList]}
-                    origIdx={index}
-                  />
-                  <DeleteIcon
-                    id={ingredient.id}
-                    aria-label="delete"
-                    children={ingredient.id}
-                    type="button"
-                    onClick={(e) => {
-                      setUpdatedRecipe(deleteIngredient(updatedRecipe, e));
-                      setIngredientList(
-                        ingredientList.filter((ingredient, i) => i !== index)
-                      );
-                    }}
-                    className="pt-0 mb-0 svg-icon"
-                  />
-                  <span style={{ color: "red" }}>
-                    {" "}
-                    {ingredient.fdc_id
-                      ? null
-                      : `Ingredient needs information - please edit`}
-                    {ingredient.nutrients.length > 0
-                      ? ""
-                      : "Warning! No nutrition information"}
-                  </span>
-                </div>
+                <h4 key={ingredient.id}>
+                  {ingredient.description.toUpperCase()}
+                </h4>
               );
-            } catch (error) {
-              return <div>Error importing ingredient</div>;
+            } else {
+              try {
+                return (
+                  <div className="form-check ps-1" key={ingredient.id}>
+                    <input
+                      id={ingredient.description}
+                      type="number"
+                      min="0"
+                      step=".01"
+                      className="form-check-label"
+                      htmlFor={ingredient.description}
+                      style={{ width: "3rem" }}
+                      name={ingredient.description}
+                      value={
+                        ingredient.userG
+                          ? Math.round(
+                              ingredient.userG * ingredient.quantity * 100
+                            ) / 100
+                          : ingredient.gramConversion
+                          ? Math.round(
+                              ingredient.quantity *
+                                ingredient.gramConversion *
+                                100
+                            ) / 100
+                          : ingredient.quantity
+                      }
+                      onChange={(e) => {
+                        setUpdatedRecipe(
+                          handleIngredientUpdate(updatedRecipe, e)
+                        );
+                      }}
+                    />
+                    {ingredient.userLabel
+                      ? ingredient.userLabel
+                      : ingredient.gramConversion
+                      ? ingredient.engLabel || ingredient.matchedMeasure
+                      : "g"}{" "}
+                    {ingredient.description}{" "}
+                    {`(${
+                      ingredient.gramConversion || ingredient.userG
+                        ? parseInt(ingredient.quantity) + "g"
+                        : ""
+                    } )`}
+                    <AddPriceModal ingredient={ingredient} />
+                    <EditIngredientModal
+                      ingredient={ingredient}
+                      updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
+                      color={
+                        ingredient.gramConversion || ingredient.userG
+                          ? "black"
+                          : "red"
+                      }
+                      ingredientList={[ingredientList, setIngredientList]}
+                      origIdx={index}
+                    />
+                    <DeleteIcon
+                      id={ingredient.id}
+                      aria-label="delete"
+                      children={ingredient.id}
+                      type="button"
+                      onClick={(e) => {
+                        setUpdatedRecipe(deleteIngredient(updatedRecipe, e));
+                        setIngredientList(
+                          ingredientList.filter((ingredient, i) => i !== index)
+                        );
+                      }}
+                      className="pt-0 mb-0 svg-icon"
+                    />
+                    <span style={{ color: "red" }}>
+                      {" "}
+                      {ingredient.fdc_id
+                        ? null
+                        : `Ingredient needs information - please edit`}
+                      {ingredient.nutrients.length > 0
+                        ? ""
+                        : "Warning! No nutrition information"}
+                    </span>
+                  </div>
+                );
+              } catch (error) {
+                return <div>Error importing ingredient</div>;
+              }
             }
           })}
         </InputGroup>
