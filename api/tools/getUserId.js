@@ -7,7 +7,6 @@ export const checkJwt = auth({
 });
 
 export async function getUserId(req, res, next) {
-  console.log(req.headers);
   try {
     let config = {
       method: "get",

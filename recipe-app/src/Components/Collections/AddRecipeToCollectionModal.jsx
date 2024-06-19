@@ -1,11 +1,11 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { addRecipeToCollection, getCollectionNames } from "../../db/queries";
+import { addRecipeToCollection, getCollectionNames } from "../../../db/queries";
 
-import { Typeahead } from "react-bootstrap-typeahead";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import Loading from "./Loading";
+import { Typeahead } from "react-bootstrap-typeahead";
+import Loading from "../Loading";
 
 export default function AddRecipeToCollectionModal(props) {
   const params = props.params;

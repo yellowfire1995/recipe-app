@@ -1,6 +1,6 @@
-import RecipeCards from "../Components/RecipeCards";
+import RecipeCards from "../Components/Recipes/View Recipe/RecipeCards.jsx";
 import { getMyRecipeCards } from "../../db/queries";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 export default function MyRecipes() {
   return (

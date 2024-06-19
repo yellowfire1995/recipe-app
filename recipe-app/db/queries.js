@@ -178,6 +178,46 @@ export async function getMyRecipeCards({ page, search }) {
   }
 }
 
+//Get recipes by day for planner
+export async function getMealPlan() {
+  try {
+    const mealPlanRecipes = await httpClient.get(`${server}/planner/recipes`);
+
+    return mealPlanRecipes.data;
+  } catch (error) {
+    console.log("ERROR!");
+    return Promise.reject(401);
+  }
+}
+
+export async function addToMeallPlan(recipeId, date) {
+  try {
+    const mealPlanRecipes = await httpClient.post(
+      `${server}/planner/add/recipe/${recipeId}`,
+      { date: date }
+    );
+
+    return mealPlanRecipes.data;
+  } catch (error) {
+    console.log("ERROR!");
+    return Promise.reject(401);
+  }
+}
+
+export async function deleteFromMealPlan(planId) {
+  try {
+    console.log(planId);
+    const deletedMealPlanRecipe = await httpClient.delete(
+      `${server}/planner/delete/${planId}`
+    );
+
+    return deletedMealPlanRecipe.data;
+  } catch (error) {
+    console.log("ERROR!");
+    return Promise.reject(401);
+  }
+}
+
 //Get recipes by collection
 export async function getCollectionRecipes() {
   try {

@@ -22,7 +22,11 @@ export default function RecipeCardData(props) {
               className="  scrollable d-flex text-center recipecard align-self-stretch  justify-content-center flex-wrap align-content-start"
               style={{ width: "15rem", height: "17rem" }}
               id={`slide-${
-                props.collection ? props.collection.id : ""
+                props.collection
+                  ? props.collection.id
+                  : props.planner
+                  ? props.planner
+                  : ""
               }-${index}`}
             >
               <Card

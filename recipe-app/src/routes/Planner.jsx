@@ -1,17 +1,20 @@
 import Col from "react-bootstrap/esm/Col.js";
 import Row from "react-bootstrap/esm/Row";
 import Container from "react-bootstrap/esm/Container";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import Button from "react-bootstrap/esm/Button";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getMealPlan } from "../../db/queries";
+import PlannerDayList from "../Components/Planner/PlannerScroller";
 
 export default function Planner() {
   const oneDay = 1000 * 60 * 60 * 24;
   const oneWeek = oneDay * 7;
+  const daysIntoWeek = new Date().getDay();
   const [weeksAhead, setWeeksAhead] = useState(0);
 
-  const daysIntoWeek = new Date().getDay();
-  const now = Date.now() + oneWeek * weeksAhead - daysIntoWeek;
+  const now = Date.now() + oneWeek * weeksAhead - daysIntoWeek * oneDay;
   const startDate = new Date(now);
   const endDate = new Date(now + oneWeek - oneDay);
 
@@ -21,6 +24,11 @@ export default function Planner() {
     dateArray.push(now + oneDay * i);
     i++;
   }
+
+  const mealPlan = useQuery({
+    queryKey: [`MealPlan`],
+    queryFn: () => getMealPlan(),
+  });
 
   return (
     <>
@@ -53,13 +61,13 @@ export default function Planner() {
           <Col className="justify-content-center">
             {dateArray.map((date) => {
               return (
-                <h3 key={date}>
-                  {new Date(date).toLocaleDateString(undefined, {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "numeric",
-                  })}
-                </h3>
+                <div key={date}>
+                  {mealPlan.isLoading ? (
+                    ""
+                  ) : (
+                    <PlannerDayList date={date} mealPlan={mealPlan} />
+                  )}
+                </div>
               );
             })}
           </Col>

@@ -1,6 +1,5 @@
-import Button from "react-bootstrap/esm/Button.js";
-import EditIngredientModal from "./EditIngredientModal.jsx";
 import { useState } from "react";
+import Button from "react-bootstrap/esm/Button.js";
 
 export function EditSelector(props) {
   const [ingredientChoices, setIngredientChoices] = props.ingredients;

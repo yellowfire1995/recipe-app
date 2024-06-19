@@ -1,16 +1,16 @@
-import Col from "react-bootstrap/esm/Col.js";
-import Button from "react-bootstrap/esm/Button";
-import RecipeCardData from "../Components/RecipeCard";
 import { useState } from "react";
+import Button from "react-bootstrap/esm/Button";
+import Col from "react-bootstrap/esm/Col.js";
+import RecipeCardData from "../Recipes/View Recipe/RecipeCard.jsx";
 
-export default function PlannerScroller(props) {
-  const dailyPlan = props.dailyPlan;
+export default function CollectionScroller(props) {
+  const collection = props.collection;
   let [activeSlide, setActiveSlide] = useState(1);
 
   function pageForward() {
-    setActiveSlide(activeSlide > dailyPlan.recipes.length ? 2 : ++activeSlide);
+    setActiveSlide(activeSlide > collection.recipes.length ? 2 : ++activeSlide);
     document
-      .querySelector(`#slide-${dailyPlan.id}-${activeSlide}`)
+      .querySelector(`#slide-${collection.id}-${activeSlide}`)
       .scrollIntoView();
   }
 
@@ -21,7 +21,7 @@ export default function PlannerScroller(props) {
           onClick={() => {
             setActiveSlide(activeSlide < 2 ? 2 : --activeSlide);
             document
-              .querySelector(`#slide-${dailyPlan.id}-${activeSlide}`)
+              .querySelector(`#slide-${collection.id}-${activeSlide}`)
               .scrollIntoView();
           }}
         >
@@ -29,7 +29,7 @@ export default function PlannerScroller(props) {
         </Button>
       </Col>
       <Col className="d-flex scrollbar p-2">
-        <RecipeCardData cards={dailyPlan.recipes} collection={dailyPlan} />
+        <RecipeCardData cards={collection.recipes} collection={collection} />
       </Col>
       <Col xs="auto" className="align-content-center">
         <Button onClick={pageForward}>{">"}</Button>

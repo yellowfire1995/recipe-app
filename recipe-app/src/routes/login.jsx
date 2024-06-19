@@ -4,7 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/esm/Col";
 import LoginButton from "../utils/LoginButton";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import useLocalStorage from "use-local-storage";
 
 export default function Login() {

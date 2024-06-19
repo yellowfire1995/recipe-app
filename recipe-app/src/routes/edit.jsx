@@ -5,20 +5,20 @@ import { getRecipeById } from "../../db/queries";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
 import Button from "react-bootstrap/Button";
-import IngredientsList from "../Components/IngredientsList";
-import DirectionsList from "../Components/directionslist";
-import CuisineSelector from "../Components/cuisineselector";
-import CategorySelector from "../Components/categoryselector";
-import DeleteButton from "../Components/deleterecipe";
+import IngredientsList from "../Components/Recipes/Multipurpose/Ingredient List/IngredientsList.jsx";
+import DirectionsList from "../Components/Recipes/Multipurpose/directionslist.jsx";
+import CuisineSelector from "../Components/Recipes/Multipurpose/cuisineselector.jsx";
+import CategorySelector from "../Components/Recipes/Multipurpose/categoryselector.jsx";
+import DeleteButton from "../Components/Recipes/Edit Recipe/deleterecipe.jsx";
 import { editRecipe } from "../../db/queries";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient } from "../main";
 import Loading from "../Components/Loading";
 import Form from "react-bootstrap/Form";
-import AddPhotoModal from "../Components/AddPhotoModal";
+import AddPhotoModal from "../Components/Recipes/Edit Recipe/AddPhotoModal";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
-import { NutritionFacts } from "../Components/NutritionFacts";
+import { NutritionFacts } from "../Components/Recipes/Multipurpose/NutritionFacts.jsx";
 import { Helmet } from "react-helmet";
 
 export default function Edit() {

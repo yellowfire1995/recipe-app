@@ -1,12 +1,8 @@
-import React from "react";
-
-import Header from "../Components/Header.jsx";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Outlet, redirect } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect } from "react";
-
+import { Outlet, redirect } from "react-router-dom";
+import Header from "../Components/Header.jsx";
 import { addAccessTokenInterceptor } from "../../db/axiosConfig.js";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export async function action({ params, request }) {
   return redirect(`/`);

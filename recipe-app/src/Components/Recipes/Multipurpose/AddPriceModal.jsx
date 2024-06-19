@@ -1,9 +1,9 @@
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { savePrice } from "../../db/queries";
-import StoreButtons from "./storesearchbuttons";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { savePrice } from "../../../../db/queries";
+import StoreButtons from "./storesearchbuttons.jsx";
 
 export default function AddPriceModal(props) {
   const ingredient = props.ingredient;

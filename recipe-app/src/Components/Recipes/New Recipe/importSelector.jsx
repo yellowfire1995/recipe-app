@@ -1,4 +1,4 @@
-import EditIngredientModal from "./EditIngredientModal.jsx";
+import EditIngredientModal from "../Multipurpose/Ingredient List/EditIngredientModal.jsx";
 import Form from "react-bootstrap/Form";
 
 export function ImportSelector(props) {

@@ -2,8 +2,8 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
-import { deleteRecipe } from "../../db/queries";
-import { queryClient } from "../main";
+import { deleteRecipe } from "../../../../db/queries";
+import { queryClient } from "../../../main";
 import { QueryCache, useMutation } from "@tanstack/react-query";
 import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
 

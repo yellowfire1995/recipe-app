@@ -29,6 +29,7 @@ import Index from "./routes/Index.jsx";
 import Collections from "./routes/Collections.jsx";
 import "./index.scss";
 import Planner from "./routes/Planner.jsx";
+import { HelmetProvider } from "react-helmet-async";
 
 export const queryClient = new QueryClient();
 
@@ -91,21 +92,23 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <div>
     <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <Auth0Provider
-          domain={auth0Domain}
-          clientId={auth0ClientId}
-          cacheLocation={"localstorage"}
-          authorizationParams={{
-            redirect_uri: auth0Redirect,
-            audience: auth0Audience,
-            scope:
-              "read:current_user update:current_user_metadata profile email",
-          }}
-        >
-          <RouterProvider router={router} />
-        </Auth0Provider>
-      </QueryClientProvider>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <Auth0Provider
+            domain={auth0Domain}
+            clientId={auth0ClientId}
+            cacheLocation={"localstorage"}
+            authorizationParams={{
+              redirect_uri: auth0Redirect,
+              audience: auth0Audience,
+              scope:
+                "read:current_user update:current_user_metadata profile email",
+            }}
+          >
+            <RouterProvider router={router} />
+          </Auth0Provider>
+        </QueryClientProvider>
+      </HelmetProvider>
     </React.StrictMode>
   </div>
 );

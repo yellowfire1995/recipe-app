@@ -1,19 +1,12 @@
-import ListGroup from "react-bootstrap/ListGroup";
-import Container from "react-bootstrap/esm/Container";
-import { useEffect, useState } from "react";
-import InputGroup from "react-bootstrap/InputGroup";
-import _, { update } from "lodash";
-import axios from "axios";
-import AddPriceModal from "./AddPriceModal.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { ingredientSearch } from "../../db/queries.js";
-import EditIngredientModal from "./EditIngredientModal.jsx";
-import { parseIngredients } from "../../db/queries.js";
-import { parse } from "dotenv";
-import { EditSelector } from "./EditNewIngredient.jsx";
+import _ from "lodash";
+import InputGroup from "react-bootstrap/InputGroup";
+import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/esm/Button.js";
+import Container from "react-bootstrap/esm/Container";
 import { v4 as uuidv4 } from "uuid";
+import EditIngredientModal from "./EditIngredientModal.jsx";
+import AddPriceModal from "../AddPriceModal.jsx";
 
 function deleteIngredient(updatedRecipe, e) {
   const buttonId = e.target.id ? e.target.id : e.target.viewportElement.id;

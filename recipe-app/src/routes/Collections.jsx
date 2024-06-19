@@ -4,10 +4,10 @@ import Row from "react-bootstrap/esm/Row";
 import Container from "react-bootstrap/esm/Container";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../Components/Loading";
-import DeleteCollectionModal from "../Components/DeleteCollectionModal";
-import CollectionScroller from "../Components/CollectionScroller";
-import EditCollectionRecipes from "../Components/EditCollectionRecipes";
-import { Helmet } from "react-helmet";
+import DeleteCollectionModal from "../Components/Collections/DeleteCollectionModal";
+import CollectionScroller from "../Components/Collections/CollectionScroller";
+import EditCollectionRecipes from "../Components/Collections/EditCollectionRecipes";
+import { Helmet } from "react-helmet-async";
 
 export default function Collections() {
   const collections = useQuery({

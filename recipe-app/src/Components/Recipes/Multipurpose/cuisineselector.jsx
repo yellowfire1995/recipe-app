@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCuisines } from "../../db/queries";
+import { getCuisines } from "../../../../db/queries";
 import { Typeahead } from "react-bootstrap-typeahead";
 
 export default function CuisineSelector(props) {

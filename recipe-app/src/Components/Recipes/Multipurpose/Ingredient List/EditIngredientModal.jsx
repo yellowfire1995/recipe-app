@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import { savePrice } from "../../db/queries";
-import { ImportSelector } from "./importSelector";
-import { parseIngredients } from "../../db/queries";
-import Form from "react-bootstrap/Form";
 import { Container } from "@mui/material";
-import { NutritionFacts } from "./NutritionFacts";
+import { useEffect, useState } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
+import { parseIngredients } from "../../../../../db/queries";
+import { NutritionFacts } from "../NutritionFacts";
+import { ImportSelector } from "../../New Recipe/importSelector";
 
 export default function EditIngredientModal(props) {
   const origIdx = props.origIdx;

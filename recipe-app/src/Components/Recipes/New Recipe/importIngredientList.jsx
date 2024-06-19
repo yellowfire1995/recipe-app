@@ -1,8 +1,6 @@
+import InputGroup from "react-bootstrap/InputGroup";
 import ListGroup from "react-bootstrap/ListGroup";
 import Container from "react-bootstrap/esm/Container";
-import { useEffect, useState } from "react";
-import InputGroup from "react-bootstrap/InputGroup";
-import _ from "lodash";
 import { ImportSelector } from "./importSelector.jsx";
 
 export default function ImportIngredientsList(props) {

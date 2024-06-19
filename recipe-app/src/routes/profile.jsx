@@ -7,7 +7,7 @@ import httpClient from "../../db/axiosConfig";
 import Button from "react-bootstrap/esm/Button";
 import LogoutButton from "../utils/LogoutButton";
 import { server } from "../../env/env";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 export default function Profile() {
   async function handleClick() {

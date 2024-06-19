@@ -25,6 +25,7 @@ function Header() {
     "theme",
     defaultDark ? "dark" : "light"
   );
+
   const switchTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
@@ -58,7 +59,7 @@ function Header() {
                   type="checkbox"
                   id="theme-switcherPopout"
                   checked={theme === "dark" ? true : false}
-                  onClick={switchTheme}
+                  onChange={switchTheme}
                 />
               </Nav.Item>
               <Nav.Link href="/profile">Profile</Nav.Link>
@@ -139,6 +140,7 @@ function Header() {
                 <NavDropdown.Item
                   fluid
                   className="d-flex align-items-center justify-content-between nav-drop"
+                  onClick={switchTheme}
                 >
                   {" "}
                   <DarkModeIcon />
@@ -148,7 +150,6 @@ function Header() {
                     type="checkbox"
                     id="theme-switcher"
                     checked={theme === "dark" ? true : false}
-                    onClick={switchTheme}
                   />
                 </NavDropdown.Item>
 

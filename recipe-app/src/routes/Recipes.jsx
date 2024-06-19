@@ -1,25 +1,23 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-
-import ListGroup from "react-bootstrap/ListGroup";
-import CardImg from "react-bootstrap/esm/CardImg";
-import Container from "react-bootstrap/esm/Container";
-import Col from "react-bootstrap/esm/Col";
-import Row from "react-bootstrap/esm/Row";
-import Button from "react-bootstrap/Button";
-import Badge from "react-bootstrap/Badge";
-import Stack from "react-bootstrap/Stack";
-
-import { getRecipeById } from "../../db/queries";
-import { getNutritionInfo } from "../../db/queries";
-import AddPriceModal from "../Components/AddPriceModal.jsx";
 import { useQuery } from "@tanstack/react-query";
-import Loading from "../Components/Loading";
-import { NutritionFacts } from "../Components/NutritionFacts.jsx";
-import AddRecipeToCollectionModal from "../Components/AddRecipeToCollectionModal.jsx";
-import { Helmet } from "react-helmet";
+import { useState } from "react";
+import Badge from "react-bootstrap/Badge";
+import Button from "react-bootstrap/Button";
+import ListGroup from "react-bootstrap/ListGroup";
+import Stack from "react-bootstrap/Stack";
+import CardImg from "react-bootstrap/esm/CardImg";
+import Col from "react-bootstrap/esm/Col";
+import Container from "react-bootstrap/esm/Container";
+import Row from "react-bootstrap/esm/Row";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { getNutritionInfo, getRecipeById } from "../../db/queries";
+import AddPriceModal from "../Components/Recipes/Multipurpose/AddPriceModal.jsx";
+import AddRecipeToCollectionModal from "../Components/Collections/AddRecipeToCollectionModal.jsx";
 import ErrorHandler from "../Components/Errors/NotFound.jsx";
+import Loading from "../Components/Loading";
+import { NutritionFacts } from "../Components/Recipes/Multipurpose/NutritionFacts.jsx";
+import AddToMealPlannerButton from "../Components/Planner/AddToMealPlannerButton.jsx";
 
 export async function loader({ params }) {
   const activeRecipe = await getRecipeById(params.recipeId);
@@ -101,6 +99,7 @@ export default function Recipe() {
                   </Link>
                 ) : null}
                 <AddRecipeToCollectionModal params={params} />
+                <AddToMealPlannerButton params={params} />
               </h2>
             </Col>
             <Col className="text-end">

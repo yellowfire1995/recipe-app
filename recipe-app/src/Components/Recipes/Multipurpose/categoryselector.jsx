@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { getCategories as getCats } from "../../db/queries";
 import { Typeahead } from "react-bootstrap-typeahead";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
+import { getCategories as getCats } from "../../../../db/queries";
 
 export default function CategorySelector(props) {
   const [categories, setCategories] = useState([]);
