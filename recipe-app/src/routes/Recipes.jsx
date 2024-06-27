@@ -70,6 +70,7 @@ export default function Recipe() {
         );
   }
 
+  console.log(recipe);
   return (
     <>
       <Helmet>

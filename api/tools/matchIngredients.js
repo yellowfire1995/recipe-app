@@ -8,7 +8,14 @@ export async function matchIngredients(ingredients) {
   const ingredientArray = await Promise.all(
     ingredients.map(async (ingredient, idx) => {
       if (ingredient.isGroupHeader) {
-        return [{ ...ingredient, quantity: 0, nutrients: [] }];
+        return [
+          {
+            ...ingredient,
+            quantity: 0,
+            nutrients: [],
+            userLabel: ingredient.description,
+          },
+        ];
       } else {
         try {
           //Search on SOLR to find best match

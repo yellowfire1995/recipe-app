@@ -127,10 +127,7 @@ export default function AddRecipe() {
 
   return (
     <>
-      <Helmet>
-        <title>CookbookCalc | Add Recipe</title>
-      </Helmet>
-      <Container md fluid="lg" className="d-flex mt-4">
+      <Container md="true" fluid="lg" className="d-flex mt-4">
         <Container fluid>
           <Form
             onSubmit={(e) => {
@@ -253,7 +250,7 @@ export default function AddRecipe() {
                   inline
                   type="checkbox"
                   checked={updatedRecipe.public}
-                  onClick={(e) =>
+                  onChange={(e) =>
                     setUpdatedRecipe({
                       ...updatedRecipe,
                       public: true,
@@ -265,7 +262,7 @@ export default function AddRecipe() {
                   inline
                   type="checkbox"
                   checked={!updatedRecipe.public}
-                  onClick={(e) =>
+                  onChange={(e) =>
                     setUpdatedRecipe({
                       ...updatedRecipe,
                       public: false,

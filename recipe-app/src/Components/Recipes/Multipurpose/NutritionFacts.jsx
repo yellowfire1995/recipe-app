@@ -2,6 +2,18 @@ import { NutritionFactsHeader } from "./NutritionFactsHeader";
 
 export function NutritionFacts(props) {
   const recipe = props.recipe;
+  const recipeWithFilteredIngredients = {
+    ...recipe,
+    ingredients: recipe.ingredients
+      .map((ingredient, index) => {
+        if (!ingredient.isGroupHeader) {
+          return ingredient;
+        }
+      })
+      .filter((ingredient) => ingredient != undefined),
+  };
+
+  console.log(recipeWithFilteredIngredients);
 
   var nutrientsPerServing = {
     totalFat: 0,
@@ -39,19 +51,22 @@ export function NutritionFacts(props) {
     const nutrientId = nutrientLookup[nutrientName];
     try {
       return Math.round(
-        recipe.ingredients.reduce((total, ingredient) => {
-          return (
-            total +
-            ingredient.nutrients.reduce((sum, nutrient) => {
-              return (
-                sum +
-                (nutrient[nutrientId]
-                  ? (nutrient[nutrientId] / 100) * ingredient.quantity
-                  : 0)
-              );
-            }, 0)
-          );
-        }, 0) / recipe.servings
+        recipeWithFilteredIngredients.ingredients.reduce(
+          (total, ingredient) => {
+            return (
+              total +
+              ingredient.nutrients.reduce((sum, nutrient) => {
+                return (
+                  sum +
+                  (nutrient[nutrientId]
+                    ? (nutrient[nutrientId] / 100) * ingredient.quantity
+                    : 0)
+                );
+              }, 0)
+            );
+          },
+          0
+        ) / recipeWithFilteredIngredients.servings
       );
     } catch (error) {
       console.log(error);
@@ -67,7 +82,10 @@ export function NutritionFacts(props) {
     <>
       <section className="performance-facts">
         {props.header ? (
-          <NutritionFactsHeader recipe={recipe} servings={props.servings} />
+          <NutritionFactsHeader
+            recipe={recipeWithFilteredIngredients}
+            servings={props.servings}
+          />
         ) : (
           ""
         )}

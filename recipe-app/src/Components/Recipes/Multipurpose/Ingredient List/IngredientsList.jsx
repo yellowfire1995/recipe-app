@@ -7,6 +7,8 @@ import Container from "react-bootstrap/esm/Container";
 import { v4 as uuidv4 } from "uuid";
 import EditIngredientModal from "./EditIngredientModal.jsx";
 import AddPriceModal from "../AddPriceModal.jsx";
+import { useState } from "react";
+import DragHandle from "../../../../Icons/dragHandle.jsx";
 
 function deleteIngredient(updatedRecipe, e) {
   const buttonId = e.target.id ? e.target.id : e.target.viewportElement.id;
@@ -19,7 +21,6 @@ function deleteIngredient(updatedRecipe, e) {
 }
 
 function handleIngredientUpdate(updatedRecipe, e) {
-  console.log(updatedRecipe);
   return {
     ...updatedRecipe,
     ingredients: updatedRecipe.ingredients.map((ingredient) => {
@@ -37,9 +38,47 @@ function handleIngredientUpdate(updatedRecipe, e) {
   };
 }
 
+// function handleDrop(e, index) {
+//   const draggedOverIndex = index;
+//   const initialItemIndex = parseInt(e.dataTransfer.getData("text/plain"));
+//   console.log(draggedOverIndex - initialItemIndex);
+// }
+
 export default function IngredientsList(props) {
   const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
   const [ingredientList, setIngredientList] = props.ingredientList;
+  // const [activeDragOver, setActiveDragOver] = useState();
+  const [initialDragIndex, setInitialDragIndex] = useState();
+  const [draggedIngredient, setDraggedIngredient] = useState();
+
+  console.log(updatedRecipe.ingredients);
+
+  function handleDragOver(index) {
+    console.log(initialDragIndex);
+
+    if (index != initialDragIndex) {
+      const ingredientsListCopy = updatedRecipe.ingredients.filter(
+        (ingredient, index) => index != initialDragIndex
+      );
+
+      setInitialDragIndex(index);
+
+      const updateIngredients = ingredientsListCopy.splice(
+        parseInt(index),
+        0,
+        draggedIngredient
+      );
+      setUpdatedRecipe({
+        ...updatedRecipe,
+        ingredients: ingredientsListCopy,
+      });
+    }
+  }
+
+  function handleDragStart(index, ingredient) {
+    setInitialDragIndex(index);
+    setDraggedIngredient(ingredient);
+  }
 
   return (
     <Container>
@@ -49,14 +88,30 @@ export default function IngredientsList(props) {
           {updatedRecipe.ingredients.map((ingredient, index) => {
             if (ingredient.isGroupHeader) {
               return (
-                <h4 key={ingredient.id}>
+                <h4
+                  key={ingredient.id}
+                  id={ingredient.id}
+                  draggable
+                  onDragStart={() => handleDragStart(index, ingredient)}
+                  onDragEnter={() => handleDragOver(index, ingredient.id)}
+                  onDragEnd={() => setInitialDragIndex()}
+                >
                   {ingredient.description.toUpperCase()}
                 </h4>
               );
             } else {
               try {
                 return (
-                  <div className="form-check ps-1" key={ingredient.id}>
+                  <div
+                    className={`form-check ps-1 d-flex`}
+                    key={ingredient.id}
+                    id={ingredient.id}
+                    draggable
+                    onDragStart={() => handleDragStart(index, ingredient)}
+                    onDragEnter={() => handleDragOver(index, ingredient.id)}
+                    onDragEnd={() => setInitialDragIndex()}
+                  >
+                    <DragHandle />
                     <input
                       id={ingredient.description}
                       type="number"

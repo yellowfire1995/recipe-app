@@ -24,7 +24,7 @@ const S3 = new S3Client({
 
 export async function resizeAndUploadFileToS3(file) {
   const key = uuidv4();
-  const buffer = await resizeToThumbnail(file.buffer);
+  const buffer = await sharp(file.buffer).webp().resize(250).toBuffer();
   const params = {
     Bucket: bucketName,
     Key: key,

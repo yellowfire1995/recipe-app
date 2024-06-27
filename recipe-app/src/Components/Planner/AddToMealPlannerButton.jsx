@@ -2,14 +2,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { addToMeallPlan } from "../../../db/queries";
+import { changeMealDay } from "../../../db/queries";
 
 export default function AddToMealPlannerButton(props) {
   const recipeId = props.params.recipeId;
   const [show, setShow] = useState(false);
   const addToPlanner = useMutation({
     mutationFn: () =>
-      addToMeallPlan(recipeId, document.getElementById("date").value),
+      changeMealDay(recipeId, document.getElementById("date").value),
     onSuccess: () => setTimeout(handleClose, 1000),
   });
 

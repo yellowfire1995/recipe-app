@@ -3,6 +3,7 @@ import Button from "react-bootstrap/esm/Button";
 import { Link } from "react-router-dom";
 import { deleteFromMealPlan } from "../../../db/queries";
 import { queryClient } from "../../main";
+import ChangeMealDay from "./ChangePlannerDateButton";
 
 export default function PlannerDayList(props) {
   const options = {
@@ -46,13 +47,17 @@ export default function PlannerDayList(props) {
       {dailyMeals.length > 0
         ? dailyMeals[0].recipes.map((recipe) => {
             return (
-              <p key={recipe.planId}>
+              <div key={recipe.planId}>
                 <Link to={`/recipes/${recipe.recipe_id}`}>{recipe.name}</Link>
                 <Button size="sm" onClick={() => deleter.mutate(recipe.planId)}>
                   Delete
                 </Button>
-                <Button size="sm">Change Day</Button>
-              </p>
+                <ChangeMealDay
+                  planId={recipe.planId}
+                  date={date}
+                  dateObject={props.date}
+                />
+              </div>
             );
           })
         : null}

@@ -15,7 +15,7 @@ const upload = multer({ storage: storage });
 router.post("/", getUserId, upload.single("photo"), async (req, res) => {
   try {
     console.log(req.user);
-    const recipe = JSON.parse(req.body.updatedRecipe);
+    let recipe = JSON.parse(req.body.updatedRecipe);
     var key = null;
     var thumbnailKey = null;
 
@@ -26,7 +26,14 @@ router.post("/", getUserId, upload.single("photo"), async (req, res) => {
       [key, thumbnailKey] = uploadDualSizesUrlToS3(recipe.imgUrl);
     }
 
-    console.log(recipe.ingredients);
+    if (recipe.ingredients) {
+      recipe = {
+        ...recipe,
+        ingredients: recipe.ingredients.map((ingredient, index) => {
+          return { ...ingredient, order: index };
+        }),
+      };
+    }
     const query = {
       text: `WITH r AS
         (
@@ -46,8 +53,8 @@ router.post("/", getUserId, upload.single("photo"), async (req, res) => {
         ),
         i AS
         (
-        insert into ingredients (recipe_id,  amt, fdc_id, sr_id,  alt_g_conv, alt_label, user_ingredient_name)
-        SELECT (SELECT recipe_id FROM r),(t ->> 'quantity')::real,(t ->> 'fdc_id')::int, (t ->> 'sr_id')::int,(t ->> 'userG')::float, (t ->> 'userLabel'), (t ->> 'description')
+        insert into ingredients (recipe_id,  amt, fdc_id, sr_id,  alt_g_conv, alt_label, user_ingredient_name, "order", header)
+        SELECT (SELECT recipe_id FROM r),(t ->> 'quantity')::real,(t ->> 'fdc_id')::int, (t ->> 'sr_id')::int,(t ->> 'userG')::float, (t ->> 'userLabel'), (t ->> 'description'), (t ->> 'order')::int,(t ->> 'isGroupHeader')::bool
         from json_array_elements($7::json) t
         ),
         cat as (

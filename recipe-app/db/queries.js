@@ -218,6 +218,20 @@ export async function deleteFromMealPlan(planId) {
   }
 }
 
+export async function changeMealDay(planId, date) {
+  try {
+    const mealPlanRecipes = await httpClient.post(`${server}/planner/edit`, {
+      date: date,
+      planId: planId,
+    });
+
+    return mealPlanRecipes.data;
+  } catch (error) {
+    console.log("ERROR!");
+    return Promise.reject(401);
+  }
+}
+
 //Get recipes by collection
 export async function getCollectionRecipes() {
   try {

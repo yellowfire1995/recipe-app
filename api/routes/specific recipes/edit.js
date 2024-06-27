@@ -48,9 +48,20 @@ export async function checkAuth(req, res, next) {
 
 router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
   try {
-    const recipe = JSON.parse(req.body.updatedRecipe);
+    let recipe = JSON.parse(req.body.updatedRecipe);
     let key = recipe.imgName;
     let thumbnailKey;
+
+    if (recipe.ingredients) {
+      recipe = {
+        ...recipe,
+        ingredients: recipe.ingredients.map((ingredient, index) => {
+          return { ...ingredient, order: index };
+        }),
+      };
+    }
+
+    console.log(recipe.ingredients);
 
     if (req.file) {
       key = await uploadFileToS3(req.file);
@@ -87,8 +98,8 @@ router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
   WHERE recipe_id = (SELECT recipe_id FROM r)
       ),	i AS
       (
-      insert into ingredients (recipe_id,  amt, fdc_id, sr_id,  alt_g_conv, alt_label)
-      SELECT (SELECT recipe_id FROM r),(t ->> 'quantity')::real,(t ->> 'fdc_id')::int, (t ->> 'sr_id')::int,(t ->> 'userG')::float, (t ->> 'userLabel')
+      insert into ingredients (recipe_id,  amt, fdc_id, sr_id,  alt_g_conv, alt_label, "order", header, user_ingredient_name)
+      SELECT (SELECT recipe_id FROM r),(t ->> 'quantity')::real,(t ->> 'fdc_id')::int, (t ->> 'sr_id')::int,(t ->> 'userG')::float, (t ->> 'userLabel'), (t ->> 'order')::int,(t ->> 'isGroupHeader')::bool, (t ->> 'description')
       from json_array_elements($7::json) t 
       ), cusdel AS 
       (

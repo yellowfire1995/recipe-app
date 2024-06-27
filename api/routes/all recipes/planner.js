@@ -107,11 +107,20 @@ router.delete("/delete/:plannerId", checkJwt, async (req, res) => {
 //   }
 // });
 
-// router.post("/edit", checkJwt, async (req, res) => {
-//   try {
-//   } catch (error) {
-//     console.log(error);
-//   }
-// });
+router.post("/edit", checkJwt, async (req, res) => {
+  try {
+    const query = {
+      text: ` update planner
+      set date = $2
+      where id = $1 and "user" = $3`,
+      values: [req.body.planId, req.body.date, req.auth.payload.sub],
+    };
+    const editor = await db.query(query);
+    console.log(req.body.date);
+    res.send(editor);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 export default router;

@@ -118,7 +118,7 @@ body {
 }
 
 .btn{
-  border-radius: 0%;
+  border-radius: 5px;
 }
 
 
@@ -264,3 +264,9 @@ input[type=number] {
 .scrollable{
   scroll-snap-align: center ;
 }
+
+.draggedOver{
+  border-bottom: 2px solid;
+ 
+}
+

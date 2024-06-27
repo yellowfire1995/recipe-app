@@ -71,7 +71,7 @@ export default function Edit() {
         <Helmet>
           <title>Edit {updatedRecipe.name}</title>
         </Helmet>
-        <Container md fluid="lg" className="d-flex mt-4">
+        <Container fluid="lg" className="d-flex mt-4">
           <Container fluid>
             <Form
               onSubmit={(e) => {

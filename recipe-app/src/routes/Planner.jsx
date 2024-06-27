@@ -6,7 +6,8 @@ import Button from "react-bootstrap/esm/Button";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getMealPlan } from "../../db/queries";
-import PlannerDayList from "../Components/Planner/PlannerScroller";
+import PlannerDayList from "../Components/Planner/PlannerList.jsx";
+import Loading from "../Components/Loading.jsx";
 
 export default function Planner() {
   const oneDay = 1000 * 60 * 60 * 24;
@@ -59,17 +60,17 @@ export default function Planner() {
         </Row>
         <Row>
           <Col className="justify-content-center">
-            {dateArray.map((date) => {
-              return (
-                <div key={date}>
-                  {mealPlan.isLoading ? (
-                    ""
-                  ) : (
+            {mealPlan.isLoading ? (
+              <Loading />
+            ) : (
+              dateArray.map((date) => {
+                return (
+                  <div key={date}>
                     <PlannerDayList date={date} mealPlan={mealPlan} />
-                  )}
-                </div>
-              );
-            })}
+                  </div>
+                );
+              })
+            )}
           </Col>
         </Row>
       </Container>
