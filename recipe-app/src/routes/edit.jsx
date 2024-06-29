@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Container from "react-bootstrap/esm/Container";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { getRecipeById } from "../../db/queries";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
@@ -20,6 +20,10 @@ import AddPhotoModal from "../Components/Recipes/Edit Recipe/AddPhotoModal";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import { NutritionFacts } from "../Components/Recipes/Multipurpose/NutritionFacts.jsx";
 import { Helmet } from "react-helmet";
+import { HeaderItem } from "../Components/Recipes/Multipurpose/Ingredient List/HeaderItem.jsx";
+import { IngredientItem } from "../Components/Recipes/Multipurpose/Ingredient List/IngredientItem.jsx";
+
+export const RecipeContext = createContext();
 
 export default function Edit() {
   const params = useParams();
@@ -31,6 +35,7 @@ export default function Edit() {
   const recipeFetch = useQuery({
     queryKey: [`Recipe${params.recipeId}`],
     queryFn: () => getRecipeById(params.recipeId),
+    staleTime: 120000,
   });
 
   useEffect(() => {
@@ -72,7 +77,7 @@ export default function Edit() {
           <title>Edit {updatedRecipe.name}</title>
         </Helmet>
         <Container fluid="lg" className="d-flex mt-4">
-          <Container fluid>
+          <Container>
             <Form
               onSubmit={(e) => {
                 editor.mutate(e);
@@ -197,7 +202,7 @@ export default function Edit() {
                     inline
                     type="checkbox"
                     checked={updatedRecipe.public}
-                    onClick={() =>
+                    onChange={() =>
                       setUpdatedRecipe({
                         ...updatedRecipe,
                         public: true,
@@ -209,7 +214,7 @@ export default function Edit() {
                     inline
                     type="checkbox"
                     checked={!updatedRecipe.public}
-                    onClick={() =>
+                    onChange={() =>
                       setUpdatedRecipe({
                         ...updatedRecipe,
                         public: false,
@@ -225,8 +230,10 @@ export default function Edit() {
                     <Col>
                       {updatedRecipe.ingredients.length > 0 ? (
                         <IngredientsList
-                          updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
-                          ingredientList={[ingredientList, setIngredientList]}
+                          updatedRecipe={updatedRecipe}
+                          setUpdatedRecipe={setUpdatedRecipe}
+                          ingredientList={ingredientList}
+                          setIngredientList={setIngredientList}
                         />
                       ) : null}
 
@@ -252,7 +259,10 @@ export default function Edit() {
               </Row>
               <Row className="justify-content-center">
                 <Col lg={6}>
-                  <NutritionFacts recipe={updatedRecipe} header={false} />
+                  <NutritionFacts
+                    header={false}
+                    updatedRecipe={updatedRecipe}
+                  />
                 </Col>
               </Row>
             </Form>

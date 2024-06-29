@@ -14,6 +14,7 @@ export async function matchIngredients(ingredients) {
             quantity: 0,
             nutrients: [],
             userLabel: ingredient.description,
+            id: uuidv4(),
           },
         ];
       } else {

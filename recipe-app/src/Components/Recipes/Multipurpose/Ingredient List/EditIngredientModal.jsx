@@ -17,7 +17,6 @@ export default function EditIngredientModal(props) {
   const [show, setShow] = useState(false);
   const [searchList, setSearchList] = useState([]);
 
-  console.log(ingredient);
   const handleClose = () => {
     setShow(false);
     setIngredient(props.ingredient);

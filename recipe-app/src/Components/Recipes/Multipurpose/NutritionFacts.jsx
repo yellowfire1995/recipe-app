@@ -1,19 +1,18 @@
+import { useContext } from "react";
 import { NutritionFactsHeader } from "./NutritionFactsHeader";
+import { RecipeContext } from "../../../routes/edit";
 
-export function NutritionFacts(props) {
-  const recipe = props.recipe;
+export function NutritionFacts({ updatedRecipe: recipe, header }) {
   const recipeWithFilteredIngredients = {
     ...recipe,
     ingredients: recipe.ingredients
-      .map((ingredient, index) => {
+      .map((ingredient) => {
         if (!ingredient.isGroupHeader) {
           return ingredient;
         }
       })
       .filter((ingredient) => ingredient != undefined),
   };
-
-  console.log(recipeWithFilteredIngredients);
 
   var nutrientsPerServing = {
     totalFat: 0,
@@ -81,7 +80,7 @@ export function NutritionFacts(props) {
   return (
     <>
       <section className="performance-facts">
-        {props.header ? (
+        {header ? (
           <NutritionFactsHeader
             recipe={recipeWithFilteredIngredients}
             servings={props.servings}

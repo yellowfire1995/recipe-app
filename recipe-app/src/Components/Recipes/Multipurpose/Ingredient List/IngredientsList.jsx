@@ -5,10 +5,13 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/esm/Button.js";
 import Container from "react-bootstrap/esm/Container";
 import { v4 as uuidv4 } from "uuid";
-import EditIngredientModal from "./EditIngredientModal.jsx";
-import AddPriceModal from "../AddPriceModal.jsx";
-import { useState } from "react";
+
+import { createContext, useContext, useState } from "react";
 import DragHandle from "../../../../Icons/dragHandle.jsx";
+import EditIcon from "@mui/icons-material/Edit";
+import { HeaderItem } from "./HeaderItem.jsx";
+import { RecipeContext } from "../../../../routes/edit.jsx";
+import { IngredientItem } from "./IngredientItem.jsx";
 
 function deleteIngredient(updatedRecipe, e) {
   const buttonId = e.target.id ? e.target.id : e.target.viewportElement.id;
@@ -38,24 +41,16 @@ function handleIngredientUpdate(updatedRecipe, e) {
   };
 }
 
-// function handleDrop(e, index) {
-//   const draggedOverIndex = index;
-//   const initialItemIndex = parseInt(e.dataTransfer.getData("text/plain"));
-//   console.log(draggedOverIndex - initialItemIndex);
-// }
-
-export default function IngredientsList(props) {
-  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
-  const [ingredientList, setIngredientList] = props.ingredientList;
-  // const [activeDragOver, setActiveDragOver] = useState();
+export default function IngredientsList({
+  updatedRecipe,
+  setUpdatedRecipe,
+  ingredientList,
+  setIngredientList,
+}) {
   const [initialDragIndex, setInitialDragIndex] = useState();
   const [draggedIngredient, setDraggedIngredient] = useState();
 
-  console.log(updatedRecipe.ingredients);
-
   function handleDragOver(index) {
-    console.log(initialDragIndex);
-
     if (index != initialDragIndex) {
       const ingredientsListCopy = updatedRecipe.ingredients.filter(
         (ingredient, index) => index != initialDragIndex
@@ -63,11 +58,8 @@ export default function IngredientsList(props) {
 
       setInitialDragIndex(index);
 
-      const updateIngredients = ingredientsListCopy.splice(
-        parseInt(index),
-        0,
-        draggedIngredient
-      );
+      ingredientsListCopy.splice(parseInt(index), 0, draggedIngredient);
+
       setUpdatedRecipe({
         ...updatedRecipe,
         ingredients: ingredientsListCopy,
@@ -80,139 +72,99 @@ export default function IngredientsList(props) {
     setDraggedIngredient(ingredient);
   }
 
+  function handleDragStop() {
+    console.log(initialDragIndex);
+    setInitialDragIndex();
+  }
+
   return (
     <Container>
       <ListGroup>
         <span className="h3"> Ingredients </span>
-        <InputGroup name="ingredients" className="d-flex flex-column ">
+        <InputGroup name="ingredients" className="d-flex flex-column">
           {updatedRecipe.ingredients.map((ingredient, index) => {
             if (ingredient.isGroupHeader) {
               return (
-                <h4
-                  key={ingredient.id}
-                  id={ingredient.id}
-                  draggable
-                  onDragStart={() => handleDragStart(index, ingredient)}
-                  onDragEnter={() => handleDragOver(index, ingredient.id)}
-                  onDragEnd={() => setInitialDragIndex()}
-                >
-                  {ingredient.description.toUpperCase()}
-                </h4>
+                <>
+                  <HeaderItem
+                    ingredient={ingredient}
+                    index={index}
+                    handleDragStop={handleDragStop}
+                    handleDragStart={handleDragStart}
+                    handleDragOver={handleDragOver}
+                    updatedRecipe={updatedRecipe}
+                    setUpdatedRecipe={setUpdatedRecipe}
+                    initialDragIndex={initialDragIndex}
+                    setInitialDragIndex={setInitialDragIndex}
+                    deleteIngredient={deleteIngredient}
+                  />
+                </>
               );
             } else {
-              try {
-                return (
-                  <div
-                    className={`form-check ps-1 d-flex`}
-                    key={ingredient.id}
-                    id={ingredient.id}
-                    draggable
-                    onDragStart={() => handleDragStart(index, ingredient)}
-                    onDragEnter={() => handleDragOver(index, ingredient.id)}
-                    onDragEnd={() => setInitialDragIndex()}
-                  >
-                    <DragHandle />
-                    <input
-                      id={ingredient.description}
-                      type="number"
-                      min="0"
-                      step=".01"
-                      className="form-check-label"
-                      htmlFor={ingredient.description}
-                      style={{ width: "3rem" }}
-                      name={ingredient.description}
-                      value={
-                        ingredient.userG
-                          ? Math.round(
-                              ingredient.userG * ingredient.quantity * 100
-                            ) / 100
-                          : ingredient.gramConversion
-                          ? Math.round(
-                              ingredient.quantity *
-                                ingredient.gramConversion *
-                                100
-                            ) / 100
-                          : ingredient.quantity
-                      }
-                      onChange={(e) => {
-                        setUpdatedRecipe(
-                          handleIngredientUpdate(updatedRecipe, e)
-                        );
-                      }}
-                    />
-                    {ingredient.userLabel
-                      ? ingredient.userLabel
-                      : ingredient.gramConversion
-                      ? ingredient.engLabel || ingredient.matchedMeasure
-                      : "g"}{" "}
-                    {ingredient.description}{" "}
-                    {`(${
-                      ingredient.gramConversion || ingredient.userG
-                        ? parseInt(ingredient.quantity) + "g"
-                        : ""
-                    } )`}
-                    <AddPriceModal ingredient={ingredient} />
-                    <EditIngredientModal
-                      ingredient={ingredient}
-                      updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
-                      color={
-                        ingredient.gramConversion || ingredient.userG
-                          ? "black"
-                          : "red"
-                      }
-                      ingredientList={[ingredientList, setIngredientList]}
-                      origIdx={index}
-                    />
-                    <DeleteIcon
-                      id={ingredient.id}
-                      aria-label="delete"
-                      children={ingredient.id}
-                      type="button"
-                      onClick={(e) => {
-                        setUpdatedRecipe(deleteIngredient(updatedRecipe, e));
-                        setIngredientList(
-                          ingredientList.filter((ingredient, i) => i !== index)
-                        );
-                      }}
-                      className="pt-0 mb-0 svg-icon"
-                    />
-                    <span style={{ color: "red" }}>
-                      {" "}
-                      {ingredient.fdc_id
-                        ? null
-                        : `Ingredient needs information - please edit`}
-                      {ingredient.nutrients.length > 0
-                        ? ""
-                        : "Warning! No nutrition information"}
-                    </span>
-                  </div>
-                );
-              } catch (error) {
-                return <div>Error importing ingredient</div>;
-              }
+              return (
+                <>
+                  <IngredientItem
+                    ingredient={ingredient}
+                    index={index}
+                    handleDragStop={handleDragStop}
+                    handleDragOver={handleDragOver}
+                    handleDragStart={handleDragStart}
+                    updatedRecipe={updatedRecipe}
+                    setUpdatedRecipe={setUpdatedRecipe}
+                    initialDragIndex={initialDragIndex}
+                    setInitialDragIndex={setInitialDragIndex}
+                    deleteIngredient={deleteIngredient}
+                    ingredientList={ingredientList}
+                    setIngredientList={setIngredientList}
+                  />
+                </>
+              );
             }
           })}
         </InputGroup>
       </ListGroup>
-      <Button
-        type="button"
-        className="w-100"
-        onClick={() => {
-          setUpdatedRecipe({
-            ...updatedRecipe,
-            ingredients: [
-              ...updatedRecipe.ingredients,
-              {
-                description: "New Ingredient",
-                id: uuidv4(),
-                nutrients: [],
-              },
-            ],
-          });
-        }}
-      >
-        Add ingredient
-      </Button>
+      <div className="d-flex justify-content-evenly">
+        {" "}
+        <Button
+          type="button"
+          className=""
+          onClick={() => {
+            setUpdatedRecipe({
+              ...updatedRecipe,
+              ingredients: [
+                ...updatedRecipe.ingredients,
+                {
+                  description: "New Ingredient",
+                  id: uuidv4(),
+                  nutrients: [],
+                },
+              ],
+            });
+          }}
+        >
+          Add ingredient
+        </Button>
+        <Button
+          type="button"
+          className=""
+          onClick={() => {
+            setUpdatedRecipe({
+              ...updatedRecipe,
+              ingredients: [
+                ...updatedRecipe.ingredients,
+                {
+                  description: "New Header",
+                  id: uuidv4(),
+                  nutrients: [],
+                  isGroupHeader: true,
+                },
+              ],
+            });
+          }}
+        >
+          Add header
+        </Button>
+      </div>
     </Container>
   );
 }

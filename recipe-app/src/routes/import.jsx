@@ -76,9 +76,8 @@ export default function AddRecipe() {
   });
 
   async function handleImport(scrapedData) {
-    console.log(scrapedData);
     const ingredientString = scrapedData.recipeIngredient.join("\r\n");
-    console.log(ingredientString);
+
     const directionString =
       typeof scrapedData.recipeInstructions == "string"
         ? scrapedData.recipeInstructions
@@ -96,7 +95,6 @@ export default function AddRecipe() {
     if (scrapedData.recipeYield.length > 0) {
       try {
         servings = parseInt(scrapedData.recipeYield[0]);
-        console.log(servings);
       } catch (error) {
         servings = 1;
       }

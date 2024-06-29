@@ -235,6 +235,7 @@ input[type=number] {
 
 .svg-icon{
   color:#222222;
+  z-index: 1;
 }
 
 .svg-icon:hover{
@@ -265,8 +266,24 @@ input[type=number] {
   scroll-snap-align: center ;
 }
 
-.draggedOver{
-  border-bottom: 2px solid;
- 
+
+.photo-add img {
+  border-radius: 5px;
 }
+
+.ingredientItem{
+  padding: 3px;
+  margin:2px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border:1px dashed rgb(41, 40, 40, .5);
+  height:3rem;
+  transition:.5s;
+   }
+
+
+.draggedItem{
+ background-color: rgb(41, 40, 40, .1);
+ cursor: move;
+ transform: scale(1.05);
+ }
 

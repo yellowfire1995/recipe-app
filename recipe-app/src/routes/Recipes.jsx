@@ -33,6 +33,7 @@ export default function Recipe() {
     queryKey: [`Recipe${params.recipeId}`],
     queryFn: () => getRecipeById(params.recipeId),
     retry: 1,
+    staleTime: 120000,
   });
 
   let recipe = [];
