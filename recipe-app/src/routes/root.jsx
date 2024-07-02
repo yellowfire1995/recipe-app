@@ -4,7 +4,7 @@ import Header from "../Components/Header.jsx";
 import { addAccessTokenInterceptor } from "../../db/axiosConfig.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-export async function action({ params, request }) {
+export async function action() {
   return redirect(`/`);
 }
 

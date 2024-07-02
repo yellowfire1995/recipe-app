@@ -1,94 +1,84 @@
-import { useContext } from "react";
-import { NutritionFactsHeader } from "./NutritionFactsHeader";
-import { RecipeContext } from "../../../routes/edit";
+import { useNutritionFactsContext } from "./NutritionFactsContext";
 
-export function NutritionFacts({ updatedRecipe: recipe, header }) {
-  const recipeWithFilteredIngredients = {
-    ...recipe,
-    ingredients: recipe.ingredients
-      .map((ingredient) => {
-        if (!ingredient.isGroupHeader) {
-          return ingredient;
-        }
-      })
-      .filter((ingredient) => ingredient != undefined),
-  };
+var nutrientsPerServing = {
+  totalFat: 0,
+  vitaminD: 0,
+  protein: 0,
+  carbs: 0,
+  calories: 0,
+  fiber: 0,
+  calcium: 0,
+  iron: 0,
+  sodium: 0,
+  vitaminC: 0,
+  cholesterol: 0,
+  saturatedFat: 0,
+  sugar: 0,
+};
 
-  var nutrientsPerServing = {
-    totalFat: 0,
-    vitaminD: 0,
-    protein: 0,
-    carbs: 0,
-    calories: 0,
-    fiber: 0,
-    calcium: 0,
-    iron: 0,
-    sodium: 0,
-    vitaminC: 0,
-    cholesterol: 0,
-    saturatedFat: 0,
-    sugar: 0,
-  };
+const nutrientLookup = {
+  totalFat: 1004,
+  vitaminD: 1110,
+  protein: 1003,
+  carbs: 1005,
+  calories: 1008,
+  fiber: 1079,
+  calcium: 1087,
+  iron: 1089,
+  sodium: 1093,
+  vitaminC: 1162,
+  cholesterol: 1253,
+  saturatedFat: 1258,
+  sugar: 2000,
+};
 
-  const nutrientLookup = {
-    totalFat: 1004,
-    vitaminD: 1110,
-    protein: 1003,
-    carbs: 1005,
-    calories: 1008,
-    fiber: 1079,
-    calcium: 1087,
-    iron: 1089,
-    sodium: 1093,
-    vitaminC: 1162,
-    cholesterol: 1253,
-    saturatedFat: 1258,
-    sugar: 2000,
-  };
-
-  function calculateNutrient(nutrientName) {
-    const nutrientId = nutrientLookup[nutrientName];
-    try {
-      return Math.round(
-        recipeWithFilteredIngredients.ingredients.reduce(
-          (total, ingredient) => {
+function calculateNutrient(nutrientName, recipeWithFilteredIngredients) {
+  const nutrientId = nutrientLookup[nutrientName];
+  try {
+    return Math.round(
+      recipeWithFilteredIngredients.ingredients.reduce((total, ingredient) => {
+        return (
+          total +
+          ingredient.nutrients.reduce((sum, nutrient) => {
             return (
-              total +
-              ingredient.nutrients.reduce((sum, nutrient) => {
-                return (
-                  sum +
-                  (nutrient[nutrientId]
-                    ? (nutrient[nutrientId] / 100) * ingredient.quantity
-                    : 0)
-                );
-              }, 0)
+              sum +
+              (nutrient[nutrientId]
+                ? (nutrient[nutrientId] / 100) * ingredient.quantity
+                : 0)
             );
-          },
-          0
-        ) / recipeWithFilteredIngredients.servings
-      );
-    } catch (error) {
-      console.log(error);
-      return 0;
-    }
+          }, 0)
+        );
+      }, 0) / recipeWithFilteredIngredients.servings
+    );
+  } catch (error) {
+    console.log(error);
+    return 0;
   }
+}
 
-  Object.keys(nutrientsPerServing).forEach((nutrientName) => {
-    nutrientsPerServing[nutrientName] = calculateNutrient(nutrientName);
-  });
+export function NutritionFactsTable() {
+  const { recipe } = useNutritionFactsContext();
+  try {
+    const recipeWithFilteredIngredients = {
+      ...recipe,
+      ingredients: recipe.ingredients
+        .map((ingredient) => {
+          if (!ingredient.isGroupHeader) {
+            return ingredient;
+          }
+        })
+        .filter((ingredient) => ingredient != undefined),
+    };
 
-  return (
-    <>
-      <section className="performance-facts">
-        {header ? (
-          <NutritionFactsHeader
-            recipe={recipeWithFilteredIngredients}
-            servings={props.servings}
-          />
-        ) : (
-          ""
-        )}
+    Object.keys(nutrientsPerServing).forEach((nutrientName) => {
+      nutrientsPerServing[nutrientName] = calculateNutrient(
+        nutrientName,
+        recipeWithFilteredIngredients
+      );
+    });
 
+    return (
+      <>
         <table className="performance-facts__table">
           <thead>
             <tr>
@@ -258,7 +248,10 @@ export function NutritionFacts({ updatedRecipe: recipe, header }) {
         <p className="small-info text-center">
           Fat 9 • Carbohydrate 4 • Protein 4
         </p>
-      </section>
-    </>
-  );
+      </>
+    );
+  } catch (error) {
+    console.log(error);
+    return <div>Error loading nutrition.</div>;
+  }
 }

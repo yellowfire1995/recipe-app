@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import Button from "react-bootstrap/Button";
@@ -8,25 +8,44 @@ import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
-import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import httpClient from "../../db/axiosConfig";
-import { newRecipe, parseDirections, parseIngredients } from "../../db/queries";
+import {
+  getRecipeById,
+  newRecipe,
+  parseDirections,
+  parseIngredients,
+} from "../../db/queries";
 import { auth0Audience } from "../../env/env";
 import ImportRecipeModal from "../Components/Recipes/New Recipe/ImportRecipeModal";
 import AddPhotoModal from "../Components/Recipes/Edit Recipe/AddPhotoModal";
 import IngredientsList from "../Components/Recipes/Multipurpose/Ingredient List/IngredientsList";
-import { NutritionFacts } from "../Components/Recipes/Multipurpose/NutritionFacts";
+import { NutritionFactsTable } from "../Components/Recipes/NutritionFacts/NutritionFactsTable";
 import CategorySelector from "../Components/Recipes/Multipurpose/categoryselector";
 import CuisineSelector from "../Components/Recipes/Multipurpose/cuisineselector";
 import DirectionsList from "../Components/Recipes/Multipurpose/directionslist";
 import { queryClient } from "../main";
 
 export default function AddRecipe() {
+  const [params, setParams] = useSearchParams();
   const { user } = useAuth0();
   const { getAccessTokenSilently } = useAuth0();
   const [userData, setUserData] = useState();
   const navigate = useNavigate();
+
+  console.log(params.get("copy"));
+  const recipeFetch = useQuery({
+    queryKey: [`RecipeCopy${params.get("copy")}`],
+    queryFn: () => getRecipeById(params.get("copy")),
+    staleTime: Infinity,
+    enabled: params.get("copy") != undefined,
+  });
+
+  useEffect(() => {
+    if (recipeFetch.status === "success") {
+      setUpdatedRecipe(recipeFetch.data[0]);
+    }
+  }, [recipeFetch.status, recipeFetch.data]);
 
   useEffect(() => {
     (async () => {
@@ -59,7 +78,7 @@ export default function AddRecipe() {
     mutationFn: () => {
       return newRecipe(updatedRecipe, userData);
     },
-    onError: (e) => {
+    onError: () => {
       alert("Please try again!");
     },
     onSuccess: (data) => {
@@ -248,7 +267,7 @@ export default function AddRecipe() {
                   inline
                   type="checkbox"
                   checked={updatedRecipe.public}
-                  onChange={(e) =>
+                  onChange={() =>
                     setUpdatedRecipe({
                       ...updatedRecipe,
                       public: true,
@@ -260,7 +279,7 @@ export default function AddRecipe() {
                   inline
                   type="checkbox"
                   checked={!updatedRecipe.public}
-                  onChange={(e) =>
+                  onChange={() =>
                     setUpdatedRecipe({
                       ...updatedRecipe,
                       public: false,
@@ -308,8 +327,10 @@ export default function AddRecipe() {
                   <Col>
                     {updatedRecipe.ingredients.length > 0 ? (
                       <IngredientsList
-                        updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
-                        ingredientList={[ingredientList, setIngredientList]}
+                        updatedRecipe={updatedRecipe}
+                        setUpdatedRecipe={setUpdatedRecipe}
+                        ingredientList={ingredientList}
+                        setIngredientList={setIngredientList}
                       />
                     ) : null}
                   </Col>
@@ -373,7 +394,10 @@ export default function AddRecipe() {
             </Row>
             <Row className="justify-content-center">
               <Col lg={6}>
-                <NutritionFacts recipe={updatedRecipe} header={false} />
+                <NutritionFactsTable
+                  header={false}
+                  updatedRecipe={updatedRecipe}
+                />
               </Col>
             </Row>
           </Form>

@@ -45,7 +45,8 @@ export async function editRecipe(e, updatedRecipe) {
     }
 
     formData.append("updatedRecipe", JSON.stringify(updatedRecipe));
-    const response = await httpClient.post(`${server}/edit`, formData);
+    const { data } = await httpClient.post(`${server}/edit`, formData);
+    return data;
   } catch (err) {
     console.error(1, err);
   }
@@ -72,12 +73,13 @@ export async function newRecipe(updatedRecipe) {
 //Save price info from popup modal on recipe page
 export async function savePrice(pkgGrms, pkgCost, url, fdc_id) {
   try {
-    const result = await httpClient.post(`${server}/ingredients/price`, {
+    const { data } = await httpClient.post(`${server}/ingredients/price`, {
       pkgGrms: pkgGrms,
       pkgCost: pkgCost,
       url: url,
       fdc_id: fdc_id,
     });
+    return data;
   } catch (error) {
     console.log(error);
   }
@@ -262,10 +264,11 @@ export async function getCollectionNames() {
 export async function addRecipeToCollection(recipeId, collection) {
   try {
     console.log(recipeId);
-    const collectionRecipes = await httpClient.post(
+    const { data } = await httpClient.post(
       `${server}/collections/add/recipe/${recipeId}`,
       { collection: collection }
     );
+    return data;
   } catch (error) {
     console.log("ERROR!");
     return Promise.reject(401);

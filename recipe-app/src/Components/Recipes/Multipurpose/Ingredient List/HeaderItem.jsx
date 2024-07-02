@@ -1,8 +1,6 @@
-import { useContext } from "react";
-import { RecipeContext } from "../../../../routes/edit";
 import DragHandle from "../../../../Icons/dragHandle.jsx";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditHeaderModal from "./EditHeaderModal.jsx";
 
 export function HeaderItem({
   ingredient,
@@ -10,12 +8,12 @@ export function HeaderItem({
   handleDragStart,
   handleDragOver,
   handleDragStop,
+  handleDragEnd,
   initialDragIndex,
   setInitialDragIndex,
   deleteIngredient,
   updatedRecipe,
   setUpdatedRecipe,
-  ...props
 }) {
   return (
     <div
@@ -26,18 +24,23 @@ export function HeaderItem({
       }
       style={{ borderRadius: "20px" }}
       draggable
-      onDragStart={() => handleDragStart(index, ingredient)}
+      onDragStart={() => {
+        handleDragStart(index, ingredient);
+      }}
       onDragEnter={() => {
         handleDragOver(index);
+        console.log("header drag entered");
       }}
       onDragOver={(e) => {
+        console.log("header dragged over");
         e.preventDefault();
       }}
       onDrop={() => {
+        console.log("header dropped");
         handleDragStop();
       }}
       onDragEnd={() => {
-        setInitialDragIndex();
+        handleDragEnd();
       }}
     >
       <div className="align-items-center d-flex">
@@ -50,14 +53,18 @@ export function HeaderItem({
       <DeleteIcon
         id={ingredient.id}
         aria-label="delete"
-        children={ingredient.id}
         type="button"
         onClick={(e) => {
           setUpdatedRecipe(deleteIngredient(updatedRecipe, e));
         }}
         className="pt-0 mb-0 svg-icon"
       />
-      <EditIcon className="svg-icon" />
+      <EditHeaderModal
+        ingredient={ingredient}
+        updatedRecipe={updatedRecipe}
+        setUpdatedRecipe={setUpdatedRecipe}
+        origIdx={index}
+      />
     </div>
   );
 }

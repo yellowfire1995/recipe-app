@@ -1,6 +1,7 @@
-export function NutritionFactsHeader(props) {
-  const recipe = props.recipe;
-  const [servings, setServings] = props.servings;
+import { useNutritionFactsContext } from "./NutritionFactsContext";
+
+export function NutritionFactsHeader() {
+  const { recipe, servings, setServings } = useNutritionFactsContext();
 
   return (
     <header className={`performance-facts__header`}>

@@ -34,10 +34,10 @@ export default function Collections() {
           <Row>
             <Col className="justify-content-center">
               {collections.data.length > 0 ? (
-                collections.data.map((collection, index) => {
+                collections.data.map((collection) => {
                   return (
-                    <Row className="d-flex">
-                      <h5 key={collection.id}>
+                    <Row className="d-flex" key={collection.id}>
+                      <h5>
                         {collection.name}{" "}
                         <DeleteCollectionModal collection={collection} />
                         <EditCollectionRecipes collection={collection} />

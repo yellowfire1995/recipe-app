@@ -18,10 +18,9 @@ import Loading from "../Components/Loading";
 import Form from "react-bootstrap/Form";
 import AddPhotoModal from "../Components/Recipes/Edit Recipe/AddPhotoModal";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
-import { NutritionFacts } from "../Components/Recipes/Multipurpose/NutritionFacts.jsx";
+import { NutritionFactsTable } from "../Components/Recipes/NutritionFacts/NutritionFactsTable.jsx";
 import { Helmet } from "react-helmet";
-import { HeaderItem } from "../Components/Recipes/Multipurpose/Ingredient List/HeaderItem.jsx";
-import { IngredientItem } from "../Components/Recipes/Multipurpose/Ingredient List/IngredientItem.jsx";
+import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
 
 export const RecipeContext = createContext();
 
@@ -35,7 +34,7 @@ export default function Edit() {
   const recipeFetch = useQuery({
     queryKey: [`Recipe${params.recipeId}`],
     queryFn: () => getRecipeById(params.recipeId),
-    staleTime: 120000,
+    staleTime: Infinity,
   });
 
   useEffect(() => {
@@ -259,10 +258,9 @@ export default function Edit() {
               </Row>
               <Row className="justify-content-center">
                 <Col lg={6}>
-                  <NutritionFacts
-                    header={false}
-                    updatedRecipe={updatedRecipe}
-                  />
+                  <NutritionFacts recipe={{ recipe: updatedRecipe }}>
+                    <NutritionFacts.Table />
+                  </NutritionFacts>
                 </Col>
               </Row>
             </Form>

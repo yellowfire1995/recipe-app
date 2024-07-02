@@ -258,8 +258,6 @@ group by
 
     let data = await db.query(query);
 
-    console.log(data.rows[0].ingredients);
-
     if (data.rows.length < 1) {
       throw new Error("Recipe not found or is private");
     }
@@ -273,6 +271,8 @@ group by
       data.rows[0].originalUrl =
         "https://d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
     }
+
+    console.log(data.rows);
 
     res.send(data.rows);
   } catch (error) {

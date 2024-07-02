@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { parseIngredients } from "../../../../../db/queries";
-import { NutritionFacts } from "../NutritionFacts";
+import { NutritionFactsTable } from "../../NutritionFacts/NutritionFactsTable";
 import { ImportSelector } from "../../New Recipe/importSelector";
 
 export default function EditIngredientModal(props) {
@@ -146,7 +146,7 @@ export default function EditIngredientModal(props) {
               id="searchButton"
               type="button"
               htmlFor="search"
-              onClick={async (e) => {
+              onClick={async () => {
                 setSearchList(
                   await parseIngredients(useElement("searchModal").value)
                 );
@@ -167,9 +167,9 @@ export default function EditIngredientModal(props) {
           ) : (
             ""
           )}
-          <NutritionFacts
+          <NutritionFactsTable
             header={false}
-            recipe={{ ingredients: [ingredient], servings: 1 }}
+            updatedRecipe={{ ingredients: [ingredient], servings: 1 }}
           />
         </Modal.Body>
         <Modal.Footer>

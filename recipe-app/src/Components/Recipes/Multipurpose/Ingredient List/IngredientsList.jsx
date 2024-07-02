@@ -1,16 +1,11 @@
-import DeleteIcon from "@mui/icons-material/Delete";
 import _ from "lodash";
 import InputGroup from "react-bootstrap/InputGroup";
 import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/esm/Button.js";
 import Container from "react-bootstrap/esm/Container";
 import { v4 as uuidv4 } from "uuid";
-
-import { createContext, useContext, useState } from "react";
-import DragHandle from "../../../../Icons/dragHandle.jsx";
-import EditIcon from "@mui/icons-material/Edit";
+import { useState } from "react";
 import { HeaderItem } from "./HeaderItem.jsx";
-import { RecipeContext } from "../../../../routes/edit.jsx";
 import { IngredientItem } from "./IngredientItem.jsx";
 
 function deleteIngredient(updatedRecipe, e) {
@@ -50,6 +45,8 @@ export default function IngredientsList({
   const [initialDragIndex, setInitialDragIndex] = useState();
   const [draggedIngredient, setDraggedIngredient] = useState();
 
+  console.log(initialDragIndex);
+
   function handleDragOver(index) {
     if (index != initialDragIndex) {
       const ingredientsListCopy = updatedRecipe.ingredients.filter(
@@ -73,13 +70,20 @@ export default function IngredientsList({
   }
 
   function handleDragStop() {
-    console.log(initialDragIndex);
+    setInitialDragIndex();
+  }
+
+  function handleDragEnd() {
     setInitialDragIndex();
   }
 
   return (
     <Container>
-      <ListGroup>
+      <ListGroup
+        onDragLeave={() => {
+          console.log("drag exited list");
+        }}
+      >
         <span className="h3"> Ingredients </span>
         <InputGroup name="ingredients" className="d-flex flex-column">
           {updatedRecipe.ingredients.map((ingredient, index) => {
@@ -92,6 +96,7 @@ export default function IngredientsList({
                     handleDragStop={handleDragStop}
                     handleDragStart={handleDragStart}
                     handleDragOver={handleDragOver}
+                    handleDragEnd={handleDragEnd}
                     updatedRecipe={updatedRecipe}
                     setUpdatedRecipe={setUpdatedRecipe}
                     initialDragIndex={initialDragIndex}
@@ -116,6 +121,7 @@ export default function IngredientsList({
                     deleteIngredient={deleteIngredient}
                     ingredientList={ingredientList}
                     setIngredientList={setIngredientList}
+                    handleIngredientUpdate={handleIngredientUpdate}
                   />
                 </>
               );

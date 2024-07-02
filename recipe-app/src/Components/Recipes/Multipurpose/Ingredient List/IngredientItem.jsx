@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import DragHandle from "../../../../Icons/dragHandle.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIngredientModal from "./EditIngredientModal.jsx";
@@ -11,13 +10,12 @@ export function IngredientItem({
   handleDragOver,
   handleDragStop,
   initialDragIndex,
-  setInitialDragIndex,
   deleteIngredient,
+  handleIngredientUpdate,
   updatedRecipe,
   setUpdatedRecipe,
   ingredientList,
   setIngredientList,
-  ...props
 }) {
   try {
     return (
@@ -92,7 +90,6 @@ export function IngredientItem({
           <DeleteIcon
             id={ingredient.id}
             aria-label="delete"
-            children={ingredient.id}
             type="button"
             onClick={(e) => {
               setUpdatedRecipe(deleteIngredient(updatedRecipe, e));

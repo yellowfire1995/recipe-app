@@ -18,7 +18,6 @@ function AddPhotoModal(props) {
     setPhotoFile();
     setPhotoUrl();
   };
-  const handleShow = () => setShow(true);
 
   return (
     <>
@@ -118,7 +117,7 @@ function AddPhotoModal(props) {
             variant="primary"
             htmlFor="photoUrl"
             type="button"
-            onClick={async (e) => {
+            onClick={async () => {
               if (photoUrl) {
                 setUpdatedRecipe({
                   ...updatedRecipe,
