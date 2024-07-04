@@ -1,0 +1,60 @@
+import { useState } from "react";
+import Button from "react-bootstrap/esm/Button";
+import Col from "react-bootstrap/esm/Col";
+import Row from "react-bootstrap/esm/Row";
+import Form from "react-bootstrap/Form";
+import { useRecipeContext } from "../RecipeContextProvider";
+import { parseIngredients } from "../../../../db/queries";
+
+export function EditableIngredientTextbox({ setIngredientList }) {
+  const [ingredients, setIngredients] = useState("");
+  const { recipe, setRecipe } = useRecipeContext();
+
+  async function getIngredientChoices() {
+    const choices = await parseIngredients(ingredients);
+
+    setRecipe({
+      ...recipe,
+      ingredients: choices.map((choice) => choice[0]),
+    });
+
+    return choices;
+  }
+
+  return (
+    <>
+      <Row>
+        <Col>
+          <h3> Ingredients </h3>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          {" "}
+          <Form.Control
+            required
+            as="textarea"
+            className="table-active"
+            rows={10}
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value)}
+            placeholder="Enter ingredients- one ingredient per line:&#10;1 cup flour&#10;2 ounces butter, softened "
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col className="d-flex">
+          <Button
+            className="flex-grow-1 bg-color-red border-0"
+            variant="primary"
+            onClick={async () => {
+              setIngredientList(await getIngredientChoices());
+            }}
+          >
+            Add Ingredients
+          </Button>
+        </Col>
+      </Row>
+    </>
+  );
+}

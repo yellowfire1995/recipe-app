@@ -6,17 +6,17 @@ import { addRecipeToCollection, getCollectionNames } from "../../../db/queries";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Typeahead } from "react-bootstrap-typeahead";
 import Loading from "../Loading";
+import { useRecipeContext } from "../Recipes/RecipeContextProvider";
 
-export default function AddRecipeToCollectionModal(props) {
-  const params = props.params;
+export function AddRecipeToCollectionModal() {
+  const { recipeId } = useRecipeContext();
   const collections = useQuery({
     queryKey: ["CollectionNames"],
     queryFn: () => getCollectionNames(),
   });
 
   const addCollection = useMutation({
-    mutationFn: () =>
-      addRecipeToCollection(params.recipeId, activeCollection[0]),
+    mutationFn: () => addRecipeToCollection(recipeId, activeCollection[0]),
     onSuccess: () => setTimeout(handleClose, 1000),
   });
 
@@ -31,7 +31,7 @@ export default function AddRecipeToCollectionModal(props) {
 
   function handleSave() {
     if (activeCollection.length > 0) {
-      addCollection.mutate(params.recipeId, activeCollection[0]);
+      addCollection.mutate(recipeId, activeCollection[0]);
 
       // handleClose();
     } else {

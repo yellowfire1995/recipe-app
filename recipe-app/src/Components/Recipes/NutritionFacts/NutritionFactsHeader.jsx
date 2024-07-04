@@ -1,15 +1,34 @@
 import { useNutritionFactsContext } from "./NutritionFactsContext";
 
+function handleServingsUpdate({ recipe, event }) {
+  if (!event.target.valueAsNumber) {
+    return recipe;
+  }
+  const yieldRatio = recipe.yieldNumber / recipe.servings;
+  const updatedIngredients = recipe.ingredients.map((ingredient) => {
+    return {
+      ...ingredient,
+      quantity:
+        (ingredient.quantity / recipe.servings) * event.target.valueAsNumber,
+    };
+  });
+
+  return {
+    ...recipe,
+    servings: event.target.valueAsNumber,
+    yieldNumber: yieldRatio * event.target.valueAsNumber,
+    ingredients: updatedIngredients,
+  };
+}
+
 export function NutritionFactsHeader() {
-  const { recipe, servings, setServings } = useNutritionFactsContext();
+  const { recipe, setRecipe } = useNutritionFactsContext();
 
   return (
     <header className={`performance-facts__header`}>
       <h1 className="performance-facts__title">Nutrition Facts</h1>
       {recipe.yieldNumber ? (
-        <p>{`Yield ${
-          (recipe.yieldNumber * (servings ?? recipe.servings)) / recipe.servings
-        } ${recipe.yieldDescription}`}</p>
+        <p>{`Yield ${recipe.yieldNumber} ${recipe.yieldDescription}`}</p>
       ) : (
         ""
       )}
@@ -18,9 +37,11 @@ export function NutritionFactsHeader() {
         <input
           type="number"
           id="servings"
-          min="0"
-          value={servings ?? recipe.servings}
-          onChange={(event) => setServings(event.target.value)}
+          min="1"
+          value={recipe.servings}
+          onChange={(event) =>
+            setRecipe(handleServingsUpdate({ event, recipe }))
+          }
           style={{ width: "3rem" }}
           className="me-2"
         />

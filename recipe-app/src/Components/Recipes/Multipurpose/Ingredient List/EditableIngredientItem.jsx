@@ -3,7 +3,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIngredientModal from "./EditIngredientModal.jsx";
 import AddPriceModal from "../AddPriceModal.jsx";
 
-export function IngredientItem({
+export function EditableIngredientItem({
   ingredient,
   index,
   handleDragStart,
@@ -12,8 +12,8 @@ export function IngredientItem({
   initialDragIndex,
   deleteIngredient,
   handleIngredientUpdate,
-  updatedRecipe,
-  setUpdatedRecipe,
+  recipe,
+  setRecipe,
   ingredientList,
   setIngredientList,
 }) {
@@ -62,7 +62,7 @@ export function IngredientItem({
               : ingredient.quantity
           }
           onChange={(e) => {
-            setUpdatedRecipe(handleIngredientUpdate(updatedRecipe, e));
+            setRecipe(handleIngredientUpdate(recipe, e));
           }}
         />
         <p className="m-0 align-self-center">
@@ -80,7 +80,7 @@ export function IngredientItem({
           <AddPriceModal ingredient={ingredient} />
           <EditIngredientModal
             ingredient={ingredient}
-            updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
+            updatedRecipe={[recipe, setRecipe]}
             color={
               ingredient.gramConversion || ingredient.userG ? "black" : "red"
             }
@@ -92,7 +92,7 @@ export function IngredientItem({
             aria-label="delete"
             type="button"
             onClick={(e) => {
-              setUpdatedRecipe(deleteIngredient(updatedRecipe, e));
+              setRecipe(deleteIngredient(recipe, e));
               setIngredientList(
                 ingredientList.filter((ingredient, i) => i !== index)
               );

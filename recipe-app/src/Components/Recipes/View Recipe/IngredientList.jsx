@@ -1,10 +1,43 @@
 import { useState } from "react";
 import { useRecipeContext } from "../RecipeContextProvider";
 import ListGroup from "react-bootstrap/ListGroup";
-import AddPriceModal from "../Multipurpose/AddPriceModal";
+import _ from "lodash";
 
-export function IngredientList() {
-  const { recipe } = useRecipeContext();
+function deleteIngredient(updatedRecipe, e) {
+  const buttonId = e.target.id ? e.target.id : e.target.viewportElement.id;
+  _.remove(
+    updatedRecipe.ingredients,
+    (ingredient) => ingredient.id == buttonId
+  );
+
+  return { ...updatedRecipe };
+}
+
+function handleIngredientUpdate(updatedRecipe, e) {
+  return {
+    ...updatedRecipe,
+    ingredients: updatedRecipe.ingredients.map((ingredient) => {
+      if (ingredient.description == e.target.id) {
+        return {
+          ...ingredient,
+          quantity:
+            e.target.valueAsNumber /
+            (ingredient.userG || ingredient.gramConversion || 1),
+        };
+      } else {
+        return { ...ingredient };
+      }
+    }),
+  };
+}
+
+export function IngredientList({
+  header,
+  item,
+  ingredientList,
+  setIngredientList,
+}) {
+  const { recipe, setRecipe } = useRecipeContext();
 
   const [checkedArray, setCheckedArray] = useState([]);
 
@@ -16,73 +49,89 @@ export function IngredientList() {
         );
   }
 
-  return (
-    <ListGroup>
-      <span className="h3">
-        Ingredients <br />
-      </span>
-      {recipe?.ingredients.map((ingredient) => {
-        if (ingredient.isGroupHeader) {
-          return (
-            <h4 key={ingredient.id}>{ingredient.description.toUpperCase()}</h4>
-          );
-        }
-        return (
-          <div className="form-check" key={ingredient.id}>
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id={ingredient.id}
-              onClick={() => handleCheck(ingredient.id)}
-            />
+  const [initialDragIndex, setInitialDragIndex] = useState();
+  const [draggedIngredient, setDraggedIngredient] = useState();
 
-            <label
-              className={`form-check-label text-lowercase ${
-                checkedArray.includes(ingredient.id)
-                  ? "text-decoration-line-through"
-                  : ""
-              }`}
-              htmlFor={ingredient.id}
-            >
-              <div className="d-inline fw-semibold">
-                {ingredient.userG
-                  ? Math.round(
-                      ingredient.userG *
-                        ingredient.quantity *
-                        recipe.servings *
-                        100
-                    ) /
-                      100 +
-                    " " +
-                    ingredient.userLabel
-                  : ingredient.gramConversion
-                  ? `${
-                      Math.round(
-                        ingredient.gramConversion *
-                          ingredient.quantity *
-                          recipe.servings *
-                          100
-                      ) /
-                        100 +
-                      " " +
-                      ingredient.engLabel
-                    }`
-                  : `${Math.round(ingredient.quantity * recipe.servings)} g`}
-              </div>
-              {ingredient.gramConversion || ingredient.userG
-                ? ` (${Math.round(ingredient.quantity * recipe.servings)} g)`
-                : ""}
-              {` ${ingredient.description}`}{" "}
-              {`- $${(
-                Math.round(
-                  ingredient.price * ingredient.quantity * recipe.servings * 100
-                ) / 100
-              ).toFixed(2)}`}{" "}
-            </label>
-            <AddPriceModal ingredient={ingredient} />
-          </div>
-        );
-      })}
-    </ListGroup>
-  );
+  function handleDragOver(index) {
+    if (index != initialDragIndex) {
+      const ingredientsListCopy = recipe.ingredients.filter(
+        (ingredient, index) => index != initialDragIndex
+      );
+
+      setInitialDragIndex(index);
+
+      ingredientsListCopy.splice(parseInt(index), 0, draggedIngredient);
+
+      setRecipe({
+        ...recipe,
+        ingredients: ingredientsListCopy,
+      });
+    }
+  }
+
+  function handleDragStart(index, ingredient) {
+    setInitialDragIndex(index);
+    setDraggedIngredient(ingredient);
+  }
+
+  function handleDragStop() {
+    setInitialDragIndex();
+  }
+
+  function handleDragEnd() {
+    setInitialDragIndex();
+  }
+
+  if (recipe.ingredients.length > 0) {
+    return (
+      <ListGroup>
+        <span className="h3">
+          Ingredients <br />
+        </span>
+        {recipe.ingredients.map((ingredient, index) => {
+          if (ingredient.isGroupHeader) {
+            header = {
+              ...header,
+              props: {
+                ingredient,
+                index,
+                handleDragStart,
+                handleDragOver,
+                handleDragStop,
+                handleDragEnd,
+                initialDragIndex,
+                setInitialDragIndex,
+                deleteIngredient,
+                recipe,
+                setRecipe,
+              },
+            };
+            return header;
+          }
+          if (!ingredient.isGroupHeader) {
+            item = {
+              ...item,
+              props: {
+                ingredient,
+                index,
+                handleDragStart,
+                handleDragOver,
+                handleDragStop,
+                initialDragIndex,
+                deleteIngredient,
+                handleIngredientUpdate,
+                recipe,
+                setRecipe,
+                ingredientList,
+                setIngredientList,
+                checkedArray,
+                handleCheck,
+              },
+            };
+            return item;
+          }
+        })}
+      </ListGroup>
+    );
+  }
 }

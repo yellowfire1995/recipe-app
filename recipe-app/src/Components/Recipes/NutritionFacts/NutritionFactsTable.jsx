@@ -1,3 +1,4 @@
+import { useRecipeContext } from "../RecipeContextProvider";
 import { useNutritionFactsContext } from "./NutritionFactsContext";
 
 var nutrientsPerServing = {
@@ -32,11 +33,11 @@ const nutrientLookup = {
   sugar: 2000,
 };
 
-function calculateNutrient(nutrientName, recipeWithFilteredIngredients) {
+function calculateNutrient({ nutrientName, headersRemovedArray, servings }) {
   const nutrientId = nutrientLookup[nutrientName];
   try {
     return Math.round(
-      recipeWithFilteredIngredients.ingredients.reduce((total, ingredient) => {
+      headersRemovedArray.reduce((total, ingredient) => {
         return (
           total +
           ingredient.nutrients.reduce((sum, nutrient) => {
@@ -48,7 +49,7 @@ function calculateNutrient(nutrientName, recipeWithFilteredIngredients) {
             );
           }, 0)
         );
-      }, 0) / recipeWithFilteredIngredients.servings
+      }, 0) / servings
     );
   } catch (error) {
     console.log(error);
@@ -57,24 +58,24 @@ function calculateNutrient(nutrientName, recipeWithFilteredIngredients) {
 }
 
 export function NutritionFactsTable() {
-  const { recipe } = useNutritionFactsContext();
+  const { recipe } = useRecipeContext();
+  const { ingredientArray = recipe.ingredients, servings = recipe.servings } =
+    useNutritionFactsContext();
   try {
-    const recipeWithFilteredIngredients = {
-      ...recipe,
-      ingredients: recipe.ingredients
-        .map((ingredient) => {
-          if (!ingredient.isGroupHeader) {
-            return ingredient;
-          }
-        })
-        .filter((ingredient) => ingredient != undefined),
-    };
+    const headersRemovedArray = ingredientArray
+      .map((ingredient) => {
+        if (!ingredient.isGroupHeader) {
+          return ingredient;
+        }
+      })
+      .filter((ingredient) => ingredient != undefined);
 
     Object.keys(nutrientsPerServing).forEach((nutrientName) => {
-      nutrientsPerServing[nutrientName] = calculateNutrient(
+      nutrientsPerServing[nutrientName] = calculateNutrient({
         nutrientName,
-        recipeWithFilteredIngredients
-      );
+        headersRemovedArray,
+        servings,
+      });
     });
 
     return (

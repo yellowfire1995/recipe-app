@@ -5,10 +5,7 @@ export function RecipePrice() {
   const recipePrice = (
     Math.round(
       recipe.ingredients
-        .map(
-          (ingredient) =>
-            ingredient.price * ingredient.quantity * recipe.servings
-        )
+        .map((ingredient) => ingredient.price * ingredient.quantity)
         .reduce((partialSum, a) => partialSum + a, 0) * 100
     ) / 100
   ).toFixed(2);

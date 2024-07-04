@@ -7,6 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import { parseIngredients } from "../../../../../db/queries";
 import { NutritionFactsTable } from "../../NutritionFacts/NutritionFactsTable";
 import { ImportSelector } from "../../New Recipe/importSelector";
+import { NutritionFacts } from "../../NutritionFacts/NutritionFacts";
 
 export default function EditIngredientModal(props) {
   const origIdx = props.origIdx;
@@ -167,10 +168,9 @@ export default function EditIngredientModal(props) {
           ) : (
             ""
           )}
-          <NutritionFactsTable
-            header={false}
-            updatedRecipe={{ ingredients: [ingredient], servings: 1 }}
-          />
+          <NutritionFacts ingredientsArray={[ingredient]} servings={1}>
+            <NutritionFacts.Table />
+          </NutritionFacts>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

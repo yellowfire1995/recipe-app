@@ -4,31 +4,20 @@ import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
 import { deleteRecipe } from "../../../../db/queries";
 import { queryClient } from "../../../main";
-import { QueryCache, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
+import { useRecipeContext } from "../RecipeContextProvider";
 
-export default function DeleteButton(props) {
+export function DeleteRecipeIcon() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const navigate = useNavigate();
-  const recipe = props.recipe;
-
-  const queryCache = new QueryCache({
-    onError: (error) => {
-      console.log(error);
-    },
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onSettled: (data, error) => {
-      console.log(data, error);
-    },
-  });
+  const { recipe } = useRecipeContext();
 
   const deleter = useMutation({
     mutationFn: () => {
-      return deleteRecipe(props.recipeId, recipe);
+      return deleteRecipe(recipe.recipeId, recipe);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({

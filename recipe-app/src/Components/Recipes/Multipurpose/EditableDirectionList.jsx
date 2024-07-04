@@ -2,6 +2,7 @@ import _ from "lodash";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/esm/Container";
+import { useRecipeContext } from "../RecipeContextProvider";
 
 function handleDirectionsUpdate(updatedRecipe, e) {
   return {
@@ -45,14 +46,14 @@ function deleteDirection(updatedRecipe, e) {
   return { ...updatedRecipe };
 }
 
-export default function DirectionsList(props) {
-  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
+export default function EditableDirectionsList() {
+  const { recipe, setRecipe } = useRecipeContext();
 
   return (
     <Container className="mt-4">
       <h3> Directions </h3>
       <ol className="d-flex flex-column">
-        {updatedRecipe.directions.map((direction) => {
+        {recipe.directions.map((direction) => {
           return (
             <div key={direction.id}>
               <li>
@@ -62,9 +63,7 @@ export default function DirectionsList(props) {
                   as="textarea"
                   rows={3}
                   defaultValue={`${direction.step}`}
-                  onChange={(e) =>
-                    setUpdatedRecipe(handleDirectionsUpdate(updatedRecipe, e))
-                  }
+                  onChange={(e) => setRecipe(handleDirectionsUpdate(recipe, e))}
                   style={{ width: "90%" }}
                 />
               </li>
@@ -73,9 +72,7 @@ export default function DirectionsList(props) {
                 id={direction.step_num}
                 aria-label="delete"
                 type="button"
-                onClick={(e) =>
-                  setUpdatedRecipe(deleteDirection(updatedRecipe, e))
-                }
+                onClick={(e) => setRecipe(deleteDirection(recipe, e))}
                 className="pt-0 mb-0"
               >
                 {" "}
@@ -88,7 +85,7 @@ export default function DirectionsList(props) {
       <Button
         type="button"
         className="w-100"
-        onClick={() => setUpdatedRecipe(addNewDirection(updatedRecipe))}
+        onClick={() => setRecipe(addNewDirection(recipe))}
       >
         Add New Step
       </Button>

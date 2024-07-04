@@ -3,9 +3,10 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { changeMealDay } from "../../../db/queries";
+import { useRecipeContext } from "../Recipes/RecipeContextProvider";
 
-export default function AddToMealPlannerButton(props) {
-  const recipeId = props.params.recipeId;
+export function AddToMealPlannerButton() {
+  const { recipeId } = useRecipeContext();
   const [show, setShow] = useState(false);
   const addToPlanner = useMutation({
     mutationFn: () =>

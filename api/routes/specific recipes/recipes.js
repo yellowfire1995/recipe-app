@@ -56,7 +56,7 @@ router.get("/:recipeId", getUserId, async (req, res) => {
   try {
     const query = {
       text: ` select
-	recipe_id,
+	recipe_id as "recipeId",
 	NAME,
 	img_url as "imgUrl",
 	img_url as "imgName",

@@ -2,7 +2,7 @@ import DragHandle from "../../../../Icons/dragHandle.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditHeaderModal from "./EditHeaderModal.jsx";
 
-export function HeaderItem({
+export function EditableHeaderItem({
   ingredient,
   index,
   handleDragStart,
