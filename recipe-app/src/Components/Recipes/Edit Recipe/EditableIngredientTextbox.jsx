@@ -6,20 +6,25 @@ import Form from "react-bootstrap/Form";
 import { useRecipeContext } from "../RecipeContextProvider";
 import { parseIngredients } from "../../../../db/queries";
 
-export function EditableIngredientTextbox({ setIngredientList }) {
+export function EditableIngredientTextbox() {
   const [ingredients, setIngredients] = useState("");
   const { recipe, setRecipe } = useRecipeContext();
 
   async function getIngredientChoices() {
     const choices = await parseIngredients(ingredients);
+    console.log(choices);
 
     setRecipe({
       ...recipe,
-      ingredients: choices.map((choice) => choice[0]),
+      ingredients: choices.map((choice) => {
+        return { ...choice[0], searchArray: choice };
+      }),
     });
 
     return choices;
   }
+
+  console.log(recipe.ingredients);
 
   return (
     <>
@@ -48,7 +53,7 @@ export function EditableIngredientTextbox({ setIngredientList }) {
             className="flex-grow-1 bg-color-red border-0"
             variant="primary"
             onClick={async () => {
-              setIngredientList(await getIngredientChoices());
+              await getIngredientChoices();
             }}
           >
             Add Ingredients

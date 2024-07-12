@@ -1,6 +1,8 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import AddPriceModal from "../Multipurpose/AddPriceModal";
 
 export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
+  const { isAuthenticated } = useAuth0();
   return (
     <div className="form-check" key={ingredient.id}>
       <input
@@ -38,11 +40,15 @@ export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
           ? ` (${Math.round(ingredient.quantity)} g)`
           : ""}
         {` ${ingredient.description}`}{" "}
-        {`- $${(
-          Math.round(ingredient.price * ingredient.quantity * 100) / 100
-        ).toFixed(2)}`}{" "}
+        {`${
+          ingredient.price
+            ? `- $${(
+                Math.round(ingredient.price * ingredient.quantity * 100) / 100
+              ).toFixed(2)}`
+            : ""
+        }`}{" "}
       </label>
-      <AddPriceModal ingredient={ingredient} />
+      {isAuthenticated && <AddPriceModal ingredient={ingredient} />}
     </div>
   );
 }

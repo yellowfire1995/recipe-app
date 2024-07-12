@@ -3,7 +3,7 @@ const router = express.Router();
 import db from "../../database/db.js";
 import { checkJwt } from "../../tools/getUserId.js";
 
-router.get("/", checkJwt, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const sqlSearch =
       req.query.search == "null"
@@ -24,7 +24,7 @@ router.get("/", checkJwt, async (req, res) => {
   WHERE recipes.recipe_id = recipe_cuisines.recipe_id
         ) as cuisine
                   FROM recipes
-                  WHERE lower(recipes.name) LIKE $2 and (recipes.public OR recipes.author = $3 )
+                  WHERE lower(recipes.name) LIKE $2 and (recipes.public)
               GROUP BY recipes.recipe_id
               ORDER BY recipes.recipe_id DESC
               LIMIT 16
@@ -33,7 +33,6 @@ router.get("/", checkJwt, async (req, res) => {
       values: [
         req.query.page == "null" ? 0 : (parseInt(req.query.page) - 1) * 15,
         sqlSearch,
-        req.auth.payload.sub,
       ],
     };
 

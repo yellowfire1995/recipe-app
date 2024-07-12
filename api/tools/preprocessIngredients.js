@@ -11,9 +11,9 @@ export default function preprocessIngredients(ingredients) {
   const postFilteredIngredients = matchedIngredientList.map((ingredient) => {
     return {
       ...ingredient,
-      description: ingredient.description.replace(/,|\d|(plus)|\//gm, ""),
+      description: ingredient.description.replace(/,|(\d plus)|\//gm, ""),
     };
   });
-  console.log(postFilteredIngredients);
+
   return postFilteredIngredients;
 }

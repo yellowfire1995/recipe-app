@@ -5,7 +5,6 @@ export function RecipeCredit() {
   return (
     <>
       <a href={recipe.url}>Original Recipe</a>
-      <br />
       {recipe.nickname}&apos;s recipe
     </>
   );

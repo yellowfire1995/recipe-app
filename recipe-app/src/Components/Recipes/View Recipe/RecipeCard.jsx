@@ -40,15 +40,7 @@ export default function RecipeCardData(props) {
                   height: "13rem",
                 }}
               >
-                <Container
-                  className="justify-content-center text-center"
-                  style={{
-                    fontSize: "3rem",
-                    fontFamily: `"Lucida Handwriting", "Courier New", monospace, `,
-                    color: "rgb(0,0,0, .25)",
-                    overflow: "hidden",
-                  }}
-                >
+                <Container className="justify-content-center text-center filler-text">
                   {recipe.thumbnail ? "" : recipe.name}
                 </Container>
               </Card>

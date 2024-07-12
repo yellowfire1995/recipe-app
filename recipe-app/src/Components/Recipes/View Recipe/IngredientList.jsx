@@ -13,16 +13,17 @@ function deleteIngredient(updatedRecipe, e) {
   return { ...updatedRecipe };
 }
 
-function handleIngredientUpdate(updatedRecipe, e) {
+function handleIngredientUpdate(recipe, e) {
   return {
-    ...updatedRecipe,
-    ingredients: updatedRecipe.ingredients.map((ingredient) => {
+    ...recipe,
+    ingredients: recipe.ingredients.map((ingredient) => {
       if (ingredient.description == e.target.id) {
         return {
           ...ingredient,
           quantity:
             e.target.valueAsNumber /
-            (ingredient.userG || ingredient.gramConversion || 1),
+              (ingredient.userG || ingredient.gramConversion || 1) ||
+            ingredient.quantity,
         };
       } else {
         return { ...ingredient };
@@ -36,9 +37,10 @@ export function IngredientList({
   item,
   ingredientList,
   setIngredientList,
+  buttons,
+  price,
 }) {
   const { recipe, setRecipe } = useRecipeContext();
-
   const [checkedArray, setCheckedArray] = useState([]);
 
   function handleCheck(ingredientId) {
@@ -84,54 +86,59 @@ export function IngredientList({
 
   if (recipe.ingredients.length > 0) {
     return (
-      <ListGroup>
-        <span className="h3">
-          Ingredients <br />
-        </span>
-        {recipe.ingredients.map((ingredient, index) => {
-          if (ingredient.isGroupHeader) {
-            header = {
-              ...header,
-              props: {
-                ingredient,
-                index,
-                handleDragStart,
-                handleDragOver,
-                handleDragStop,
-                handleDragEnd,
-                initialDragIndex,
-                setInitialDragIndex,
-                deleteIngredient,
-                recipe,
-                setRecipe,
-              },
-            };
-            return header;
-          }
-          if (!ingredient.isGroupHeader) {
-            item = {
-              ...item,
-              props: {
-                ingredient,
-                index,
-                handleDragStart,
-                handleDragOver,
-                handleDragStop,
-                initialDragIndex,
-                deleteIngredient,
-                handleIngredientUpdate,
-                recipe,
-                setRecipe,
-                ingredientList,
-                setIngredientList,
-                checkedArray,
-                handleCheck,
-              },
-            };
-            return item;
-          }
-        })}
-      </ListGroup>
+      <>
+        <ListGroup>
+          <span className="h3">
+            Ingredients {price} <br />
+          </span>
+          {recipe.ingredients.map((ingredient, index) => {
+            if (ingredient.isGroupHeader) {
+              header = {
+                ...header,
+                key: ingredient.id,
+                props: {
+                  ingredient,
+                  index,
+                  handleDragStart,
+                  handleDragOver,
+                  handleDragStop,
+                  handleDragEnd,
+                  initialDragIndex,
+                  setInitialDragIndex,
+                  deleteIngredient,
+                  recipe,
+                  setRecipe,
+                },
+              };
+              return header;
+            }
+            if (!ingredient.isGroupHeader) {
+              item = {
+                ...item,
+                key: ingredient.id,
+                props: {
+                  ingredient,
+                  index,
+                  handleDragStart,
+                  handleDragOver,
+                  handleDragStop,
+                  initialDragIndex,
+                  deleteIngredient,
+                  handleIngredientUpdate,
+                  recipe,
+                  setRecipe,
+                  ingredientList,
+                  setIngredientList,
+                  checkedArray,
+                  handleCheck,
+                },
+              };
+              return item;
+            }
+          })}
+        </ListGroup>
+        {buttons}
+      </>
     );
   }
 }

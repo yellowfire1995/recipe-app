@@ -12,8 +12,8 @@ export function EditableHeaderItem({
   initialDragIndex,
   setInitialDragIndex,
   deleteIngredient,
-  updatedRecipe,
-  setUpdatedRecipe,
+  recipe,
+  setRecipe,
 }) {
   return (
     <div
@@ -22,8 +22,8 @@ export function EditableHeaderItem({
         `form-check d-flex ps-1 ingredientItem align-items-center ` +
         `${index === initialDragIndex ? "draggedItem" : ""}`
       }
-      style={{ borderRadius: "20px" }}
       draggable
+      style={{ borderRadius: "20px" }}
       onDragStart={() => {
         handleDragStart(index, ingredient);
       }}
@@ -50,20 +50,20 @@ export function EditableHeaderItem({
       <h4 id={ingredient.id} className="m-0 align-self-center">
         {ingredient.description.toUpperCase()}
       </h4>
+      <EditHeaderModal
+        ingredient={ingredient}
+        recipe={recipe}
+        setRecipe={setRecipe}
+        origIdx={index}
+      />
       <DeleteIcon
         id={ingredient.id}
         aria-label="delete"
         type="button"
         onClick={(e) => {
-          setUpdatedRecipe(deleteIngredient(updatedRecipe, e));
+          setRecipe(deleteIngredient(recipe, e));
         }}
         className="pt-0 mb-0 svg-icon"
-      />
-      <EditHeaderModal
-        ingredient={ingredient}
-        updatedRecipe={updatedRecipe}
-        setUpdatedRecipe={setUpdatedRecipe}
-        origIdx={index}
       />
     </div>
   );

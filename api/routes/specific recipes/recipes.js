@@ -5,7 +5,8 @@ import axios from "axios";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { deleteFromS3 } from "../../tools/aws.js";
 import e from "express";
-import { getUserId } from "../../tools/getUserId.js";
+import { checkJwt, getUserId } from "../../tools/getUserId.js";
+import { auth } from "express-oauth2-jwt-bearer";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -22,29 +23,44 @@ const S3 = new S3Client({
 
 async function checkAuth(req, res, next) {
   try {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: process.env.AUTH0_VERIFY,
-      headers: {
-        Accept: "application/json",
-        Authorization: `${req.headers.authorization}`,
-      },
-    };
+    if (req.headers.authorization) {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: process.env.AUTH0_VERIFY,
+        headers: {
+          Accept: "application/json",
+          Authorization: `${req.headers.authorization}`,
+        },
+      };
 
-    const activeUser = await axios.request(config);
+      const query = {
+        text: `SELECT author, public FROM RECIPES where recipe_id = $1`,
+        values: [req.params.recipeId],
+      };
 
-    const query = {
-      text: `SELECT author FROM RECIPES where recipe_id = $1`,
-      values: [req.params.recipeId],
-    };
+      let data = await db.query(query);
+      const activeUser = await axios.request(config);
 
-    let data = await db.query(query);
-
-    if (data.rows[0].author == activeUser.data.sub) {
-      next();
+      if (data.rows[0].author == activeUser.data.sub || data.rows[0].public) {
+        req.body = { user: activeUser.data.sub };
+        next();
+      } else {
+        res.status(401).send("Unauthorized");
+      }
     } else {
-      res.status(401).send("Unauthorized");
+      const query = {
+        text: `SELECT public FROM RECIPES where recipe_id = $1`,
+        values: [req.params.recipeId],
+      };
+
+      let data = await db.query(query);
+
+      if (data.rows[0].public) {
+        next();
+      } else {
+        res.status(401).send("Unauthorized");
+      }
     }
   } catch (error) {
     console.error(error);
@@ -52,7 +68,7 @@ async function checkAuth(req, res, next) {
   }
 }
 
-router.get("/:recipeId", getUserId, async (req, res) => {
+router.get("/:recipeId", checkAuth, async (req, res) => {
   try {
     const query = {
       text: ` select
@@ -253,7 +269,7 @@ where
 group by
 	recipes.recipe_id ; `,
 
-      values: [req.params.recipeId, req.user.sub],
+      values: [req.params.recipeId, req.body?.user],
     };
 
     let data = await db.query(query);
@@ -272,8 +288,6 @@ group by
         "https://d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
     }
 
-    console.log(data.rows);
-
     res.send(data.rows);
   } catch (error) {
     console.error(error);
@@ -283,7 +297,6 @@ group by
 
 router.delete("/:recipeId/delete", checkAuth, async (req, res) => {
   try {
-    console.log(req.body);
     const query = {
       text: `DELETE FROM recipes WHERE recipe_id = $1;
       `,

@@ -9,12 +9,13 @@ export function RecipePrice() {
         .reduce((partialSum, a) => partialSum + a, 0) * 100
     ) / 100
   ).toFixed(2);
-
-  return (
-    <>
-      ${recipePrice} ($
-      {(recipePrice / recipe.servings).toFixed(2)}
-      /serving){" "}
-    </>
-  );
+  if (recipePrice > 0) {
+    return (
+      <>
+        - ${recipePrice} ($
+        {(recipePrice / recipe.servings).toFixed(2)}
+        /serving){" "}
+      </>
+    );
+  }
 }

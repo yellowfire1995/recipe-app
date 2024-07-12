@@ -36,19 +36,20 @@ export async function deleteRecipe(recipeId, recipe) {
 }
 
 //Edit Recipe
-export async function editRecipe(e, updatedRecipe) {
+export async function editRecipe({ e, recipe }) {
   e.preventDefault();
   try {
     const formData = new FormData();
-    if (updatedRecipe.imgFile) {
-      formData.append("photo", updatedRecipe.imgFile);
+    if (recipe.imgFile) {
+      formData.append("photo", recipe.imgFile);
     }
 
-    formData.append("updatedRecipe", JSON.stringify(updatedRecipe));
+    formData.append("recipe", JSON.stringify(recipe));
     const { data } = await httpClient.post(`${server}/edit`, formData);
     return data;
   } catch (err) {
     console.error(1, err);
+    throw new Error("Error saving recipe");
   }
 }
 
@@ -252,7 +253,7 @@ export async function getCollectionRecipes() {
 export async function getCollectionNames() {
   try {
     const collectionNames = await httpClient.get(`${server}/collections/names`);
-    console.log(collectionNames.data);
+
     return collectionNames.data;
   } catch (error) {
     console.log("ERROR!");

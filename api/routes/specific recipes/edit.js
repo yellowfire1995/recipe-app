@@ -10,7 +10,7 @@ import {
 } from "../../tools/aws.js";
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits: { fileSize: 5242880 } });
 
 export async function checkAuth(req, res, next) {
   try {
@@ -25,17 +25,17 @@ export async function checkAuth(req, res, next) {
     };
 
     const activeUser = await axios.request(config);
-    const recipe = JSON.parse(req.body.updatedRecipe);
+
+    const recipe = JSON.parse(req.body.recipe);
 
     const query = {
       text: `SELECT author FROM RECIPES where recipe_id = $1`,
-      values: [recipe.recipe_id],
+      values: [recipe.recipeId],
     };
 
     let data = await db.query(query);
 
     if (data.rows[0].author == activeUser.data.sub) {
-      console.log("authorized");
       next();
     } else {
       res.status(403).send("Unauthorized");
@@ -48,7 +48,7 @@ export async function checkAuth(req, res, next) {
 
 router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
   try {
-    let recipe = JSON.parse(req.body.updatedRecipe);
+    let recipe = JSON.parse(req.body.recipe);
     let key = recipe.imgName;
     let thumbnailKey;
 
@@ -61,13 +61,16 @@ router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
       };
     }
 
-    console.log(recipe.ingredients);
-
-    if (req.file) {
-      key = await uploadFileToS3(req.file);
-      thumbnailKey = await resizeAndUploadFileToS3(req.file);
-    } else if (recipe.imgUrl != recipe.originalUrl) {
-      [key, thumbnailKey] = await uploadDualSizesUrlToS3(recipe.imgUrl);
+    try {
+      if (req.file) {
+        key = await uploadFileToS3(req.file);
+        thumbnailKey = await resizeAndUploadFileToS3(req.file);
+      } else if (recipe.imgUrl != recipe.originalUrl) {
+        [key, thumbnailKey] = await uploadDualSizesUrlToS3(recipe.imgUrl);
+      }
+    } catch (error) {
+      console.log(error);
+      throw new Error("Unable to process image.");
     }
 
     const query = {
@@ -123,7 +126,7 @@ router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
         recipe.name,
         key,
         recipe.servings,
-        recipe.recipe_id,
+        recipe.recipeId,
         recipe.url,
         JSON.stringify(recipe.directions),
         JSON.stringify(recipe.ingredients),
@@ -139,7 +142,7 @@ router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
     let data = await db.query(query);
     res.json(req.body);
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     res
       .status(422)
       .send("Unable to process. Please change data and try again.");

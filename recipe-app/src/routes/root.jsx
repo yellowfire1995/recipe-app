@@ -1,25 +1,30 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { Outlet, redirect } from "react-router-dom";
-import Header from "../Components/Header.jsx";
+import { Outlet } from "react-router-dom";
+import Header from "../Components/Header/Header.jsx";
 import { addAccessTokenInterceptor } from "../../db/axiosConfig.js";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-export async function action() {
-  return redirect(`/`);
-}
+import Loading from "../Components/Loading.jsx";
 
 export default function App() {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const { getAccessTokenSilently, isLoading, isAuthenticated } = useAuth0();
 
-  if (isAuthenticated) {
-    addAccessTokenInterceptor(getAccessTokenSilently);
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <Loading />
+      </>
+    );
   }
 
-  return (
-    <>
-      <Header />
+  if (!isLoading) {
+    addAccessTokenInterceptor({ getAccessTokenSilently, isAuthenticated });
+    return (
+      <>
+        <Header />
 
-      <Outlet />
-    </>
-  );
+        <Outlet />
+      </>
+    );
+  }
 }

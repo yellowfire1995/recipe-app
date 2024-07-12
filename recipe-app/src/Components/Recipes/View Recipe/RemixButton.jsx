@@ -7,11 +7,8 @@ export function RemixButton() {
   const navigate = useNavigate();
 
   return (
-    <Button
-      size="sm"
-      onClick={() => navigate(`/newrecipe?copy=${recipe.recipe_id}`)}
-    >
-      Remix Recipe
+    <Button onClick={() => navigate(`/newrecipe?copy=${recipe.recipe_id}`)}>
+      Remix
     </Button>
   );
 }

@@ -1,0 +1,12 @@
+[data-bs-theme=light] .login{
+    background-color: rgb(41, 40, 40, .1);
+    border-radius: 10px;
+    max-width: 30rem;
+    
+  }
+  
+  [data-bs-theme=dark] .login{
+    background-color: rgb(255, 255, 255, .2);
+    border-radius: 10px;
+    max-width: 30rem;
+      }

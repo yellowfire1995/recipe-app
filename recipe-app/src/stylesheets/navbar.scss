@@ -1,0 +1,29 @@
+
+[data-bs-theme=light] .bg-nav{
+    background-color: $primary;
+    --bs-heading-color: #fff4ee;
+  }
+
+  [data-bs-theme=light] .nav-text a.nav-drop{
+    color: black;
+    --bs-navbar-active-color: black;
+     }
+  
+  [data-bs-theme=light] a.nav-drop.dropdown-item{
+    -color: #1b1b1b !important;
+  
+  }
+    
+  .nav-text a{
+    color: #fff4ee;
+    --bs-navbar-active-color: #d8cfcb;
+  }
+    
+  .nav-text 
+  a:hover{
+    color: #d8cfcb;
+  }
+
+  [data-bs-theme=dark] .bg-nav {
+    background-color:$primary ;
+  }

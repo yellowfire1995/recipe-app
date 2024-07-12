@@ -4,7 +4,6 @@ import { chromium } from "playwright";
 
 async function extractSchemaRecipe(url) {
   try {
-    console.log(`sraping schema: ${url}`);
     const html = await axios.get(url);
     const $ = cheerio.load(html.data);
 
@@ -17,12 +16,11 @@ async function extractSchemaRecipe(url) {
       scriptText[0]["@type"][0].match(/recipe/i)
     ) {
       const recipe = scriptText[0];
-      console.log(recipe);
+
       return recipe;
     } else if (scriptText["@graph"]) {
       return scriptText["@graph"].filter((graph) => {
         if (graph["@type"].match(/recipe/i)) {
-          console.log(graph);
           return graph;
         }
       })[0];
@@ -49,8 +47,6 @@ async function extractSamsungRecipe($) {
     .map(($direction) => {
       return { "@type": "HowToStep", text: $($direction).text() };
     });
-
-  console.log(directionList);
 
   const recipe = {
     "@type": ["Recipe"],

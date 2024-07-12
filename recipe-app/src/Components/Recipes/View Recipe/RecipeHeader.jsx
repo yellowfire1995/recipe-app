@@ -1,3 +1,4 @@
+import Row from "react-bootstrap/esm/Row";
 import { useRecipeContext } from "../RecipeContextProvider";
 import Col from "react-bootstrap/esm/Col";
 
@@ -6,14 +7,18 @@ export function RecipeHeader({ price, buttons, credit }) {
 
   return (
     <>
-      <Col lg={10}>
-        <h2>
-          {recipe.name} - {price}
-          {buttons}
-        </h2>
+      <Row>
+        <Col className="d-flex justify-content-between">{credit}</Col>
+      </Row>
+      <Col className="d-flex flex-wrap">
+        <Col xl={8} className="d-flex ">
+          <h2>{recipe.name}</h2>
+        </Col>
+        <Col className="flex-grow-1">{buttons}</Col>
+
+        <hr />
+        <div className="d-flex">{price}</div>
       </Col>
-      <Col className="text-end">{credit}</Col>
-      <hr />
     </>
   );
 }

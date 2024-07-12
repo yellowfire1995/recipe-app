@@ -11,13 +11,12 @@ export function EditableYieldDescription() {
       <FloatingLabel
         id="Yield Description"
         label="Yield Description (optional)"
-        className="p-0"
       >
         <Form.Control
           type="text"
           id="yieldDescription"
           min="0"
-          value={recipe.yieldDescription}
+          value={recipe.yieldDescription ?? ""}
           onChange={(e) =>
             setRecipe({
               ...recipe,

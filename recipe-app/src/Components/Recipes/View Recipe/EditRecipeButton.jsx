@@ -10,11 +10,8 @@ export function EditRecipeButton() {
 
   if (user.sub == recipe.author) {
     return (
-      <Button
-        className="p-1"
-        onClick={() => navigate(`/recipes/${recipe.recipeId}/edit`)}
-      >
-        Edit Recipe
+      <Button onClick={() => navigate(`/recipes/${recipe.recipeId}/edit`)}>
+        Edit
       </Button>
     );
   }

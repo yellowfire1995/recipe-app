@@ -30,9 +30,7 @@ export function AddToMealPlannerButton() {
 
   return (
     <>
-      <Button className="p-1 mx-2" onClick={handleShow}>
-        Add to planner
-      </Button>
+      <Button onClick={handleShow}>Add to planner</Button>
       <Modal show={show} onHide={handleClose} animation={false} size="lg">
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">

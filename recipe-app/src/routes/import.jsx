@@ -7,12 +7,7 @@ import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-  getRecipeById,
-  newRecipe,
-  parseDirections,
-  parseIngredients,
-} from "../../db/queries";
+import { getRecipeById, newRecipe } from "../../db/queries";
 import CategorySelector from "../Components/Recipes/Multipurpose/categoryselector";
 import CuisineSelector from "../Components/Recipes/Multipurpose/cuisineselector";
 import { queryClient } from "../main";
@@ -68,43 +63,6 @@ export default function AddRecipe() {
     },
   });
 
-  async function handleImport(scrapedData) {
-    const ingredientString = scrapedData.recipeIngredient.join("\r\n");
-
-    const directionString =
-      typeof scrapedData.recipeInstructions == "string"
-        ? scrapedData.recipeInstructions
-        : scrapedData.recipeInstructions
-            .map((direction) => direction.text)
-            .join("\r\n");
-
-    setIngredients(ingredientString);
-    setDirections(directionString);
-    const choices = await parseIngredients(ingredientString);
-    const directions = await parseDirections(directionString);
-
-    let servings = 1;
-
-    if (scrapedData.recipeYield.length > 0) {
-      try {
-        servings = parseInt(scrapedData.recipeYield[0]);
-      } catch (error) {
-        servings = 1;
-      }
-    }
-
-    setRecipe({
-      ...recipe,
-      directions: directions,
-      img_url: scrapedData.image?.url,
-      name: scrapedData.name ? scrapedData.name : "",
-      ingredients: choices.map((choice) => choice[0]),
-      servings: servings,
-    });
-
-    setIngredientList(choices);
-  }
-
   return (
     <>
       <RecipeForm recipe={recipe} setRecipe={setRecipe}>
@@ -119,7 +77,10 @@ export default function AddRecipe() {
             <Col className="d-flex justify-content-end">
               <RecipeForm.DeleteRecipeIcon />
             </Col>
-          </Row>
+          </Row>{" "}
+          <RecipeForm.ImportRecipeButton
+            setIngredientList={setIngredientList}
+          />
           <Row className="mt-1 justify-content-center mx-1 mb-1 ">
             <RecipeForm.AddPhoto
               style={{
@@ -127,9 +88,6 @@ export default function AddRecipe() {
                 height: "12rem",
               }}
               className="photo-add ps-2"
-              image={<RecipeForm.AddPhotoImage />}
-              popup={<RecipeForm.AddPhotoPopup />}
-              button={<RecipeForm.AddPhotoButton />}
             />
             <Col md>
               <Row className="mb-1">
@@ -149,7 +107,6 @@ export default function AddRecipe() {
               </Row>
             </Col>
           </Row>
-
           <Row className="">
             <Col md className="">
               <CategorySelector updatedRecipe={[recipe, setRecipe]} />
@@ -165,7 +122,9 @@ export default function AddRecipe() {
           </Row>
           <Row className="">
             <Col md>
-              <RecipeForm.EditableIngredientTextbox />
+              <RecipeForm.EditableIngredientTextbox
+                setIngredientList={setIngredientList}
+              />
             </Col>
             <Col>
               <RecipeForm.EditableDirectionTextbox />
@@ -180,6 +139,7 @@ export default function AddRecipe() {
                     item={<RecipeForm.EditableIngredientItem />}
                     ingredientList={ingredientList}
                     setIngredientList={setIngredientList}
+                    buttons={<RecipeForm.AddToIngredientListButtons />}
                   />
                   <RecipeForm.EditableDirectionList />
                 </Col>

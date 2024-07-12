@@ -46,20 +46,20 @@ export function EditableIngredientItem({
         <input
           id={ingredient.description}
           type="number"
-          min="0"
+          min=".01"
           step=".01"
-          className="form-check-label"
+          className="form-check-label ingredientAmountInput"
           htmlFor={ingredient.description}
           style={{ width: "3rem" }}
           name={ingredient.description}
           value={
-            ingredient.userG
+            (ingredient.userG
               ? Math.round(ingredient.userG * ingredient.quantity * 100) / 100
               : ingredient.gramConversion
               ? Math.round(
                   ingredient.quantity * ingredient.gramConversion * 100
                 ) / 100
-              : ingredient.quantity
+              : ingredient.quantity) || 1
           }
           onChange={(e) => {
             setRecipe(handleIngredientUpdate(recipe, e));
@@ -80,11 +80,11 @@ export function EditableIngredientItem({
           <AddPriceModal ingredient={ingredient} />
           <EditIngredientModal
             ingredient={ingredient}
-            updatedRecipe={[recipe, setRecipe]}
             color={
               ingredient.gramConversion || ingredient.userG ? "black" : "red"
             }
-            ingredientList={[ingredientList, setIngredientList]}
+            ingredientList={ingredientList}
+            setIngredientList={setIngredientList}
             origIdx={index}
           />
           <DeleteIcon

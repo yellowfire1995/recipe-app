@@ -31,6 +31,8 @@ import { EditableHeaderItem } from "./Multipurpose/Ingredient List/EditableHeade
 import EditableDirectionsList from "./Multipurpose/EditableDirectionList";
 import { EditableDirectionTextbox } from "./Edit Recipe/EditableDirecitonTextbox";
 import { EditableIngredientTextbox } from "./Edit Recipe/EditableIngredientTextbox";
+import { ImportRecipeButton } from "./New Recipe/ImportRecipeButton";
+import { AddToIngredientListButtons } from "./Multipurpose/Ingredient List/AddToIngredientListButtons";
 
 export function RecipeForm({ children, recipe, setRecipe }) {
   return (
@@ -61,6 +63,7 @@ RecipeForm.RemixButton = RemixButton;
 RecipeForm.AddToMealPlannerButton = AddToMealPlannerButton;
 RecipeForm.EditRecipeButton = EditRecipeButton;
 RecipeForm.DeleteRecipeIcon = DeleteRecipeIcon;
+RecipeForm.ImportRecipeButton = ImportRecipeButton;
 
 //Editable recipe options
 RecipeForm.AddPhoto = AddPhoto;
@@ -79,3 +82,4 @@ RecipeForm.EditableHeaderItem = EditableHeaderItem;
 RecipeForm.EditableDirectionList = EditableDirectionsList;
 RecipeForm.EditableDirectionTextbox = EditableDirectionTextbox;
 RecipeForm.EditableIngredientTextbox = EditableIngredientTextbox;
+RecipeForm.AddToIngredientListButtons = AddToIngredientListButtons;

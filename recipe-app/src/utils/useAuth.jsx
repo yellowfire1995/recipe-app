@@ -27,7 +27,9 @@ export const AuthProvider = () => {
       login,
       logout,
     }),
-    [user]
+    [user],
+    login,
+    logout
   );
   return (
     <AuthContext.Provider value={value}>

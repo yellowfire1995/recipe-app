@@ -55,10 +55,7 @@ export async function findMeasureMatch(
     const dbMeasureMatch = foodMeasurements.find((m) =>
       m.measurement.test(dbMeasure)
     );
-    // console.log([
-    //   { userMeasure: [userMeasure, userMeasureMatch] },
-    //   { dbMeasure: [dbMeasure, dbMeasureMatch] },
-    // ]);
+
     if (userMeasureMatch.type == "weight") {
       return userMeasureMatch.conversionFactor;
     } else if (

@@ -1,22 +1,25 @@
 import Container from "react-bootstrap/esm/Container";
-import { AddPhotoContext } from "./AddPhotoContext";
 import { useState } from "react";
+import { AddPhotoButton } from "./AddPhotoButton";
+import { AddPhotoImage } from "./AddPhotoImage";
+import { AddPhotoPopup } from "./AddPhotoPopup";
 
-export function AddPhoto({ image, popup, button, ...props }) {
+export function AddPhoto({ ...props }) {
   const [showPopup, setShowPopup] = useState(false);
 
   return (
-    <AddPhotoContext.Provider value={{ showPopup, setShowPopup }}>
+    <>
+      {" "}
       <Container
         {...props}
         onClick={() => {
-          setShowPopup(!showPopup);
+          setShowPopup(true);
         }}
       >
-        {image}
-        {button}
-        {popup}
+        <AddPhotoImage />
+        <AddPhotoButton />
       </Container>
-    </AddPhotoContext.Provider>
+      <AddPhotoPopup setShowPopup={setShowPopup} showPopup={showPopup} />
+    </>
   );
 }

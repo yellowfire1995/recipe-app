@@ -6,12 +6,9 @@ import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/esm/Container";
-import { useAddPhotoContext } from "./AddPhotoContext";
 
-export function AddPhotoPopup() {
+export function AddPhotoPopup({ setShowPopup, showPopup }) {
   const { recipe, setRecipe } = useRecipeContext();
-  const { showPopup, setShowPopup } = useAddPhotoContext();
-  console.log(showPopup);
   const [photoFile, setPhotoFile] = useState();
   const [photoUrl, setPhotoUrl] = useState(recipe.imgUrl);
   const handleClose = () => {

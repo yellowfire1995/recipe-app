@@ -62,7 +62,11 @@ export async function uploadDualSizesUrlToS3(link) {
 
   const fullImageBuffer = await sharp(buffer).webp().toBuffer();
 
-  console.log(fullImageBuffer);
+  const imageVerification = await sharp(fullImageBuffer).metadata();
+  if (!imageVerification.format) {
+    throw new Error("Invalid Image format");
+  }
+
   const params = {
     Bucket: bucketName,
     Key: key,
@@ -74,7 +78,6 @@ export async function uploadDualSizesUrlToS3(link) {
   await S3.send(command);
 
   const thumbnailBuffer = await sharp(buffer).webp().resize(250).toBuffer();
-  console.log(thumbnailBuffer);
 
   const thumbnailParams = {
     Bucket: bucketName,
@@ -95,6 +98,12 @@ export async function uploadUrlToS3(link) {
       responseType: "arraybuffer",
     });
     let buffer = Buffer.from(response.data, "utf-8");
+
+    const imageVerification = await sharp(buffer).metadata();
+    if (!imageVerification.format) {
+      throw new Error("Invalid Image format");
+    }
+
     const contentType = response.headers["content-type"];
     const params = {
       Bucket: bucketName,

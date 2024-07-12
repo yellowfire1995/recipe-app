@@ -8,11 +8,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import ErrorPage from "./errorpage";
-import { action as filterAction } from "./routes/root.jsx";
 import Recipe from "./routes/Recipes.jsx";
 import Edit from "./routes/edit.jsx";
 import Ingredients from "./routes/ingredients.jsx";
-import AddRecipe from "./routes/import.jsx";
+import AddRecipe from "./routes/Import.jsx";
 import Login from "./routes/login.jsx";
 import PrivateRoutes from "./utils/PrivateRoutes.jsx";
 import { Auth0Provider } from "@auth0/auth0-react";
@@ -35,21 +34,25 @@ export const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
-    element: <PrivateRoutes />,
+    path: "/",
+    element: <Root />,
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/",
-        element: <Root />,
+        element: <Recipe />,
+        path: "recipes/:recipeId",
+      },
+      {
+        path: "recipes",
+        element: <AllRecipes />,
+      },
+      { index: true, element: <Index /> },
+      {
+        element: <PrivateRoutes />,
         errorElement: <ErrorPage />,
-        action: filterAction,
         children: [
-          { index: true, element: <Index /> },
           { path: "planner", element: <Planner /> },
-          {
-            path: "recipes",
-            element: <AllRecipes />,
-          },
+
           {
             path: "collections",
             element: <Collections />,
@@ -58,10 +61,7 @@ const router = createBrowserRouter([
             element: <MyRecipes />,
             path: "myrecipes",
           },
-          {
-            element: <Recipe />,
-            path: "recipes/:recipeId",
-          },
+
           {
             element: <Edit />,
             path: "/recipes/:recipeId/edit",
@@ -92,23 +92,23 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <div>
     <React.StrictMode>
-      <HelmetProvider>
-        <QueryClientProvider client={queryClient}>
-          <Auth0Provider
-            domain={auth0Domain}
-            clientId={auth0ClientId}
-            cacheLocation={"localstorage"}
-            authorizationParams={{
-              redirect_uri: auth0Redirect,
-              audience: auth0Audience,
-              scope:
-                "read:current_user update:current_user_metadata profile email",
-            }}
-          >
+      <Auth0Provider
+        domain={auth0Domain}
+        clientId={auth0ClientId}
+        cacheLocation={"localstorage"}
+        useRefreshTokens={true}
+        authorizationParams={{
+          redirect_uri: auth0Redirect,
+          audience: auth0Audience,
+          scope: "read:current_user update:current_user_metadata profile email",
+        }}
+      >
+        <HelmetProvider>
+          <QueryClientProvider client={queryClient}>
             <RouterProvider router={router} />
-          </Auth0Provider>
-        </QueryClientProvider>
-      </HelmetProvider>
+          </QueryClientProvider>
+        </HelmetProvider>
+      </Auth0Provider>
     </React.StrictMode>
   </div>
 );

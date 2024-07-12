@@ -1,44 +1,37 @@
 import EditIcon from "@mui/icons-material/Edit";
 import { Container } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { parseIngredients } from "../../../../../db/queries";
-import { NutritionFactsTable } from "../../NutritionFacts/NutritionFactsTable";
 import { ImportSelector } from "../../New Recipe/importSelector";
 import { NutritionFacts } from "../../NutritionFacts/NutritionFacts";
+import { useRecipeContext } from "../../RecipeContextProvider";
 
-export default function EditIngredientModal(props) {
-  const origIdx = props.origIdx;
-  const useElement = (id) => document.getElementById(id);
-  const [ingredientList, setIngredientList] = props.ingredientList;
-  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
-  const [ingredient, setIngredient] = useState(props.ingredient);
+export default function EditIngredientModal({
+  ingredient: initialIngredient,
+  origIdx,
+}) {
+  const element = (id) => document.getElementById(id);
+  const { recipe, setRecipe } = useRecipeContext();
   const [show, setShow] = useState(false);
-  const [searchList, setSearchList] = useState([]);
+  const [ingredient, setIngredient] = useState(initialIngredient);
 
   const handleClose = () => {
     setShow(false);
-    setIngredient(props.ingredient);
-    setSearchList([]);
+    setIngredient(initialIngredient);
   };
 
   const handleShow = () => {
-    setIngredient(props.ingredient);
+    setIngredient(ingredient);
     setShow(true);
   };
 
-  useEffect(() => {
-    if (searchList.length > 0) {
-      setIngredient(searchList[0][0]);
-    }
-  }, [searchList]);
-
   function handleSave() {
-    setUpdatedRecipe({
-      ...updatedRecipe,
-      ingredients: updatedRecipe.ingredients.map((recipeIngredient, index) => {
+    setRecipe({
+      ...recipe,
+      ingredients: recipe.ingredients.map((recipeIngredient, index) => {
         if (index == origIdx) {
           return ingredient;
         } else {
@@ -47,16 +40,6 @@ export default function EditIngredientModal(props) {
       }),
     });
 
-    setIngredientList(
-      ingredientList.map((ingredient, index) => {
-        if (index == origIdx) {
-          return searchList[0];
-        } else {
-          return [...ingredient];
-        }
-      })
-    );
-
     handleClose();
   }
 
@@ -64,7 +47,6 @@ export default function EditIngredientModal(props) {
     <>
       <EditIcon onClick={handleShow} className="svg-icon" />
       <Modal
-        {...props}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -148,27 +130,34 @@ export default function EditIngredientModal(props) {
               type="button"
               htmlFor="search"
               onClick={async () => {
-                setSearchList(
-                  await parseIngredients(useElement("searchModal").value)
+                const newArray = await parseIngredients(
+                  element("searchModal").value
                 );
+
+                if (newArray.length > 0) {
+                  console.log(newArray[0][0]);
+                  setIngredient({
+                    ...newArray[0][0],
+                    searchArray: newArray[0],
+                  });
+                }
               }}
             >
               Search
             </Button>
           </Container>
           <br />
-          {ingredientList[origIdx] || searchList.length > 0 ? (
+          {ingredient.searchArray ? (
             <ImportSelector
-              ingredient={[ingredient, setIngredient]}
-              ingredientList={
-                searchList.length > 0 ? searchList[0] : ingredientList[origIdx]
-              }
+              ingredient={ingredient}
+              setIngredient={setIngredient}
+              searchArray={ingredient.searchArray}
               origIdx={origIdx}
             />
           ) : (
             ""
           )}
-          <NutritionFacts ingredientsArray={[ingredient]} servings={1}>
+          <NutritionFacts ingredientArray={[ingredient]} servings={1}>
             <NutritionFacts.Table />
           </NutritionFacts>
         </Modal.Body>

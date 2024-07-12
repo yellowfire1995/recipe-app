@@ -1,4 +1,4 @@
-import { useNutritionFactsContext } from "./NutritionFactsContext";
+import { useRecipeContext } from "../RecipeContextProvider";
 
 function handleServingsUpdate({ recipe, event }) {
   if (!event.target.valueAsNumber) {
@@ -9,20 +9,21 @@ function handleServingsUpdate({ recipe, event }) {
     return {
       ...ingredient,
       quantity:
-        (ingredient.quantity / recipe.servings) * event.target.valueAsNumber,
+        (ingredient.quantity / recipe.servings) * event.target.valueAsNumber ||
+        recipe.servings,
     };
   });
 
   return {
     ...recipe,
-    servings: event.target.valueAsNumber,
-    yieldNumber: yieldRatio * event.target.valueAsNumber,
+    servings: event.target.valueAsNumber || recipe.servings,
+    yieldNumber: yieldRatio * event.target.valueAsNumber || recipe.servings,
     ingredients: updatedIngredients,
   };
 }
 
 export function NutritionFactsHeader() {
-  const { recipe, setRecipe } = useNutritionFactsContext();
+  const { recipe, setRecipe } = useRecipeContext();
 
   return (
     <header className={`performance-facts__header`}>
@@ -38,7 +39,7 @@ export function NutritionFactsHeader() {
           type="number"
           id="servings"
           min="1"
-          value={recipe.servings}
+          defaultValue={recipe.servings}
           onChange={(event) =>
             setRecipe(handleServingsUpdate({ event, recipe }))
           }

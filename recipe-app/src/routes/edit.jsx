@@ -5,16 +5,14 @@ import { getRecipeById } from "../../db/queries";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
 import Button from "react-bootstrap/Button";
-import EditableDirectionsList from "../Components/Recipes/Multipurpose/EditableDirectionList.jsx";
 import CuisineSelector from "../Components/Recipes/Multipurpose/cuisineselector.jsx";
 import CategorySelector from "../Components/Recipes/Multipurpose/categoryselector.jsx";
 import { editRecipe } from "../../db/queries";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { queryClient } from "../main";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "../Components/Loading";
 import Form from "react-bootstrap/Form";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
 import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
 import ErrorHandler from "../Components/Errors/NotFound.jsx";
@@ -27,6 +25,7 @@ export default function Edit() {
   const [recipe, setRecipe] = useState();
   const navigate = useNavigate();
   const { user } = useAuth0();
+  const queryClient = useQueryClient();
 
   const {
     data: loadedRecipe,
@@ -38,7 +37,7 @@ export default function Edit() {
     queryKey: [`Recipe${recipeId}`],
     queryFn: async () => await getRecipeById(recipeId),
     retry: 2,
-    staleTime: Infinity,
+    staleTime: 1000 * 60 * 60 * 24,
   });
 
   useEffect(() => {
@@ -49,21 +48,23 @@ export default function Edit() {
 
   const editor = useMutation({
     mutationFn: (e) => {
-      return editRecipe(e, recipe);
+      e.preventDefault();
+      return editRecipe({ e, recipe });
     },
-    onError: () => {
+    onError: (error) => {
+      console.log(error);
       alert("Error occured! Please try again");
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
         queryKey: ["AllRecipes"],
         refetchType: "all",
       });
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: ["MyRecipes"],
         refetchType: "all",
       });
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: [`Recipe${recipeId}`],
         refetchType: "all",
       });
@@ -88,8 +89,8 @@ export default function Edit() {
         <RecipeForm recipe={recipe} setRecipe={setRecipe}>
           <Form
             onSubmit={(e) => {
-              editor.mutate(e);
               e.preventDefault();
+              editor.mutate(e);
             }}
             encType="multipart/form-data"
           >
@@ -105,9 +106,6 @@ export default function Edit() {
                   height: "12rem",
                 }}
                 className="photo-add ps-2"
-                image={<RecipeForm.AddPhotoImage />}
-                popup={<RecipeForm.AddPhotoPopup />}
-                button={<RecipeForm.AddPhotoButton />}
               />
               <Col md>
                 <Row className="mb-1">
@@ -150,6 +148,7 @@ export default function Edit() {
                       item={<RecipeForm.EditableIngredientItem />}
                       ingredientList={ingredientList}
                       setIngredientList={setIngredientList}
+                      buttons={<RecipeForm.AddToIngredientListButtons />}
                     />
                     <RecipeForm.EditableDirectionList />
                   </Col>

@@ -4,7 +4,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import Form from "react-bootstrap/Form";
-import SearchIcon from "@mui/icons-material/Search";
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
@@ -14,9 +13,11 @@ import Row from "react-bootstrap/esm/Row";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import useLocalStorage from "use-local-storage";
+import { HeaderLinklist } from "./HeaderLinkList";
+import { PopoutMenuLogout } from "./PopoutMenuLogout";
 
 function Header() {
-  const { logout } = useAuth0();
+  const { logout, isAuthenticated, loginWithPopup } = useAuth0();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search");
 
@@ -27,7 +28,7 @@ function Header() {
   );
 
   const switchTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
+    const newTheme = theme == "light" ? "dark" : "light";
     setTheme(newTheme);
   };
   useEffect(() => {
@@ -45,11 +46,7 @@ function Header() {
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav>
-              <Nav.Link href="/recipes">All Recipes</Nav.Link>
-              <Nav.Link href="/myrecipes">Your Recipes</Nav.Link>
-              <Nav.Link href="/newrecipe">Add Recipe </Nav.Link>
-              <Nav.Link href="/planner">Planner </Nav.Link>
-              <Nav.Link href="/collections">Collections</Nav.Link>
+              <HeaderLinklist />
               <hr />
               <h5>Settings</h5>
               <Nav.Item className="my-1">
@@ -62,17 +59,7 @@ function Header() {
                   onChange={switchTheme}
                 />
               </Nav.Item>
-              <Nav.Link href="/profile">Profile</Nav.Link>
-              <Nav.Link
-                className="nav-drop mt-0 pt-0"
-                onClick={() =>
-                  logout({
-                    logoutParams: { returnTo: window.location.origin },
-                  })
-                }
-              >
-                Log Out
-              </Nav.Link>
+              <PopoutMenuLogout />
             </Nav>
           </Offcanvas.Body>
         </Navbar.Offcanvas>
@@ -85,11 +72,7 @@ function Header() {
             </Col>
 
             <Col className=" d-none d-xl-inline-flex flex-grow-1 align-items-center justify-content-evenly nav-text">
-              <Nav.Link href="/recipes">All Recipes</Nav.Link>
-              <Nav.Link href="/myrecipes">Your Recipes</Nav.Link>
-              <Nav.Link href="/collections">Collections</Nav.Link>
-              <Nav.Link href="/planner">Planner </Nav.Link>
-              <Nav.Link href="/newrecipe">Add Recipe </Nav.Link>
+              <HeaderLinklist />
             </Col>
             <Col className="d-flex justify-content-center">
               <Form
@@ -133,14 +116,19 @@ function Header() {
                 align="end"
                 className="nav-drop me-1"
               >
-                <NavDropdown.Item href="/profile" className="nav-drop">
-                  Profile{" "}
-                </NavDropdown.Item>
+                {isAuthenticated ? (
+                  <NavDropdown.Item href="/profile" className="nav-drop">
+                    Profile{" "}
+                  </NavDropdown.Item>
+                ) : (
+                  ""
+                )}
 
                 <NavDropdown.Item
-                  fluid
                   className="d-flex align-items-center justify-content-between nav-drop"
-                  onClick={switchTheme}
+                  onClick={() => {
+                    switchTheme();
+                  }}
                 >
                   {" "}
                   <DarkModeIcon />
@@ -149,22 +137,33 @@ function Header() {
                     className="ms-1"
                     type="checkbox"
                     id="theme-switcher"
-                    checked={theme === "dark" ? true : false}
+                    onChange={(e) => e.preventDefault()}
+                    checked={theme == "dark" ? true : false}
                   />
                 </NavDropdown.Item>
 
                 <hr />
-
-                <NavDropdown.Item
-                  className="nav-drop mt-0 pt-0"
-                  onClick={() =>
-                    logout({
-                      logoutParams: { returnTo: window.location.origin },
-                    })
-                  }
-                >
-                  Log Out
-                </NavDropdown.Item>
+                {isAuthenticated ? (
+                  <NavDropdown.Item
+                    className="nav-drop mt-0 pt-0"
+                    onClick={() =>
+                      logout({
+                        logoutParams: {
+                          returnTo: window.location.origin,
+                        },
+                      })
+                    }
+                  >
+                    Log Out
+                  </NavDropdown.Item>
+                ) : (
+                  <NavDropdown.Item
+                    className="nav-drop mt-0 pt-0"
+                    onClick={loginWithPopup}
+                  >
+                    Log In
+                  </NavDropdown.Item>
+                )}
               </NavDropdown>
             </Col>
           </Nav>

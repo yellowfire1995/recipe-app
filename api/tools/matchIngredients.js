@@ -102,7 +102,7 @@ export async function matchIngredients(ingredients) {
                 userG: weightConversion ? weightConversion : null,
                 nutrients: data.rows[0].nutrients ?? [],
               };
-              console.log(finalIngredient);
+
               return finalIngredient;
             })
           );

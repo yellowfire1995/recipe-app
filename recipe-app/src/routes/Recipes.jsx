@@ -10,10 +10,12 @@ import ErrorHandler from "../Components/Errors/NotFound.jsx";
 import Loading from "../Components/Loading";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
 import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Recipe() {
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState();
+  const { isAuthenticated } = useAuth0();
 
   const {
     data: loadedRecipe,
@@ -21,12 +23,19 @@ export default function Recipe() {
     isLoading,
     error,
     isFetched,
+    refetch,
   } = useQuery({
     queryKey: [`Recipe${recipeId}`],
-    queryFn: async () => await getRecipeById(recipeId),
+    queryFn: async () => {
+      return await getRecipeById(recipeId);
+    },
     retry: 2,
-    staleTime: Infinity,
+    staleTime: 1000 * 60 * 60 * 24,
   });
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, isAuthenticated]);
 
   useEffect(() => {
     if (isFetched) {
@@ -48,11 +57,10 @@ export default function Recipe() {
         <Helmet>
           <title>{recipe.name}</title>
         </Helmet>
-        <RecipeForm recipe={recipe}>
+        <RecipeForm recipe={recipe} setRecipe={setRecipe}>
           <RecipeForm.RecipeHeaderImage />
           <Row className="pt-3">
             <RecipeForm.RecipeHeader
-              price={<RecipeForm.RecipePrice />}
               buttons={
                 <RecipeForm.RecipeHeaderButtons>
                   <RecipeForm.EditRecipeButton />
@@ -71,15 +79,16 @@ export default function Recipe() {
             </Stack>
           </Row>
           <Row>
-            <Col lg="8" className="flex-shrink-1 ">
+            <Col xl="8" className="flex-shrink-1 ">
               <RecipeForm.IngredientList
                 header={<RecipeForm.IngredientListHeader />}
                 item={<RecipeForm.IngredientListItem />}
+                price={<RecipeForm.RecipePrice />}
               />
               <RecipeForm.DirectionList />
             </Col>
-            <Col lg>
-              <NutritionFacts recipe={{ recipe, setRecipe }}>
+            <Col xl>
+              <NutritionFacts>
                 <NutritionFacts.Header />
                 <NutritionFacts.Table />
               </NutritionFacts>

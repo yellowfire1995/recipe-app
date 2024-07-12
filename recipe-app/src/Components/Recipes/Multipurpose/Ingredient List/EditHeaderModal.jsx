@@ -5,8 +5,8 @@ import Modal from "react-bootstrap/Modal";
 
 export default function EditHeaderModal({
   origIdx,
-  updatedRecipe,
-  setUpdatedRecipe,
+  recipe,
+  setRecipe,
   ingredient: originalIngredient,
   ...props
 }) {
@@ -24,9 +24,9 @@ export default function EditHeaderModal({
   };
 
   function handleSave() {
-    setUpdatedRecipe({
-      ...updatedRecipe,
-      ingredients: updatedRecipe.ingredients.map((recipeIngredient, index) => {
+    setRecipe({
+      ...recipe,
+      ingredients: recipe.ingredients.map((recipeIngredient, index) => {
         if (index == origIdx) {
           return ingredient;
         } else {

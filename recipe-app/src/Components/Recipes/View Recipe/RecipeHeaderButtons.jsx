@@ -7,5 +7,5 @@ export function RecipeHeaderButtons({ children }) {
     return <></>;
   }
 
-  return <>{children}</>;
+  return <div className="d-flex gap-1">{children}</div>;
 }
