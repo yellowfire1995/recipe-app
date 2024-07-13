@@ -12,8 +12,6 @@ export default function RecipeCards(props) {
   const page = searchParams.get("page");
   const searchQuery = searchParams.get("search");
 
-  console.log(searchQuery == null);
-
   const previousPageParams =
     searchQuery == null
       ? {
@@ -33,8 +31,6 @@ export default function RecipeCards(props) {
           page: page ? (parseInt(page) + 1).toString() : "2",
           search: searchQuery,
         };
-
-  console.log(nextPageParams);
 
   const cardsQuery = useQuery({
     queryKey: [props.queryKey, page, searchQuery],

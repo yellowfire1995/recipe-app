@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import getPrice from "../../tools/scrapeprice.js";
+import getPrice from "../../../../tools/webscraping/scrapeprice.js";
 
 router.post("/", async (req, res) => {
   try {

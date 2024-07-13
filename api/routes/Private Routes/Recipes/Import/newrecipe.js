@@ -1,18 +1,18 @@
 import express from "express";
 const router = express.Router();
-import db from "../../database/db.js";
+import db from "../../../../database/db.js";
 import {
   resizeAndUploadFileToS3,
   uploadDualSizesUrlToS3,
   uploadFileToS3,
-} from "../../tools/aws.js";
+} from "../../../../tools/aws/aws.js";
 import multer from "multer";
-import { getUserId } from "../../tools/getUserId.js";
+import { getUserId } from "../../../../tools/auth/getUserId.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-router.post("/", getUserId, upload.single("photo"), async (req, res) => {
+router.post("/", upload.single("photo"), getUserId, async (req, res) => {
   try {
     console.log(req.user);
     let recipe = JSON.parse(req.body.updatedRecipe);
@@ -73,7 +73,7 @@ router.post("/", getUserId, upload.single("photo"), async (req, res) => {
         JSON.stringify(recipe.directions),
         JSON.stringify(recipe.ingredients),
         JSON.stringify(recipe.category),
-        req.user.sub,
+        req.auth.payload.sub,
         req.user.nickname,
         recipe.yieldNumber,
         recipe.yieldDescription,

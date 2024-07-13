@@ -1,7 +1,7 @@
 import { findMeasureMatch } from "./findMeasureMatch.js";
 import "dotenv/config";
-import db from "../database/db.js";
-import { searchSolr } from "./searchSolr.js";
+import db from "../../database/db.js";
+import { searchSolr } from "../solr/searchSolr.js";
 import { v4 as uuidv4 } from "uuid";
 
 export async function matchIngredients(ingredients) {

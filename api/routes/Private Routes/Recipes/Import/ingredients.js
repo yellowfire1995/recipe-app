@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
-import preprocessIngredients from "../../tools/preprocessIngredients.js";
-import { matchIngredients } from "../../tools/matchIngredients.js";
+import preprocessIngredients from "../../../../tools/recipe parsing/preprocessIngredients.js";
+import { matchIngredients } from "../../../../tools/recipe parsing/matchIngredients.js";
 
 router.post("/ingredients", async (req, res) => {
   try {
@@ -10,8 +10,7 @@ router.post("/ingredients", async (req, res) => {
     const ingredientArray = await matchIngredients(formatedIngredientList);
     res.json(ingredientArray);
   } catch (error) {
-    console.error(error);
-    res.json(["An error occured, please try again."]);
+    console.log(error);
   }
 });
 

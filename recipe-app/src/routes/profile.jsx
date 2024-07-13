@@ -23,8 +23,6 @@ export default function Profile() {
   const { user } = useAuth0();
   const [nickname, setNickname] = useState(user.nickname);
 
-  console.log(user);
-
   return (
     <>
       {" "}

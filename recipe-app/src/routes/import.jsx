@@ -18,19 +18,6 @@ export default function AddRecipe() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
 
-  const recipeFetch = useQuery({
-    queryKey: [`RecipeCopy${params.get("copy")}`],
-    queryFn: () => getRecipeById(params.get("copy")),
-    staleTime: Infinity,
-    enabled: params.get("copy") != undefined,
-  });
-
-  useEffect(() => {
-    if (recipeFetch.status === "success") {
-      setRecipe(recipeFetch.data[0]);
-    }
-  }, [recipeFetch.status, recipeFetch.data]);
-
   const [ingredientList, setIngredientList] = useState([]);
   const [recipe, setRecipe] = useState({
     name: "",
@@ -42,6 +29,23 @@ export default function AddRecipe() {
     category: [],
     public: true,
   });
+
+  const recipeFetch = useQuery({
+    queryKey: [`RecipeCopy${params.get("copy")}`],
+    queryFn: async () => {
+      const recipe = await getRecipeById(params.get("copy"));
+
+      return { ...recipe[0], name: `Copy of ${recipe[0].name}` };
+    },
+    staleTime: Infinity,
+    enabled: params.get("copy") != undefined,
+  });
+
+  useEffect(() => {
+    if (recipeFetch.status === "success") {
+      setRecipe(recipeFetch.data);
+    }
+  }, [recipeFetch.status, recipeFetch.data]);
 
   const mutation = useMutation({
     mutationFn: () => {
@@ -161,7 +165,7 @@ export default function AddRecipe() {
           </Row>
           <Row className="justify-content-center">
             <Col lg={6}>
-              <NutritionFacts recipe={{ recipe, setRecipe }}>
+              <NutritionFacts>
                 <NutritionFacts.Table />
               </NutritionFacts>
             </Col>

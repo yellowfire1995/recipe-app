@@ -1,11 +1,12 @@
 import { useRecipeContext } from "../RecipeContextProvider";
+import Col from "react-bootstrap/esm/Col.js";
 
 export function RecipeCredit() {
   const { recipe } = useRecipeContext();
   return (
     <>
-      <a href={recipe.url}>Original Recipe</a>
-      {recipe.nickname}&apos;s recipe
+      <Col>{recipe.url ? <a href={recipe.url}>Original Recipe</a> : ""}</Col>
+      <Col className="text-end">{recipe.nickname}&apos;s recipe</Col>
     </>
   );
 }

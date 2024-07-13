@@ -1,9 +1,8 @@
 import express from "express";
 const router = express.Router();
-import db from "../../database/db.js";
-import { checkJwt, getUserId } from "../../tools/getUserId.js";
+import db from "../../../database/db.js";
 
-router.get("/recipes", checkJwt, async (req, res) => {
+router.get("/recipes", async (req, res) => {
   try {
     const query = {
       text: `select
@@ -33,10 +32,13 @@ router.get("/recipes", checkJwt, async (req, res) => {
       collection_id = c.id
   join recipes r on
       r.recipe_id = rc.recipe_id
+  where rc.user = $1
   group by
       c."name",
       c.id
+
   `,
+      values: [req.auth.payload.sub],
     };
     const data = await db.query(query);
     const cardData = data.rows.map((collection) => {
@@ -59,12 +61,12 @@ router.get("/recipes", checkJwt, async (req, res) => {
   }
 });
 
-router.get("/names", getUserId, async (req, res) => {
+router.get("/names", async (req, res) => {
   try {
     const query = {
       text: `select * from collections c 
       where c.user = $1`,
-      values: [req.user.sub],
+      values: [req.auth.payload.sub],
     };
     const data = await db.query(query);
     res.send(data.rows);
@@ -73,7 +75,7 @@ router.get("/names", getUserId, async (req, res) => {
   }
 });
 
-router.post("/add/recipe/:recipeId", checkJwt, async (req, res) => {
+router.post("/add/recipe/:recipeId", async (req, res) => {
   try {
     if (req.body.collection.customOption) {
       const query = {
@@ -114,7 +116,7 @@ router.post("/add/recipe/:recipeId", checkJwt, async (req, res) => {
 
 router.delete(
   "/delete/collection/:collectionId",
-  checkJwt,
+
   async (req, res) => {
     try {
       const query = {
@@ -131,7 +133,7 @@ router.delete(
   }
 );
 
-router.delete("/delete/recipe", checkJwt, async (req, res) => {
+router.delete("/delete/recipe", async (req, res) => {
   try {
     const query = {
       text: `delete from recipe_collections 
@@ -146,7 +148,7 @@ router.delete("/delete/recipe", checkJwt, async (req, res) => {
   }
 });
 
-router.post("/edit", checkJwt, async (req, res) => {
+router.post("/edit", async (req, res) => {
   try {
   } catch (error) {
     console.log(error);

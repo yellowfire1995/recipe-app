@@ -14,7 +14,7 @@ export default function ChangeMealDay(props) {
     month: "2-digit",
     day: "2-digit",
   };
-  console.log(new Date(dateObject).toLocaleDateString("en-CA"));
+
   const [show, setShow] = useState(false);
   const changeMealDate = useMutation({
     mutationFn: () =>
@@ -35,8 +35,6 @@ export default function ChangeMealDay(props) {
 
   function handleSave() {
     if (document.getElementById("date").value) {
-      console.log(planId);
-
       changeMealDate.mutate(planId, document.getElementById("date").value);
     } else {
       alert("Please choose a date.");

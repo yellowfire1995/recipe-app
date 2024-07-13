@@ -1,11 +1,10 @@
 import express from "express";
 import axios from "axios";
 import "dotenv/config";
-import getManagementToken from "./managementToken.js";
+import getManagementToken from "../../../tools/auth/managementToken.js";
 const _ = process.env;
 const router = express.Router();
-import db from "../../database/db.js";
-import { getUserId } from "../../tools/getUserId.js";
+import db from "../../../database/db.js";
 
 let refreshToken = {};
 
@@ -13,7 +12,7 @@ if (_.ENV == "production") {
   refreshToken = await getManagementToken();
 }
 
-router.patch("/", getUserId, async (req, res) => {
+router.patch("/", async (req, res) => {
   const token = _.AUTH0_DEV_MGT_TOKEN;
 
   if (_.ENV == "production") {
@@ -26,7 +25,7 @@ router.patch("/", getUserId, async (req, res) => {
 
   try {
     const updateAuth0 = await axios.patch(
-      `${_.AUTH0_AUDIENCE}users/${req.user.sub}`,
+      `${_.AUTH0_AUDIENCE}users/${req.auth.payload.sub}`,
       { nickname: req.body.nickname },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -34,7 +33,7 @@ router.patch("/", getUserId, async (req, res) => {
       text: ` UPDATE recipes
         SET nickname = $1
         WHERE author = $2   `,
-      values: [req.body.nickname, req.user.sub],
+      values: [req.body.nickname, req.payload.auth.sub],
     };
     const updateDb = await db.query(query);
     res.send(updateAuth0.data);

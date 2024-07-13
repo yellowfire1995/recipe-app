@@ -28,8 +28,6 @@ export async function deleteRecipe(recipeId, recipe) {
       `${server}/recipes/${recipeId}/delete`,
       { data: recipe }
     );
-
-    console.log(deletedRecipe);
   } catch (error) {
     console.error(error);
   }
@@ -38,6 +36,7 @@ export async function deleteRecipe(recipeId, recipe) {
 //Edit Recipe
 export async function editRecipe({ e, recipe }) {
   e.preventDefault();
+  console.log(recipe);
   try {
     const formData = new FormData();
     if (recipe.imgFile) {
@@ -99,7 +98,7 @@ export async function ingredientSearch(e, search) {
         },
       }
     );
-    console.log(listIngredients.data);
+
     return listIngredients.data;
   } catch (error) {
     console.error(error);
@@ -139,7 +138,7 @@ export async function parseIngredients(ingredients) {
     );
     return ingredientsArray.data;
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 }
 
@@ -291,7 +290,7 @@ export async function deleteCollection(collection) {
 export async function deleteCollectionRecipe(arrayOfRecipes) {
   try {
     const arrayOfIds = arrayOfRecipes.map((recipe) => recipe.key);
-    console.log(arrayOfIds);
+
     const deleteCollectionRecipe = await httpClient.delete(
       `${server}/collections/delete/recipe`,
       { data: { ids: arrayOfIds } }
@@ -300,31 +299,6 @@ export async function deleteCollectionRecipe(arrayOfRecipes) {
   } catch (error) {
     console.log("ERROR!");
     return Promise.reject(401);
-  }
-}
-
-//Get all cuisines for sidebar filter list
-export async function getSidebarCuisines() {
-  try {
-    const sidebarCuisines = await httpClient.get(`${server}/sidebarcuisines`);
-
-    return sidebarCuisines.data;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-//Get nutrition info for recipes page
-
-export async function getNutritionInfo(recipeId) {
-  try {
-    const nutritionInfo = await httpClient.get(
-      `${server}/nutrition/${recipeId}`
-    );
-
-    return nutritionInfo.data[0];
-  } catch (error) {
-    console.error(error);
   }
 }
 
@@ -340,7 +314,7 @@ export async function scrapeRecipe(url) {
         },
       }
     );
-    console.log(recipe);
+
     return recipe.data;
   } catch (error) {
     console.error(error);

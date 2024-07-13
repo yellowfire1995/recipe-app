@@ -16,7 +16,6 @@ export default function Collections() {
   });
 
   if (collections.isError) {
-    console.log(collections.error);
     return <div>Recipe not found</div>;
   }
 

@@ -12,11 +12,11 @@ export default async function getPrice(url) {
   const context = browser.defaultBrowserContext();
   await context.overridePermissions(url, ["geolocation"]);
   const page = await browser.newPage();
-  console.log("page launched");
+
   page.setUserAgent(ua);
   await page.setGeolocation({ latitude: 43.16063, longitude: -85.69073 });
   page.goto(url);
-  console.log("page loaded");
+
   page.setViewport({ width: 1080, height: 1024 });
 
   if (url.match(/walmart/)) {

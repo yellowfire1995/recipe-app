@@ -1,31 +1,18 @@
 import express from "express";
 const router = express.Router();
-import db from "../../database/db.js";
-import axios from "axios";
+import db from "../../../../database/db.js";
 import multer from "multer";
 import {
   resizeAndUploadFileToS3,
   uploadDualSizesUrlToS3,
   uploadFileToS3,
-} from "../../tools/aws.js";
+} from "../../../../tools/aws/aws.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage, limits: { fileSize: 5242880 } });
 
 export async function checkAuth(req, res, next) {
   try {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: process.env.AUTH0_VERIFY,
-      headers: {
-        Accept: "application/json",
-        Authorization: `${req.headers.authorization}`,
-      },
-    };
-
-    const activeUser = await axios.request(config);
-
     const recipe = JSON.parse(req.body.recipe);
 
     const query = {
@@ -35,10 +22,10 @@ export async function checkAuth(req, res, next) {
 
     let data = await db.query(query);
 
-    if (data.rows[0].author == activeUser.data.sub) {
+    if (data.rows[0].author == req.auth.payload.sub) {
       next();
     } else {
-      res.status(403).send("Unauthorized");
+      res.status(401).send("Unauthorized");
     }
   } catch (error) {
     console.error(error);

@@ -12,7 +12,6 @@ export function EditableIngredientTextbox() {
 
   async function getIngredientChoices() {
     const choices = await parseIngredients(ingredients);
-    console.log(choices);
 
     setRecipe({
       ...recipe,
@@ -23,8 +22,6 @@ export function EditableIngredientTextbox() {
 
     return choices;
   }
-
-  console.log(recipe.ingredients);
 
   return (
     <>

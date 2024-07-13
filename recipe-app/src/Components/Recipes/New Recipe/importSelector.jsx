@@ -53,7 +53,6 @@ export function ImportSelector({
             return (
               <option
                 value={choice.id}
-                index={idx}
                 key={`${origIdx}${idx}`}
                 id={idx}
                 style={{

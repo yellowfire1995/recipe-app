@@ -10,15 +10,18 @@ export function RecipeHeader({ price, buttons, credit }) {
       <Row>
         <Col className="d-flex justify-content-between">{credit}</Col>
       </Row>
-      <Col className="d-flex flex-wrap">
-        <Col xl={8} className="d-flex ">
-          <h2>{recipe.name}</h2>
-        </Col>
-        <Col className="flex-grow-1">{buttons}</Col>
+      <Row>
+        {" "}
+        <Col className="d-flex flex-wrap">
+          <Col xl={8} className="d-flex ">
+            <h2>{recipe.name}</h2>
+          </Col>
+          <Col className="text-nowrap">{buttons}</Col>
 
-        <hr />
-        <div className="d-flex">{price}</div>
-      </Col>
+          <hr />
+          <div className="d-flex">{price}</div>
+        </Col>
+      </Row>
     </>
   );
 }

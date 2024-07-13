@@ -12,6 +12,7 @@ export function EditableYieldNumber() {
           type="number"
           id="yieldNumber"
           min="0"
+          step=".1"
           value={recipe.yieldNumber ?? ""}
           onChange={(e) =>
             setRecipe({

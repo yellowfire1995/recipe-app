@@ -2,25 +2,24 @@ import helmet from "helmet";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import { auth } from "express-oauth2-jwt-bearer";
 
-import nutritionRoute from "./routes/specific recipes/nutrition.js";
-import newRecipeRoute from "./routes/specific recipes/newrecipe.js";
-import ingredientsRoute from "./routes/specific recipes/ingredients.js";
-import editRoute from "./routes/specific recipes/edit.js";
-import recipeCardsRoute from "./routes/all recipes/recipecards.js";
-import recipesRoute from "./routes/specific recipes/recipes.js";
-import cuisineRouter from "./routes/all recipes/cuisines.js";
-import categoryRouter from "./routes/all recipes/categories.js";
-import sidebarCuisinesRoute from "./routes/all recipes/sidebarcuisines.js";
-import importDirectionsRoute from "./routes/import/directions.js";
-import importIngredientsRoute from "./routes/import/ingredients.js";
-import auth0Route from "./routes/auth/auth0.js";
-import myRecipesRoute from "./routes/specific recipes/myrecipes.js";
-import getPriceRoute from "./routes/specific recipes/getprice.js";
-import scrapeRecipeRoute from "./routes/import/scrapeRecipe.js";
-import uploadPhotoRoute from "./routes/specific recipes/photos.js";
-import collectionsRoute from "./routes/all recipes/collections.js";
-import plannerRoute from "./routes/all recipes/planner.js";
+import newRecipeRoute from "./routes/Private Routes/Recipes/Import/newrecipe.js";
+import ingredientsRoute from "./routes/Private Routes/Recipes/ingredients.js";
+import editRoute from "./routes/Private Routes/Recipes/Edit/edit.js";
+import recipeCardsRoute from "./routes/Public Routes/recipecards.js";
+import recipesRoute from "./routes/Public Routes/recipes.js";
+import cuisineRouter from "./routes/Private Routes/Recipes/cuisines.js";
+import categoryRouter from "./routes/Private Routes/Recipes/categories.js";
+import importDirectionsRoute from "./routes/Private Routes/Recipes/Import/directions.js";
+import importIngredientsRoute from "./routes/Private Routes/Recipes/Import/ingredients.js";
+import auth0Route from "./routes/Private Routes/Auth/auth0.js";
+import myRecipesRoute from "./routes/Private Routes/Recipes/myrecipes.js";
+import getPriceRoute from "./routes/Private Routes/Recipes/Scrape/getprice.js";
+import scrapeRecipeRoute from "./routes/Private Routes/Recipes/Scrape/scrapeRecipe.js";
+import uploadPhotoRoute from "./routes/Private Routes/Recipes/photos.js";
+import collectionsRoute from "./routes/Private Routes/UserLists/collections.js";
+import plannerRoute from "./routes/Private Routes/UserLists/planner.js";
 
 const ENV = process.env;
 const app = express();
@@ -42,18 +41,24 @@ app.use(cors());
 app.use(helmet());
 app.use(bodyParser.json());
 
-app.use("/nutrition", nutritionRoute);
-app.use("/newrecipe", newRecipeRoute);
-app.use("/ingredients", ingredientsRoute);
-app.use("/edit", editRoute);
 app.use("/recipecards", recipeCardsRoute);
 app.use("/recipes", recipesRoute);
-app.use("/categories", categoryRouter);
-app.use("/cuisines", cuisineRouter);
-app.use("/sidebarcuisines", sidebarCuisinesRoute);
+
+app.use(
+  auth({
+    audience: [process.env.AUTH0_AUDIENCE, process.env.AUTH0_VERIFY],
+    issuerBaseURL: process.env.AUTH0_BASEURL,
+  })
+);
+
 app.use("/import", importDirectionsRoute);
 app.use("/import", importIngredientsRoute);
 app.use("/import", scrapeRecipeRoute);
+app.use("/categories", categoryRouter);
+app.use("/cuisines", cuisineRouter);
+app.use("/newrecipe", newRecipeRoute);
+app.use("/ingredients", ingredientsRoute);
+app.use("/edit", editRoute);
 app.use("/profile", auth0Route);
 app.use("/myrecipes", myRecipesRoute);
 app.use("/getPrice", getPriceRoute);

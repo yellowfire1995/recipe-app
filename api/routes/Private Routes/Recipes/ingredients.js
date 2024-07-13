@@ -1,9 +1,8 @@
 import express from "express";
 const router = express.Router();
-import db from "../../database/db.js";
+import db from "../../../database/db.js";
 import "dotenv/config";
-import { getUserId } from "../../tools/getUserId.js";
-import { searchSolr } from "../../tools/searchSolr.js";
+import { searchSolr } from "../../../tools/solr/searchSolr.js";
 
 router.post("/search", async (req, res) => {
   try {
@@ -43,7 +42,7 @@ router.post("/search", async (req, res) => {
         return data.rows[0];
       })
     );
-    console.log(ingredients);
+
     res.json(ingredients);
   } catch (error) {
     res.send(error);
@@ -56,7 +55,6 @@ router.post("/import", async (req, res) => {
 
   try {
     const searchResult = await searchSolr(req.body.ingredient);
-    console.log(searchResult);
 
     const query = {
       text: `SELECT description, food.fdc_id, case 
@@ -87,7 +85,7 @@ router.post("/import", async (req, res) => {
   }
 });
 
-router.post("/price", getUserId, async (req, res) => {
+router.post("/price", async (req, res) => {
   let data;
   const i = req.body;
 
@@ -98,7 +96,7 @@ router.post("/price", getUserId, async (req, res) => {
         ;
   
         `,
-      values: [i.fdc_id, i.pkgGrms, i.pkgCost, i.url, req.user.sub],
+      values: [i.fdc_id, i.pkgGrms, i.pkgCost, i.url, req.auth.payload.sub],
     };
     data = await db.query(query);
 

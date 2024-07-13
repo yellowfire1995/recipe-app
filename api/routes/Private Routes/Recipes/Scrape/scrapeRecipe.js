@@ -1,7 +1,5 @@
 import express from "express";
-import axios from "axios";
-import qs from "qs";
-import getRecipe from "../../tools/scraperecipe.js";
+import getRecipe from "../../../../tools/webscraping/scraperecipe.js";
 const router = express.Router();
 
 router.post("/scrape", async (req, res) => {

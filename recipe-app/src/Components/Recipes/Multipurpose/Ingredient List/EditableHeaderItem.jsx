@@ -29,14 +29,11 @@ export function EditableHeaderItem({
       }}
       onDragEnter={() => {
         handleDragOver(index);
-        console.log("header drag entered");
       }}
       onDragOver={(e) => {
-        console.log("header dragged over");
         e.preventDefault();
       }}
       onDrop={() => {
-        console.log("header dropped");
         handleDragStop();
       }}
       onDragEnd={() => {

@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import parseDirections from "../../tools/parseDirections.js";
+import parseDirections from "../../../../tools/recipe parsing/parseDirections.js";
 
 router.post("/directions", async (req, res) => {
   try {

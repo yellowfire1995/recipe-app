@@ -1,10 +1,8 @@
 import express from "express";
 const router = express.Router();
-import db from "../../database/db.js";
-import { checkJwt } from "../../tools/getUserId.js";
+import db from "../../../database/db.js";
 
-router.get("/", checkJwt, async (req, res) => {
-  console.log("authorized!");
+router.get("/", async (req, res) => {
   const auth = req.auth;
   try {
     const sqlSearch =

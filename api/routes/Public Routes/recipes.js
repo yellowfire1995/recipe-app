@@ -1,5 +1,75 @@
-select
-	recipe_id,
+import express from "express";
+const router = express.Router();
+import db from "../../database/db.js";
+import axios from "axios";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { deleteFromS3 } from "../../tools/aws/aws.js";
+
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accessKey = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const S3 = new S3Client({
+  credentials: {
+    secretAccessKey: secretAccessKey,
+    accessKeyId: accessKey,
+  },
+  region: bucketRegion,
+});
+
+async function checkAuth(req, res, next) {
+  try {
+    if (req.headers.authorization) {
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: process.env.AUTH0_VERIFY,
+        headers: {
+          Accept: "application/json",
+          Authorization: `${req.headers.authorization}`,
+        },
+      };
+
+      const query = {
+        text: `SELECT author, public FROM RECIPES where recipe_id = $1`,
+        values: [req.params.recipeId],
+      };
+
+      let data = await db.query(query);
+      const activeUser = await axios.request(config);
+
+      if (data.rows[0].author == activeUser.data.sub || data.rows[0].public) {
+        req.body = { user: activeUser.data.sub };
+        next();
+      } else {
+        res.status(401).send("Unauthorized");
+      }
+    } else {
+      const query = {
+        text: `SELECT public FROM RECIPES where recipe_id = $1`,
+        values: [req.params.recipeId],
+      };
+
+      let data = await db.query(query);
+
+      if (data.rows[0].public) {
+        next();
+      } else {
+        res.status(401).send("Unauthorized");
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    res.status;
+  }
+}
+
+router.get("/:recipeId", checkAuth, async (req, res) => {
+  try {
+    const query = {
+      text: ` select
+	recipe_id as "recipeId",
 	NAME,
 	img_url as "imgUrl",
 	img_url as "imgName",
@@ -110,11 +180,13 @@ select
 		'url',
 		fps.url,
 		'order',
-		"order")),
+		"order",
+    'isGroupHeader',
+    header) order by "order"),
 		'[]')
 	from
 		ingredients
-	join food
+  	left join food
                 on
 		ingredients.fdc_id = food.fdc_id
 	join recipes
@@ -170,7 +242,8 @@ select
                 on
 		um.fdc_id = ingredients.fdc_id
 	where
-		recipes.recipe_id = $1 ) as ingredients,
+		recipes.recipe_id = $1
+     ) as ingredients,
 	(
 	select
 		coalesce(json_agg(d.*
@@ -191,4 +264,59 @@ where
 	and (recipes.public
 		or recipes.author = $2 )
 group by
-	recipes.recipe_id ;
+	recipes.recipe_id ; `,
+
+      values: [req.params.recipeId, req.body?.user],
+    };
+
+    let data = await db.query(query);
+
+    if (data.rows.length < 1) {
+      throw new Error("Recipe not found or is private");
+    }
+
+    if (
+      data.rows[0].imgUrl !== null &&
+      !data.rows[0].imgUrl.match(/.*(http).*/g)
+    ) {
+      data.rows[0].imgUrl =
+        "https://d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
+      data.rows[0].originalUrl =
+        "https://d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
+    }
+
+    res.send(data.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(404).send("Recipe not found");
+  }
+});
+
+router.delete("/:recipeId/delete", checkAuth, async (req, res) => {
+  try {
+    const query = {
+      text: `DELETE FROM recipes WHERE recipe_id = $1;
+      `,
+      values: [req.params.recipeId],
+    };
+
+    if (
+      req.body.imgUrl !== null &&
+      req.body.thumbnail !== null &&
+      req.body.imgUrl.match(/.*(cloudfront).*/g) &&
+      req.body.thumbnail.match(/.*(cloudfront).*/g)
+    ) {
+      await deleteFromS3(req.body.imgName);
+      await deleteFromS3(req.body.thumbnailName);
+    }
+
+    await db.query(query);
+
+    res.send(`Recipe has been deleted`);
+  } catch (error) {
+    res.send("ERROR");
+    console.log(error);
+  }
+});
+
+export default router;

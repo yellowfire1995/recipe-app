@@ -1,5 +1,5 @@
 import express from "express";
-import { checkAuth } from "./edit.js";
+
 import {
   S3Client,
   PutObjectCommand,

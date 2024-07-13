@@ -6,9 +6,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Loading from "../Components/Loading.jsx";
 
 export default function App() {
-  const { getAccessTokenSilently, isLoading, isAuthenticated } = useAuth0();
+  const { getAccessTokenSilently, isLoading, isAuthenticated, error } =
+    useAuth0();
 
   if (isLoading) {
+    console.log("loading...");
     return (
       <>
         <Header />
@@ -17,7 +19,12 @@ export default function App() {
     );
   }
 
+  if (error) {
+    console.log(error);
+  }
+
   if (!isLoading) {
+    console.log("loaded auth");
     addAccessTokenInterceptor({ getAccessTokenSilently, isAuthenticated });
     return (
       <>

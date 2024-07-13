@@ -1,9 +1,8 @@
 import express from "express";
 const router = express.Router();
-import db from "../../database/db.js";
-import { checkJwt, getUserId } from "../../tools/getUserId.js";
+import db from "../../../database/db.js";
 
-router.get("/recipes", checkJwt, async (req, res) => {
+router.get("/recipes", async (req, res) => {
   try {
     const query = {
       text: `select
@@ -61,7 +60,7 @@ group by
   }
 });
 
-router.post("/add/recipe/:recipeId", checkJwt, async (req, res) => {
+router.post("/add/recipe/:recipeId", async (req, res) => {
   console.log(req);
   try {
     const query = {
@@ -77,7 +76,7 @@ router.post("/add/recipe/:recipeId", checkJwt, async (req, res) => {
   }
 });
 
-router.delete("/delete/:plannerId", checkJwt, async (req, res) => {
+router.delete("/delete/:plannerId", async (req, res) => {
   try {
     const query = {
       text: ` delete from planner
@@ -107,7 +106,7 @@ router.delete("/delete/:plannerId", checkJwt, async (req, res) => {
 //   }
 // });
 
-router.post("/edit", checkJwt, async (req, res) => {
+router.post("/edit", async (req, res) => {
   try {
     const query = {
       text: ` update planner

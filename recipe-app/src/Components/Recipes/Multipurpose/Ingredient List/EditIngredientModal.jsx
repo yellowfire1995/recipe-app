@@ -56,7 +56,7 @@ export default function EditIngredientModal({
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Set density for {ingredient.description} {origIdx}
+            Set density for {ingredient.description}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -69,7 +69,7 @@ export default function EditIngredientModal({
                 ? ingredient.userLabel
                 : ingredient.unitOfMeasure
                 ? ingredient.unitOfMeasure
-                : ingredient.engLabel
+                : ingredient.engLabel || ""
             }
             onChange={(e) =>
               setIngredient({ ...ingredient, userLabel: e.target.value })
@@ -87,7 +87,7 @@ export default function EditIngredientModal({
             value={
               Math.round(
                 (1 / (ingredient.userG || ingredient.gramConversion)) * 100
-              ) / 100
+              ) / 100 || ""
             }
             onChange={(e) =>
               setIngredient({
@@ -135,7 +135,6 @@ export default function EditIngredientModal({
                 );
 
                 if (newArray.length > 0) {
-                  console.log(newArray[0][0]);
                   setIngredient({
                     ...newArray[0][0],
                     searchArray: newArray[0],

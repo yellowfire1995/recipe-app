@@ -1,7 +1,6 @@
 import express from "express";
 const router = express.Router();
 import db from "../../database/db.js";
-import { checkJwt } from "../../tools/getUserId.js";
 
 router.get("/", async (req, res) => {
   try {
