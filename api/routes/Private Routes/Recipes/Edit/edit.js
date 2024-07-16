@@ -121,7 +121,7 @@ router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
         JSON.stringify(recipe.category),
         isNaN(recipe.yieldNumber) ? null : recipe.yieldNumber,
         recipe.yieldDescription == "" ? null : recipe.yieldDescription,
-        thumbnailKey,
+        thumbnailKey || recipe.thumbnail,
         recipe.public,
       ],
     };

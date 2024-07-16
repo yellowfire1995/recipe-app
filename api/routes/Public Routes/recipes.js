@@ -300,6 +300,8 @@ router.delete("/:recipeId/delete", checkAuth, async (req, res) => {
       values: [req.params.recipeId],
     };
 
+    await db.query(query);
+
     if (
       req.body.imgUrl !== null &&
       req.body.thumbnail !== null &&
@@ -309,8 +311,6 @@ router.delete("/:recipeId/delete", checkAuth, async (req, res) => {
       await deleteFromS3(req.body.imgName);
       await deleteFromS3(req.body.thumbnailName);
     }
-
-    await db.query(query);
 
     res.send(`Recipe has been deleted`);
   } catch (error) {

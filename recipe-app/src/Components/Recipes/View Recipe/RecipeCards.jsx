@@ -6,6 +6,7 @@ import Row from "react-bootstrap/esm/Row";
 import { useSearchParams } from "react-router-dom";
 import Loading from "../../Loading.jsx";
 import RecipeCardData from "./RecipeCard.jsx";
+import { useEffect } from "react";
 
 export default function RecipeCards(props) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,7 +33,7 @@ export default function RecipeCards(props) {
           search: searchQuery,
         };
 
-  const cardsQuery = useQuery({
+  const { isLoading, refetch, isAuthenticated, data, isError } = useQuery({
     queryKey: [props.queryKey, page, searchQuery],
     queryFn: async () =>
       await props.fetcher({
@@ -41,19 +42,23 @@ export default function RecipeCards(props) {
       }),
   });
 
-  if (cardsQuery.isError) {
+  useEffect(() => {
+    refetch();
+  }, [refetch, isAuthenticated]);
+
+  if (isError) {
     return <div>An error has occured</div>;
   }
 
   return (
     <>
-      {cardsQuery.isLoading ? (
+      {isLoading ? (
         <Loading />
       ) : (
         <Container>
           <Row>
             <Col className="d-flex flex-wrap justify-content-center">
-              <RecipeCardData cards={cardsQuery.data.data} />
+              <RecipeCardData cards={data.data} />
             </Col>
           </Row>
           <Row className="w-100">
@@ -67,7 +72,7 @@ export default function RecipeCards(props) {
                 Previous Page
               </Button>
               <Button
-                className={`${cardsQuery.data.lastPage ? "d-none" : " "}`}
+                className={`${data.lastPage ? "d-none" : " "}`}
                 onClick={() => setSearchParams(nextPageParams)}
               >
                 Next page

@@ -38,17 +38,18 @@ export default function Recipe() {
   }, [refetch, isAuthenticated]);
 
   useEffect(() => {
-    if (isFetched) {
+    if (isFetched && !isError && loadedRecipe) {
       setRecipe(loadedRecipe[0]);
     }
-  }, [loadedRecipe, isFetched]);
-
-  if (isError) {
-    return <ErrorHandler error={error} />;
-  }
+  }, [loadedRecipe, isFetched, isError, isAuthenticated]);
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (isError) {
+    console.log(error);
+    return <ErrorHandler error={error} />;
   }
 
   if (recipe && isFetched) {

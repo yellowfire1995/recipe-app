@@ -11,7 +11,7 @@ export function ImportSelector({
       <div className="d-inline-flex align-items-center">
         <Form.Control
           required
-          key={`input${origIdx}`}
+          key={`input${origIdx}${ingredient.quantity}`}
           id={ingredient.description}
           type="number"
           min="0"
@@ -20,21 +20,22 @@ export function ImportSelector({
           htmlFor={ingredient.id}
           style={{ width: "5rem" }}
           name={ingredient.description}
-          value={
-            ingredient.userG
+          defaultValue={
+            (ingredient.userG
               ? Math.round(ingredient.userG * ingredient.quantity * 100) / 100
               : ingredient.gramConversion
               ? Math.round(
                   ingredient.quantity * ingredient.gramConversion * 100
                 ) / 100
-              : ingredient.quantity
+              : ingredient.quantity) || ""
           }
           onChange={(e) => {
             setIngredient({
               ...ingredient,
               quantity:
                 e.target.valueAsNumber /
-                (ingredient.userG || ingredient.gramConversion),
+                  (ingredient.userG || ingredient.gramConversion || 1) ||
+                ingredient.quantity,
             });
           }}
         />
@@ -42,11 +43,16 @@ export function ImportSelector({
         <Form.Select
           value={ingredient.id}
           key={`selector${origIdx}`}
-          onChange={(e) =>
-            setIngredient(
-              searchArray.find((choice) => choice.id == e.target.value)
-            )
-          }
+          onChange={async (e) => {
+            const ingredientIndex = searchArray.findIndex(
+              (choice) => choice.id == e.target.value
+            );
+
+            setIngredient({
+              ...searchArray[ingredientIndex],
+              searchArray: searchArray,
+            });
+          }}
           className="py-1"
         >
           {searchArray.map((choice, idx) => {

@@ -1,7 +1,8 @@
-import DragHandle from "../../../../Icons/dragHandle.jsx";
+import DragHandle from "../../../../../Icons/dragHandle.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIngredientModal from "./EditIngredientModal.jsx";
-import AddPriceModal from "../AddPriceModal.jsx";
+import EditIngredientModal from "../EditIngredientModal.jsx";
+import AddPriceModal from "../../AddPriceModal.jsx";
+import { useState } from "react";
 
 export function EditableIngredientItem({
   ingredient,
@@ -17,6 +18,7 @@ export function EditableIngredientItem({
   ingredientList,
   setIngredientList,
 }) {
+  const [draggable, setDraggable] = useState(true);
   try {
     return (
       <div
@@ -25,9 +27,9 @@ export function EditableIngredientItem({
           `${index === initialDragIndex ? "draggedItem" : ""}`
         }
         style={{ borderRadius: "20px" }}
-        key={ingredient.id}
+        key={ingredient.id + ingredient.quantity}
         id={ingredient.id}
-        draggable
+        draggable={draggable}
         onDragStart={() => handleDragStart(index, ingredient)}
         onDragEnter={() => {
           handleDragOver(index);
@@ -44,7 +46,7 @@ export function EditableIngredientItem({
           <DragHandle />
         </div>
         <input
-          id={ingredient.description}
+          id={ingredient.id}
           type="number"
           min=".01"
           step=".01"
@@ -52,18 +54,20 @@ export function EditableIngredientItem({
           htmlFor={ingredient.description}
           style={{ width: "3rem" }}
           name={ingredient.description}
-          value={
+          defaultValue={
             (ingredient.userG
               ? Math.round(ingredient.userG * ingredient.quantity * 100) / 100
               : ingredient.gramConversion
               ? Math.round(
                   ingredient.quantity * ingredient.gramConversion * 100
                 ) / 100
-              : ingredient.quantity) || 1
+              : ingredient.quantity) || ""
           }
           onChange={(e) => {
             setRecipe(handleIngredientUpdate(recipe, e));
           }}
+          onMouseDown={() => setDraggable(false)}
+          onMouseUp={() => setDraggable(true)}
         />
         <p className="m-0 align-self-center">
           {ingredient.userLabel

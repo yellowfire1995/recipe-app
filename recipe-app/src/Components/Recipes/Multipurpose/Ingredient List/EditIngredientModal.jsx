@@ -17,14 +17,15 @@ export default function EditIngredientModal({
   const { recipe, setRecipe } = useRecipeContext();
   const [show, setShow] = useState(false);
   const [ingredient, setIngredient] = useState(initialIngredient);
+  const [searchArray, setSearchArray] = useState(initialIngredient.searchArray);
 
   const handleClose = () => {
     setShow(false);
     setIngredient(initialIngredient);
+    setSearchArray(initialIngredient.searchArray);
   };
 
   const handleShow = () => {
-    setIngredient(ingredient);
     setShow(true);
   };
 
@@ -32,7 +33,7 @@ export default function EditIngredientModal({
     setRecipe({
       ...recipe,
       ingredients: recipe.ingredients.map((recipeIngredient, index) => {
-        if (index == origIdx) {
+        if (index === origIdx) {
           return ingredient;
         } else {
           return { ...recipeIngredient };
@@ -40,7 +41,7 @@ export default function EditIngredientModal({
       }),
     });
 
-    handleClose();
+    setShow(false);
   }
 
   return (
@@ -135,10 +136,8 @@ export default function EditIngredientModal({
                 );
 
                 if (newArray.length > 0) {
-                  setIngredient({
-                    ...newArray[0][0],
-                    searchArray: newArray[0],
-                  });
+                  setSearchArray(newArray[0]);
+                  setIngredient(newArray[0][0]);
                 }
               }}
             >
@@ -146,11 +145,11 @@ export default function EditIngredientModal({
             </Button>
           </Container>
           <br />
-          {ingredient.searchArray ? (
+          {searchArray ? (
             <ImportSelector
               ingredient={ingredient}
               setIngredient={setIngredient}
-              searchArray={ingredient.searchArray}
+              searchArray={searchArray}
               origIdx={origIdx}
             />
           ) : (

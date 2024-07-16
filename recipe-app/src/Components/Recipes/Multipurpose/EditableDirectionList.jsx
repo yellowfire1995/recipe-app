@@ -37,7 +37,6 @@ function addNewDirection(updatedRecipe) {
 }
 
 function deleteDirection(updatedRecipe, e) {
-  console.log(e.target.id);
   const deleteRecipe = _.remove(
     updatedRecipe.directions,
     (direction) => direction.step_num == e.target.id

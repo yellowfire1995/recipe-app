@@ -10,7 +10,6 @@ export function EditSelector(props) {
 
   function handleSubmit(e) {
     e.preventDefault;
-    console.log(e.target);
   }
 
   return (

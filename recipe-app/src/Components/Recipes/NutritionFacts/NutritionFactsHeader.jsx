@@ -1,7 +1,7 @@
 import { useRecipeContext } from "../RecipeContextProvider";
 
 function handleServingsUpdate({ recipe, event }) {
-  if (!event.target.valueAsNumber) {
+  if (!event.target.valueAsNumber || !recipe.yield) {
     return recipe;
   }
   const yieldRatio = recipe.yieldNumber / recipe.servings;

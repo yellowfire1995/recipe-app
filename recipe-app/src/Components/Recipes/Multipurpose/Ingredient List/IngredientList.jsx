@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useRecipeContext } from "../RecipeContextProvider";
+import { useRecipeContext } from "../../RecipeContextProvider";
 import ListGroup from "react-bootstrap/ListGroup";
 import _ from "lodash";
 
@@ -17,7 +17,7 @@ function handleIngredientUpdate(recipe, e) {
   return {
     ...recipe,
     ingredients: recipe.ingredients.map((ingredient) => {
-      if (ingredient.description == e.target.id) {
+      if (ingredient.id == e.target.id) {
         return {
           ...ingredient,
           quantity:

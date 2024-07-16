@@ -96,7 +96,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         domain={auth0Domain}
         clientId={auth0ClientId}
         cacheLocation={"localstorage"}
-        useRefreshTokens={true}
         authorizationParams={{
           redirect_uri: auth0Redirect,
           audience: auth0Audience,

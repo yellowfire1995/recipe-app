@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
 
     const query = {
       text: `
-      SELECT recipe_id, name, thumbnail, servings, url, author, nickname, create_date,
+      SELECT recipe_id as "recipeId", name, thumbnail, servings, url, author, nickname, create_date,
   (
          Select COALESCE(JSON_AGG(json_build_object(
               'id',  recipe_cuisines.id, 
@@ -44,7 +44,8 @@ router.get("/", async (req, res) => {
     const getThumbnailUrls = data.rows.map(async (recipe) => {
       return {
         ...recipe,
-        thumbnail: recipe.thumbnail
+        thumbnail: recipe.thumbnail,
+        thumbnailLink: recipe.thumbnail
           ? "https://d30b48eq3arkah.cloudfront.net/" + recipe.thumbnail
           : null,
       };

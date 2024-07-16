@@ -14,9 +14,9 @@ export default function RecipeCardData(props) {
       {cards.map((recipe, index) => {
         return (
           <Link
-            to={`/recipes/${recipe.recipe_id}`}
+            to={`/recipes/${recipe.recipeId}`}
             className="d-flex p-2 text-decoration-none rounded flex-wrap text-body"
-            key={recipe.key || recipe.recipe_id}
+            key={recipe.recipeId}
           >
             <Container
               className="  scrollable d-flex text-center recipecard align-self-stretch  justify-content-center flex-wrap align-content-start"
@@ -32,7 +32,7 @@ export default function RecipeCardData(props) {
               <Card
                 className="d-flex border-0 shadow"
                 style={{
-                  backgroundImage: `url(${recipe.thumbnail})`,
+                  backgroundImage: `url(${recipe.thumbnailLink})`,
                   backgroundColor: "rgb(0,0,0,.2)",
                   backgroundPosition: "50% 50%",
                   backgroundSize: "cover",

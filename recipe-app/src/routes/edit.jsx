@@ -26,6 +26,7 @@ export default function Edit() {
   const navigate = useNavigate();
   const { user } = useAuth0();
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth0();
 
   const {
     data: loadedRecipe,
@@ -33,18 +34,25 @@ export default function Edit() {
     isLoading,
     error,
     isFetched,
+    refetch,
   } = useQuery({
     queryKey: [`Recipe${recipeId}`],
-    queryFn: async () => await getRecipeById(recipeId),
+    queryFn: async () => {
+      return await getRecipeById(recipeId);
+    },
     retry: 2,
     staleTime: 1000 * 60 * 60 * 24,
   });
 
   useEffect(() => {
-    if (isFetched) {
+    refetch();
+  }, [refetch, isAuthenticated]);
+
+  useEffect(() => {
+    if (isFetched && !isError && loadedRecipe) {
       setRecipe(loadedRecipe[0]);
     }
-  }, [loadedRecipe, isFetched]);
+  }, [loadedRecipe, isFetched, isError, isAuthenticated]);
 
   const editor = useMutation({
     mutationFn: (e) => {
