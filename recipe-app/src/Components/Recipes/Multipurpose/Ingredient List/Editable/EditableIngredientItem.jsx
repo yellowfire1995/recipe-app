@@ -31,7 +31,9 @@ export function EditableIngredientItem({
         className={
           `form-check d-flex ps-1 ingredientItem align-items-center ` +
           `${index === initialDragIndex ? "draggedItem" : ""} ${
-            !ingredient.matchedMeasure && !ingredient.userLabel
+            !ingredient.matchedMeasure &&
+            !ingredient.userLabel &&
+            !ingredient.gramConversion
               ? "erroredIngredient"
               : ""
           }`
@@ -115,9 +117,8 @@ export function EditableIngredientItem({
             }}
             className="pt-0 mb-0 svg-icon"
           />
-          <Button onClick={() => console.log(ingredient)}>LOG</Button>
+          <IngredientError ingredient={ingredient} />
         </p>
-        <IngredientError ingredient={ingredient} />
       </div>
     );
   } catch (error) {

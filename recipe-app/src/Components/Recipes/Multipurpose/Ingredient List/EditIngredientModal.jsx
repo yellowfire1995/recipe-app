@@ -61,7 +61,7 @@ export default function EditIngredientModal({
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Set density for {ingredient.description}
+            Edit {ingredient.description}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

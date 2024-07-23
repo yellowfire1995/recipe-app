@@ -14,11 +14,20 @@ export function IngredientError({ ingredient }) {
   if (!ingredient.fdc_id) {
     errors.push("No ingredient matched to database");
   }
-  if (!ingredient.matchedMeasure && !ingredient.userLabel) {
+  if (
+    !ingredient.matchedMeasure &&
+    !ingredient.userLabel &&
+    !ingredient.gramConversion
+  ) {
     errors.push("No measurement information found for ingredient");
   }
 
   if (errors.length > 0) {
-    return <ErrorIcon className="ingredientErrorIcon" onClick={showErrors} />;
+    return (
+      <ErrorIcon
+        className="ingredientErrorIcon flex-end"
+        onClick={showErrors}
+      />
+    );
   }
 }

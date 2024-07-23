@@ -13,10 +13,10 @@ export function RecipeHeader({ price, buttons, credit }) {
       <Row>
         {" "}
         <Col className="d-flex flex-wrap">
-          <Col xl={8} className="d-flex ">
+          <Col xl={8} className="d-flex align-items-center ">
             <h2>{recipe.name}</h2>
+            {buttons}
           </Col>
-          <Col className="text-nowrap">{buttons}</Col>
 
           <hr />
           <div className="d-flex">{price}</div>

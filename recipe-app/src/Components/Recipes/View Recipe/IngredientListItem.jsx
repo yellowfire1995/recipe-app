@@ -4,7 +4,7 @@ import AddPriceModal from "../Multipurpose/AddPriceModal";
 export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
   const { isAuthenticated } = useAuth0();
   return (
-    <div className="form-check d-flex" key={ingredient.id}>
+    <div className="form-check d-flex py-2" key={ingredient.id}>
       <input
         className="form-check-input"
         type="checkbox"
