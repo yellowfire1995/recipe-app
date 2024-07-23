@@ -77,7 +77,7 @@ export async function uploadDualSizesUrlToS3(link) {
   var command = new PutObjectCommand(params);
   await S3.send(command);
 
-  const thumbnailBuffer = await sharp(buffer).webp().resize(250).toBuffer();
+  const thumbnailBuffer = await sharp(buffer).webp().resize(500).toBuffer();
 
   const thumbnailParams = {
     Bucket: bucketName,
@@ -88,7 +88,7 @@ export async function uploadDualSizesUrlToS3(link) {
 
   command = new PutObjectCommand(thumbnailParams);
   await S3.send(command);
-  return [key, thumbnailKey];
+  return { key: key, thumbnailKey: thumbnailKey };
 }
 
 export async function uploadUrlToS3(link) {

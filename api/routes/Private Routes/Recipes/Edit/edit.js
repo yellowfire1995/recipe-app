@@ -7,34 +7,34 @@ import {
   uploadDualSizesUrlToS3,
   uploadFileToS3,
 } from "../../../../tools/aws/aws.js";
+import { tryCatch } from "../../../../tools/error/tryCatch.js";
+import { AppError } from "../../../../tools/error/AppError.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage, limits: { fileSize: 5242880 } });
 
 export async function checkAuth(req, res, next) {
-  try {
-    const recipe = JSON.parse(req.body.recipe);
+  const recipe = JSON.parse(req.body.recipe);
 
-    const query = {
-      text: `SELECT author FROM RECIPES where recipe_id = $1`,
-      values: [recipe.recipeId],
-    };
+  const query = {
+    text: `SELECT author FROM RECIPES where recipe_id = $1`,
+    values: [recipe.recipeId],
+  };
 
-    let data = await db.query(query);
+  let data = await db.query(query);
 
-    if (data.rows[0].author == req.auth.payload.sub) {
-      next();
-    } else {
-      res.status(401).send("Unauthorized");
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(401).send("ERROR");
+  if (data.rows[0].author == req.auth.payload.sub) {
+    next();
+  } else {
+    throw new AppError(401, "Unauthorized", 401);
   }
 }
 
-router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
-  try {
+router.post(
+  "/",
+  tryCatch(upload.single("photo")),
+  tryCatch(checkAuth),
+  tryCatch(async (req, res) => {
     let recipe = JSON.parse(req.body.recipe);
     let key = recipe.imgName;
     let thumbnailKey;
@@ -48,16 +48,11 @@ router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
       };
     }
 
-    try {
-      if (req.file) {
-        key = await uploadFileToS3(req.file);
-        thumbnailKey = await resizeAndUploadFileToS3(req.file);
-      } else if (recipe.imgUrl != recipe.originalUrl) {
-        [key, thumbnailKey] = await uploadDualSizesUrlToS3(recipe.imgUrl);
-      }
-    } catch (error) {
-      console.log(error);
-      throw new Error("Unable to process image.");
+    if (req.file) {
+      key = await uploadFileToS3(req.file);
+      thumbnailKey = await resizeAndUploadFileToS3(req.file);
+    } else if (recipe.imgUrl != recipe.originalUrl) {
+      ({ key, thumbnailKey } = await uploadDualSizesUrlToS3(recipe.imgUrl));
     }
 
     const query = {
@@ -126,14 +121,9 @@ router.post("/", upload.single("photo"), checkAuth, async (req, res) => {
       ],
     };
 
-    let data = await db.query(query);
+    await db.query(query);
     res.json(req.body);
-  } catch (error) {
-    console.error(error.message);
-    res
-      .status(422)
-      .send("Unable to process. Please change data and try again.");
-  }
-});
+  })
+);
 
 export default router;

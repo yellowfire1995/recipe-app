@@ -3,6 +3,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIngredientModal from "../EditIngredientModal.jsx";
 import AddPriceModal from "../../AddPriceModal.jsx";
 import { useState } from "react";
+import Button from "react-bootstrap/esm/Button.js";
+import ErrorIcon from "@mui/icons-material/Error";
+import { IngredientError } from "./IngredientError.jsx";
 
 export function EditableIngredientItem({
   ingredient,
@@ -10,6 +13,7 @@ export function EditableIngredientItem({
   handleDragStart,
   handleDragOver,
   handleDragStop,
+  handleDragEnd,
   initialDragIndex,
   deleteIngredient,
   handleIngredientUpdate,
@@ -19,18 +23,24 @@ export function EditableIngredientItem({
   setIngredientList,
 }) {
   const [draggable, setDraggable] = useState(true);
+
   try {
     return (
       <div
+        key={ingredient.id + ingredient.ingredientVersion}
         className={
-          `form-check ps-1 d-flex ingredientItem ` +
-          `${index === initialDragIndex ? "draggedItem" : ""}`
+          `form-check d-flex ps-1 ingredientItem align-items-center ` +
+          `${index === initialDragIndex ? "draggedItem" : ""} ${
+            !ingredient.matchedMeasure && !ingredient.userLabel
+              ? "erroredIngredient"
+              : ""
+          }`
         }
-        style={{ borderRadius: "20px" }}
-        key={ingredient.id + ingredient.quantity}
-        id={ingredient.id}
         draggable={draggable}
-        onDragStart={() => handleDragStart(index, ingredient)}
+        style={{ borderRadius: "20px" }}
+        onDragStart={() => {
+          handleDragStart(index, ingredient);
+        }}
         onDragEnter={() => {
           handleDragOver(index);
         }}
@@ -40,7 +50,9 @@ export function EditableIngredientItem({
         onDrop={() => {
           handleDragStop();
         }}
-        onDragEnd={(e) => e.target.classList.remove("draggedItem")}
+        onDragEnd={() => {
+          handleDragEnd();
+        }}
       >
         <div className="align-items-center d-flex ">
           <DragHandle />
@@ -69,7 +81,7 @@ export function EditableIngredientItem({
           onMouseDown={() => setDraggable(false)}
           onMouseUp={() => setDraggable(true)}
         />
-        <p className="m-0 align-self-center">
+        <p className="m-0 align-self-center d-flex align-items-center">
           {ingredient.userLabel
             ? ingredient.userLabel
             : ingredient.gramConversion
@@ -103,16 +115,9 @@ export function EditableIngredientItem({
             }}
             className="pt-0 mb-0 svg-icon"
           />
-          <span style={{ color: "red" }}>
-            {" "}
-            {ingredient.fdc_id
-              ? null
-              : `Ingredient needs information - please edit`}
-            {ingredient.nutrients.length > 0
-              ? ""
-              : "Warning! No nutrition information"}
-          </span>
+          <Button onClick={() => console.log(ingredient)}>LOG</Button>
         </p>
+        <IngredientError ingredient={ingredient} />
       </div>
     );
   } catch (error) {

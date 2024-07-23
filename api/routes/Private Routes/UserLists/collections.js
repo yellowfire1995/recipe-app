@@ -1,43 +1,45 @@
 import express from "express";
 const router = express.Router();
 import db from "../../../database/db.js";
+import { tryCatch } from "../../../tools/error/tryCatch.js";
 
-router.get("/recipes", async (req, res) => {
-  try {
+router.get(
+  "/recipes",
+  tryCatch(async (req, res) => {
     const query = {
       text: `select
-      array_agg(json_build_object('recipe_id',
-      r.recipe_id,
-      'key',
-      rc.id,
-      'name',
-      r."name",
-      'thumbnail',
-       thumbnail,
-      'servings',
-      servings,
-      'url',
-      url,
-      'author',
-      author,
-      'nickname',
-      nickname,
-      'createDate',
-      r.create_date)) as recipes,
-      c."name",
-      c.id
-  from
-      recipe_collections rc
-  join collections c on
-      collection_id = c.id
-  join recipes r on
-      r.recipe_id = rc.recipe_id
-  where rc.user = $1
-  group by
-      c."name",
-      c.id
+    array_agg(json_build_object('recipeId',
+    r.recipe_id,
+    'key',
+    rc.id,
+    'name',
+    r."name",
+    'thumbnail',
+     thumbnail,
+    'servings',
+    servings,
+    'url',
+    url,
+    'author',
+    author,
+    'nickname',
+    nickname,
+    'createDate',
+    r.create_date)) as recipes,
+    c."name",
+    c.id
+from
+    recipe_collections rc
+join collections c on
+    collection_id = c.id
+join recipes r on
+    r.recipe_id = rc.recipe_id
+where rc.user = $1
+group by
+    c."name",
+    c.id
 
-  `,
+`,
       values: [req.auth.payload.sub],
     };
     const data = await db.query(query);
@@ -56,13 +58,12 @@ router.get("/recipes", async (req, res) => {
     });
 
     res.send(cardData);
-  } catch (error) {
-    console.log(error);
-  }
-});
+  })
+);
 
-router.get("/names", async (req, res) => {
-  try {
+router.get(
+  "/names",
+  tryCatch(async (req, res) => {
     const query = {
       text: `select * from collections c 
       where c.user = $1`,
@@ -70,13 +71,12 @@ router.get("/names", async (req, res) => {
     };
     const data = await db.query(query);
     res.send(data.rows);
-  } catch (error) {
-    console.log(error);
-  }
-});
+  })
+);
 
-router.post("/add/recipe/:recipeId", async (req, res) => {
-  try {
+router.post(
+  "/add/recipe/:recipeId",
+  tryCatch(async (req, res) => {
     if (req.body.collection.customOption) {
       const query = {
         text: `with update as (INSERT INTO collections
@@ -109,32 +109,26 @@ router.post("/add/recipe/:recipeId", async (req, res) => {
       const data = await db.query(query);
       res.send(data);
     }
-  } catch (error) {
-    console.log(error);
-  }
-});
+  })
+);
 
 router.delete(
   "/delete/collection/:collectionId",
+  tryCatch(async (req, res) => {
+    const query = {
+      text: ` delete from collections 
+  where id = $1 and "user" = $2`,
+      values: [req.params.collectionId, req.auth.payload.sub],
+    };
+    const deleter = await db.query(query);
 
-  async (req, res) => {
-    try {
-      const query = {
-        text: ` delete from collections 
-      where id = $1 and "user" = $2`,
-        values: [req.params.collectionId, req.auth.payload.sub],
-      };
-      const deleter = await db.query(query);
-
-      res.send(deleter);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+    res.send(deleter);
+  })
 );
 
-router.delete("/delete/recipe", async (req, res) => {
-  try {
+router.delete(
+  "/delete/recipe",
+  tryCatch(async (req, res) => {
     const query = {
       text: `delete from recipe_collections 
     where id = any($1::int[]) and "user" = $2 `,
@@ -143,16 +137,7 @@ router.delete("/delete/recipe", async (req, res) => {
     const deleter = await db.query(query);
     console.log(deleter);
     res.send(deleter);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-router.post("/edit", async (req, res) => {
-  try {
-  } catch (error) {
-    console.log(error);
-  }
-});
+  })
+);
 
 export default router;

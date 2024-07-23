@@ -16,6 +16,7 @@ import { Helmet } from "react-helmet-async";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
 import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
 import ErrorHandler from "../Components/Errors/NotFound.jsx";
+import { toast } from "react-toastify";
 
 export const RecipeContext = createContext();
 
@@ -27,6 +28,8 @@ export default function Edit() {
   const { user } = useAuth0();
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth0();
+  const SavingError = () =>
+    toast.error("Error saving recipe, please try again!");
 
   const {
     data: loadedRecipe,
@@ -54,14 +57,14 @@ export default function Edit() {
     }
   }, [loadedRecipe, isFetched, isError, isAuthenticated]);
 
-  const editor = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (e) => {
       e.preventDefault();
       return editRecipe({ e, recipe });
     },
     onError: (error) => {
       console.log(error);
-      alert("Error occured! Please try again");
+      SavingError();
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
@@ -98,7 +101,7 @@ export default function Edit() {
           <Form
             onSubmit={(e) => {
               e.preventDefault();
-              editor.mutate(e);
+              mutate(e);
             }}
             encType="multipart/form-data"
           >
@@ -171,7 +174,7 @@ export default function Edit() {
                     className="flex-grow-1"
                     style={{ height: "3rem" }}
                   >
-                    Save Recipe
+                    {isPending ? "Saving..." : "Save Recipe"}
                   </Button>
                 </Container>
               </Col>

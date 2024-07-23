@@ -11,6 +11,7 @@ import Loading from "../Components/Loading";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
 import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
 import { useAuth0 } from "@auth0/auth0-react";
+import AppErrorPage from "../Components/Errors/AppErrorPage.jsx";
 
 export default function Recipe() {
   const { recipeId } = useParams();
@@ -20,8 +21,8 @@ export default function Recipe() {
   const {
     data: loadedRecipe,
     isError,
-    isLoading,
     error,
+    isLoading,
     isFetched,
     refetch,
   } = useQuery({
@@ -29,7 +30,7 @@ export default function Recipe() {
     queryFn: async () => {
       return await getRecipeById(recipeId);
     },
-    retry: 2,
+    retry: 1,
     staleTime: 1000 * 60 * 60 * 24,
   });
 
@@ -47,9 +48,8 @@ export default function Recipe() {
     return <Loading />;
   }
 
-  if (isError) {
-    console.log(error);
-    return <ErrorHandler error={error} />;
+  if (error) {
+    return <AppErrorPage error={error} />;
   }
 
   if (recipe && isFetched) {

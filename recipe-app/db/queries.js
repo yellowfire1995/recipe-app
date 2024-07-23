@@ -7,7 +7,7 @@ export async function getCategories() {
     const categoryList = await httpClient.get(`${server}/categories`);
     return categoryList.data[0].categories;
   } catch (error) {
-    console.log(error);
+    return Promise.reject(error.response);
   }
 }
 
@@ -17,19 +17,18 @@ export async function getCuisines() {
     const cuisineList = await httpClient.get(`${server}/cuisines`);
     return cuisineList.data[0].cuisines;
   } catch (error) {
-    console.log(error);
+    return Promise.reject(error.response);
   }
 }
 
 //Delete recipe from recipe page
 export async function deleteRecipe(recipeId, recipe) {
   try {
-    const deletedRecipe = await httpClient.delete(
-      `${server}/recipes/${recipeId}/delete`,
-      { data: recipe }
-    );
+    await httpClient.delete(`${server}/recipes/${recipeId}/delete`, {
+      data: recipe,
+    });
   } catch (error) {
-    console.error(error);
+    return Promise.reject(error.response);
   }
 }
 
@@ -46,9 +45,8 @@ export async function editRecipe({ e, recipe }) {
     formData.append("recipe", JSON.stringify(recipe));
     const { data } = await httpClient.post(`${server}/edit`, formData);
     return data;
-  } catch (err) {
-    console.error(1, err);
-    throw new Error("Error saving recipe");
+  } catch (error) {
+    return Promise.reject(error.response);
   }
 }
 
@@ -63,10 +61,9 @@ export async function newRecipe(updatedRecipe) {
     formData.append("updatedRecipe", JSON.stringify(updatedRecipe));
 
     const response = await httpClient.post(`${server}/newrecipe`, formData);
-    return response.data.recipe_id;
-  } catch (err) {
-    console.error(err);
-    throw err;
+    return response.data.recipeId;
+  } catch (error) {
+    return Promise.reject(error.response);
   }
 }
 
@@ -81,7 +78,7 @@ export async function savePrice(pkgGrms, pkgCost, url, fdc_id) {
     });
     return data;
   } catch (error) {
-    console.log(error);
+    return Promise.reject(error.response);
   }
 }
 
@@ -101,7 +98,7 @@ export async function ingredientSearch(e, search) {
 
     return listIngredients.data;
   } catch (error) {
-    console.error(error);
+    return Promise.reject(error.response);
   }
 }
 
@@ -120,7 +117,7 @@ export async function parseDirections(directions) {
 
     return directionsArray.data;
   } catch (error) {
-    console.error(error);
+    return Promise.reject(error.response);
   }
 }
 
@@ -138,7 +135,7 @@ export async function parseIngredients(ingredients) {
     );
     return ingredientsArray.data;
   } catch (error) {
-    console.log(error);
+    return Promise.reject(error.response);
   }
 }
 
@@ -148,8 +145,7 @@ export async function getRecipeById(recipeId) {
     const recipe = await httpClient.get(`${server}/recipes/${recipeId}`);
     return recipe.data;
   } catch (error) {
-    console.error(error);
-    throw error;
+    return Promise.reject(error.response);
   }
 }
 
@@ -159,11 +155,9 @@ export async function getRecipeCards({ page, search }) {
     const recipeCards = await httpClient.get(
       `${server}/recipecards?page=${page}&search=${search}`
     );
-
     return recipeCards.data;
   } catch (error) {
-    console.log(error);
-    return Promise.reject(404);
+    return Promise.reject(error.response);
   }
 }
 
@@ -175,8 +169,7 @@ export async function getMyRecipeCards({ page, search }) {
     );
     return recipeCards.data;
   } catch (error) {
-    console.log("ERROR!");
-    return Promise.reject(401);
+    return Promise.reject(error.response);
   }
 }
 
@@ -187,8 +180,7 @@ export async function getMealPlan() {
 
     return mealPlanRecipes.data;
   } catch (error) {
-    console.log("ERROR!");
-    return Promise.reject(401);
+    return Promise.reject(error.response);
   }
 }
 
@@ -201,8 +193,7 @@ export async function addToMeallPlan(recipeId, date) {
 
     return mealPlanRecipes.data;
   } catch (error) {
-    console.log("ERROR!");
-    return Promise.reject(401);
+    return Promise.reject(error.response);
   }
 }
 
@@ -215,8 +206,7 @@ export async function deleteFromMealPlan(planId) {
 
     return deletedMealPlanRecipe.data;
   } catch (error) {
-    console.log("ERROR!");
-    return Promise.reject(401);
+    return Promise.reject(error.response);
   }
 }
 
@@ -229,8 +219,7 @@ export async function changeMealDay(planId, date) {
 
     return mealPlanRecipes.data;
   } catch (error) {
-    console.log("ERROR!");
-    return Promise.reject(401);
+    return Promise.reject(error.response);
   }
 }
 
@@ -243,8 +232,7 @@ export async function getCollectionRecipes() {
 
     return collectionRecipes.data;
   } catch (error) {
-    console.log("ERROR!");
-    return Promise.reject(401);
+    return Promise.reject(error.response);
   }
 }
 
@@ -255,8 +243,7 @@ export async function getCollectionNames() {
 
     return collectionNames.data;
   } catch (error) {
-    console.log("ERROR!");
-    return Promise.reject(401);
+    return Promise.reject(error.response);
   }
 }
 
@@ -270,8 +257,7 @@ export async function addRecipeToCollection(recipeId, collection) {
     );
     return data;
   } catch (error) {
-    console.log("ERROR!");
-    return Promise.reject(401);
+    return Promise.reject(error.response);
   }
 }
 
@@ -282,8 +268,7 @@ export async function deleteCollection(collection) {
     );
     return deleteCollection;
   } catch (error) {
-    console.log("ERROR!");
-    return Promise.reject(401);
+    return Promise.reject(error.response);
   }
 }
 
@@ -297,8 +282,7 @@ export async function deleteCollectionRecipe(arrayOfRecipes) {
     );
     return deleteCollectionRecipe;
   } catch (error) {
-    console.log("ERROR!");
-    return Promise.reject(401);
+    return Promise.reject(error.response);
   }
 }
 
@@ -317,6 +301,6 @@ export async function scrapeRecipe(url) {
 
     return recipe.data;
   } catch (error) {
-    console.error(error);
+    return Promise.reject(error.response);
   }
 }

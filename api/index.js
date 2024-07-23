@@ -17,9 +17,9 @@ import auth0Route from "./routes/Private Routes/Auth/auth0.js";
 import myRecipesRoute from "./routes/Private Routes/Recipes/myrecipes.js";
 import getPriceRoute from "./routes/Private Routes/Recipes/Scrape/getprice.js";
 import scrapeRecipeRoute from "./routes/Private Routes/Recipes/Scrape/scrapeRecipe.js";
-import uploadPhotoRoute from "./routes/Private Routes/Recipes/photos.js";
 import collectionsRoute from "./routes/Private Routes/UserLists/collections.js";
 import plannerRoute from "./routes/Private Routes/UserLists/planner.js";
+import { errorHandler } from "./tools/error/errorHandler.js";
 
 const ENV = process.env;
 const app = express();
@@ -62,9 +62,10 @@ app.use("/edit", editRoute);
 app.use("/profile", auth0Route);
 app.use("/myrecipes", myRecipesRoute);
 app.use("/getPrice", getPriceRoute);
-app.use("/photo/upload", uploadPhotoRoute);
 app.use("/collections", collectionsRoute);
 app.use("/planner", plannerRoute);
+
+app.use(errorHandler);
 
 app.listen(port, ENV.SERVER_HOST, () => {
   console.log(`Server is running on port ${port}`);

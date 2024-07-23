@@ -1,11 +1,12 @@
 import express from "express";
 const router = express.Router();
 import db from "../../../database/db.js";
+import { tryCatch } from "../../../tools/error/tryCatch.js";
 
-router.get("/", async (req, res) => {
-  let data;
-  try {
-    data = await db.query(`
+router.get(
+  "/",
+  tryCatch(async (req, res) => {
+    const data = await db.query(`
       SELECT 
   COALESCE(JSON_AGG(json_build_object('category', food_category, 'category_id', id)), '[]') categories
   FROM food_categories
@@ -13,10 +14,7 @@ router.get("/", async (req, res) => {
       `);
 
     res.json(data.rows);
-  } catch (error) {
-    console.error(error);
-    throw new Error("Unable to find categories");
-  }
-});
+  })
+);
 
 export default router;

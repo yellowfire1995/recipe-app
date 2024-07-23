@@ -13,10 +13,14 @@ import CuisineSelector from "../Components/Recipes/Multipurpose/cuisineselector"
 import { queryClient } from "../main";
 import { RecipeForm } from "../Components/Recipes/RecipeForm";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts";
+import { toast } from "react-toastify";
+import { Helmet } from "react-helmet-async";
 
 export default function AddRecipe() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
+  const SavingError = () =>
+    toast.error("Error saving recipe, please try again!");
 
   const [ingredientList, setIngredientList] = useState([]);
   const [recipe, setRecipe] = useState({
@@ -51,8 +55,9 @@ export default function AddRecipe() {
     mutationFn: () => {
       return newRecipe(recipe);
     },
-    onError: () => {
-      alert("Please try again!");
+    onError: (error) => {
+      console.log(error);
+      SavingError();
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
@@ -69,6 +74,9 @@ export default function AddRecipe() {
 
   return (
     <>
+      <Helmet>
+        <title>New Recipe</title>
+      </Helmet>
       <RecipeForm recipe={recipe} setRecipe={setRecipe}>
         <Form
           onSubmit={(e) => {

@@ -48,7 +48,7 @@ export default function PlannerDayList(props) {
         ? dailyMeals[0].recipes.map((recipe) => {
             return (
               <div key={recipe.planId}>
-                <Link to={`/recipes/${recipe.recipe_id}`}>{recipe.name}</Link>
+                <Link to={`/recipes/${recipe.recipeId}`}>{recipe.name}</Link>
                 <Button size="sm" onClick={() => deleter.mutate(recipe.planId)}>
                   Delete
                 </Button>

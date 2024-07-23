@@ -6,7 +6,9 @@ import { changeMealDay } from "../../../db/queries";
 import { useRecipeContext } from "../Recipes/RecipeContextProvider";
 
 export function AddToMealPlannerButton() {
-  const { recipeId } = useRecipeContext();
+  const {
+    recipe: { recipeId },
+  } = useRecipeContext();
   const [show, setShow] = useState(false);
   const addToPlanner = useMutation({
     mutationFn: () =>

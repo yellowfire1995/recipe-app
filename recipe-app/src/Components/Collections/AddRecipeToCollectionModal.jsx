@@ -9,7 +9,9 @@ import Loading from "../Loading";
 import { useRecipeContext } from "../Recipes/RecipeContextProvider";
 
 export function AddRecipeToCollectionModal() {
-  const { recipeId } = useRecipeContext();
+  const {
+    recipe: { recipeId },
+  } = useRecipeContext();
   const collections = useQuery({
     queryKey: ["CollectionNames"],
     queryFn: () => getCollectionNames(),

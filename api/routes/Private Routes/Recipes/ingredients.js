@@ -3,9 +3,11 @@ const router = express.Router();
 import db from "../../../database/db.js";
 import "dotenv/config";
 import { searchSolr } from "../../../tools/solr/searchSolr.js";
+import { tryCatch } from "../../../tools/error/tryCatch.js";
 
-router.post("/search", async (req, res) => {
-  try {
+router.post(
+  "/search",
+  tryCatch(async (req, res) => {
     const searchResult = await searchSolr(req.body.ingredient);
     const ingredients = await Promise.all(
       searchResult.map(async (doc) => {
@@ -44,16 +46,12 @@ router.post("/search", async (req, res) => {
     );
 
     res.json(ingredients);
-  } catch (error) {
-    res.send(error);
-    console.log(error);
-  }
-});
+  })
+);
 
-router.post("/import", async (req, res) => {
-  let data;
-
-  try {
+router.post(
+  "/import",
+  tryCatch(async (req, res) => {
     const searchResult = await searchSolr(req.body.ingredient);
 
     const query = {
@@ -76,35 +74,35 @@ router.post("/import", async (req, res) => {
         `,
       values: [searchResult[0].fdc_id],
     };
-    data = await db.query(query);
+    const data = await db.query(query);
 
     res.json(data.rows);
-  } catch (error) {
-    res.send(error);
-    console.log(error);
-  }
-});
+  })
+);
 
-router.post("/price", async (req, res) => {
-  let data;
-  const i = req.body;
+router.post(
+  "/price",
+  tryCatch(async (req, res) => {
+    const ingredient = req.body;
 
-  try {
     const query = {
       text: `insert into food_prices (fdc_id, package_grams, package_cost, url, user_id) 
       values ( $1, $2, $3, $4, $5 )
         ;
   
         `,
-      values: [i.fdc_id, i.pkgGrms, i.pkgCost, i.url, req.auth.payload.sub],
+      values: [
+        ingredient.fdc_id,
+        ingredient.pkgGrms,
+        ingredient.pkgCost,
+        ingredient.url,
+        req.auth.payload.sub,
+      ],
     };
-    data = await db.query(query);
+    const data = await db.query(query);
 
     res.json(data.rows);
-  } catch (error) {
-    res.send(error);
-    console.log(error);
-  }
-});
+  })
+);
 
 export default router;

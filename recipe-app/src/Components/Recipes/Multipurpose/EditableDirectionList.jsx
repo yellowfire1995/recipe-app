@@ -29,7 +29,7 @@ function addNewDirection(updatedRecipe) {
   const step = {
     step_num: 1 + currentLastStep,
     step: "",
-    recipe_id: updatedRecipe.recipe_id,
+    recipeId: updatedRecipe.recipeId,
   };
 
   const finalRecipe = { ...updatedRecipe.directions.push(step) };

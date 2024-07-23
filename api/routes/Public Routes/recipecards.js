@@ -1,9 +1,11 @@
 import express from "express";
 const router = express.Router();
 import db from "../../database/db.js";
+import { tryCatch } from "../../tools/error/tryCatch.js";
 
-router.get("/", async (req, res) => {
-  try {
+router.get(
+  "/",
+  tryCatch(async (req, res) => {
     const sqlSearch =
       req.query.search == "null"
         ? "%"
@@ -54,9 +56,7 @@ router.get("/", async (req, res) => {
     const cardData = await Promise.all(getThumbnailUrls);
 
     res.json({ data: cardData, lastPage: lastPage });
-  } catch (error) {
-    console.error(error);
-  }
-});
+  })
+);
 
 export default router;

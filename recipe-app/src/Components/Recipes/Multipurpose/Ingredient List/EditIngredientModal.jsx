@@ -30,11 +30,15 @@ export default function EditIngredientModal({
   };
 
   function handleSave() {
+    console.log(ingredient);
     setRecipe({
       ...recipe,
       ingredients: recipe.ingredients.map((recipeIngredient, index) => {
         if (index === origIdx) {
-          return ingredient;
+          return {
+            ...ingredient,
+            ingredientVersion: ingredient.ingredientVersion + 1 || 1,
+          };
         } else {
           return { ...recipeIngredient };
         }
@@ -68,9 +72,7 @@ export default function EditIngredientModal({
             value={
               ingredient.userLabel
                 ? ingredient.userLabel
-                : ingredient.unitOfMeasure
-                ? ingredient.unitOfMeasure
-                : ingredient.engLabel || ""
+                : ingredient.matchedMeasure || ""
             }
             onChange={(e) =>
               setIngredient({ ...ingredient, userLabel: e.target.value })
@@ -85,15 +87,14 @@ export default function EditIngredientModal({
             min="0"
             step="1"
             size="5"
-            value={
-              Math.round(
-                (1 / (ingredient.userG || ingredient.gramConversion)) * 100
-              ) / 100 || ""
-            }
+            defaultValue={Math.round((1 / ingredient.userG) * 100) / 100 || ""}
             onChange={(e) =>
               setIngredient({
                 ...ingredient,
-                userG: 1 / e.target.value,
+                userG: 1 / e.target.valueAsNumber,
+                quantity:
+                  ingredient.quantity *
+                  (ingredient.userG / (1 / e.target.valueAsNumber)),
               })
             }
           />

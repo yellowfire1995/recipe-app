@@ -1,10 +1,12 @@
 import express from "express";
 const router = express.Router();
 import db from "../../../database/db.js";
+import { tryCatch } from "../../../tools/error/tryCatch.js";
 
-router.get("/", async (req, res) => {
-  const auth = req.auth;
-  try {
+router.get(
+  "/",
+  tryCatch(async (req, res) => {
+    const auth = req.auth;
     const sqlSearch =
       req.query.search == "null"
         ? "%"
@@ -12,12 +14,12 @@ router.get("/", async (req, res) => {
 
     const query = {
       text: `
-      SELECT recipe_id, name, thumbnail, servings, url, author, nickname, create_date,
+      SELECT recipe_id as "recipeId", name, thumbnail, servings, url, author, nickname, create_date,
   (
          Select COALESCE(JSON_AGG(json_build_object(
               'id',  recipe_cuisines.id, 
               'cuisine', cuisines.cuisine, 
-              'recipe_id', recipe_cuisines.recipe_id              
+              'recipeId', recipe_cuisines.recipe_id              
             )), '[]') 
         from recipe_cuisines
           JOIN cuisines ON cuisines.id = recipe_cuisines.cuisine_id
@@ -46,7 +48,8 @@ router.get("/", async (req, res) => {
     const getThumbnailUrls = data.rows.map(async (recipe) => {
       return {
         ...recipe,
-        thumbnail: recipe.thumbnail
+        thumbnail: recipe.thumbnail,
+        thumbnailLink: recipe.thumbnail
           ? "https://d30b48eq3arkah.cloudfront.net/" + recipe.thumbnail
           : null,
       };
@@ -55,9 +58,7 @@ router.get("/", async (req, res) => {
     const cardData = await Promise.all(getThumbnailUrls);
 
     res.json({ data: cardData, lastPage: lastPage });
-  } catch (error) {
-    console.error(error);
-  }
-});
+  })
+);
 
 export default router;

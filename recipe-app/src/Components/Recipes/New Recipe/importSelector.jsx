@@ -11,7 +11,7 @@ export function ImportSelector({
       <div className="d-inline-flex align-items-center">
         <Form.Control
           required
-          key={`input${origIdx}${ingredient.quantity}`}
+          key={`input${origIdx}` + ingredient.userG}
           id={ingredient.description}
           type="number"
           min="0"
@@ -21,20 +21,14 @@ export function ImportSelector({
           style={{ width: "5rem" }}
           name={ingredient.description}
           defaultValue={
-            (ingredient.userG
-              ? Math.round(ingredient.userG * ingredient.quantity * 100) / 100
-              : ingredient.gramConversion
-              ? Math.round(
-                  ingredient.quantity * ingredient.gramConversion * 100
-                ) / 100
-              : ingredient.quantity) || ""
+            Math.round((ingredient.userG || 1) * ingredient.quantity * 100) /
+            100
           }
           onChange={(e) => {
             setIngredient({
               ...ingredient,
               quantity:
-                e.target.valueAsNumber /
-                  (ingredient.userG || ingredient.gramConversion || 1) ||
+                e.target.valueAsNumber / (ingredient.userG || 1) ||
                 ingredient.quantity,
             });
           }}
@@ -70,9 +64,7 @@ export function ImportSelector({
                     ? ingredient.userLabel
                     : choice.matchedMeasure
                     ? choice.matchedMeasure
-                    : choice.unitOfMeasure
-                    ? choice.unitOfMeasure
-                    : ""
+                    : "g"
                 } ${
                   choice.id == ingredient.id
                     ? ingredient.description

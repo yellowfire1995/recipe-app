@@ -122,6 +122,7 @@ export function IngredientList({
                   handleDragStart,
                   handleDragOver,
                   handleDragStop,
+                  handleDragEnd,
                   initialDragIndex,
                   deleteIngredient,
                   handleIngredientUpdate,

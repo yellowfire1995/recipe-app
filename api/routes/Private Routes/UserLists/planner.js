@@ -1,13 +1,15 @@
 import express from "express";
 const router = express.Router();
 import db from "../../../database/db.js";
+import { tryCatch } from "../../../tools/error/tryCatch.js";
 
-router.get("/recipes", async (req, res) => {
-  try {
+router.get(
+  "/recipes",
+  tryCatch(async (req, res) => {
     const query = {
       text: `select
 	array_agg(json_build_object(
-      'recipe_id',
+      'recipeId',
 	r.recipe_id,
 	'name',
 	r."name",
@@ -54,15 +56,12 @@ group by
     });
 
     res.send(cardData);
-  } catch (error) {
-    console.log(error);
-    throw new Error(401).message("Unauthorized");
-  }
-});
+  })
+);
 
-router.post("/add/recipe/:recipeId", async (req, res) => {
-  console.log(req);
-  try {
+router.post(
+  "/add/recipe/:recipeId",
+  tryCatch(async (req, res) => {
     const query = {
       text: `INSERT INTO planner
       (recipe_id, date, "user")
@@ -71,13 +70,12 @@ router.post("/add/recipe/:recipeId", async (req, res) => {
     };
     const data = await db.query(query);
     res.send(data);
-  } catch (error) {
-    console.log(error);
-  }
-});
+  })
+);
 
-router.delete("/delete/:plannerId", async (req, res) => {
-  try {
+router.delete(
+  "/delete/:plannerId",
+  tryCatch(async (req, res) => {
     const query = {
       text: ` delete from planner
       where id = $1 and "user" = $2`,
@@ -86,28 +84,12 @@ router.delete("/delete/:plannerId", async (req, res) => {
     const deleter = await db.query(query);
 
     res.send(deleter);
-  } catch (error) {
-    console.log(error);
-  }
-});
+  })
+);
 
-// router.delete("/delete/recipe", checkJwt, async (req, res) => {
-//   try {
-//     const query = {
-//       text: `delete from recipe_collections
-//     where id = any($1::int[]) and "user" = $2 `,
-//       values: [req.body.ids, req.auth.payload.sub],
-//     };
-//     const deleter = await db.query(query);
-//     console.log(deleter);
-//     res.send(deleter);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// });
-
-router.post("/edit", async (req, res) => {
-  try {
+router.post(
+  "/edit",
+  tryCatch(async (req, res) => {
     const query = {
       text: ` update planner
       set date = $2
@@ -117,9 +99,7 @@ router.post("/edit", async (req, res) => {
     const editor = await db.query(query);
     console.log(req.body.date);
     res.send(editor);
-  } catch (error) {
-    console.log(error);
-  }
-});
+  })
+);
 
 export default router;

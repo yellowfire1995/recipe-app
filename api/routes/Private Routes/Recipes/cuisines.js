@@ -1,10 +1,12 @@
 import express from "express";
 const router = express.Router();
 import db from "../../../database/db.js";
+import { tryCatch } from "../../../tools/error/tryCatch.js";
 
-router.get("/", async (req, res) => {
-  let data;
-  try {
+router.get(
+  "/",
+  tryCatch(async (req, res) => {
+    let data;
     data = await db.query(`
       SELECT 
   COALESCE(JSON_AGG(json_build_object('cuisine', cuisine, 'cuisine_id', id)), '[]') cuisines
@@ -13,9 +15,7 @@ router.get("/", async (req, res) => {
       `);
 
     res.json(data.rows);
-  } catch (error) {
-    console.error(error);
-  }
-});
+  })
+);
 
 export default router;

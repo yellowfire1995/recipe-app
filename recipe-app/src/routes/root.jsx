@@ -3,17 +3,18 @@ import { Outlet } from "react-router-dom";
 import Header from "../Components/Header/Header.jsx";
 import { addAccessTokenInterceptor } from "../../db/axiosConfig.js";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Loading from "../Components/Loading.jsx";
+import { ToastContainer } from "react-toastify";
 
 export default function App() {
   const { getAccessTokenSilently, isLoading, isAuthenticated, error } =
     useAuth0();
 
   if (isLoading) {
-    console.log("loading...");
     return (
       <>
         <Header />
-        <Outlet />
+        <Loading />
       </>
     );
   }
@@ -23,13 +24,13 @@ export default function App() {
   }
 
   if (!isLoading) {
-    console.log("loaded auth");
     addAccessTokenInterceptor({ getAccessTokenSilently, isAuthenticated });
     return (
       <>
         <Header />
 
         <Outlet />
+        <ToastContainer position="bottom-right" />
       </>
     );
   }

@@ -4,7 +4,7 @@ import AddPriceModal from "../Multipurpose/AddPriceModal";
 export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
   const { isAuthenticated } = useAuth0();
   return (
-    <div className="form-check" key={ingredient.id}>
+    <div className="form-check d-flex" key={ingredient.id}>
       <input
         className="form-check-input"
         type="checkbox"
@@ -39,16 +39,16 @@ export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
         {ingredient.gramConversion || ingredient.userG
           ? ` (${Math.round(ingredient.quantity)} g)`
           : ""}
-        {` ${ingredient.description}`}{" "}
+        {` ${ingredient.description}`}
         {`${
           ingredient.price
-            ? `- $${(
+            ? ` - $${(
                 Math.round(ingredient.price * ingredient.quantity * 100) / 100
               ).toFixed(2)}`
             : ""
-        }`}{" "}
+        }`}
+        {isAuthenticated && <AddPriceModal ingredient={ingredient} />}
       </label>
-      {isAuthenticated && <AddPriceModal ingredient={ingredient} />}
     </div>
   );
 }

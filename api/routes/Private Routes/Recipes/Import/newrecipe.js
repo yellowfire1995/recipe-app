@@ -8,13 +8,16 @@ import {
 } from "../../../../tools/aws/aws.js";
 import multer from "multer";
 import { getUserId } from "../../../../tools/auth/getUserId.js";
+import { tryCatch } from "../../../../tools/error/tryCatch.js";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-router.post("/", upload.single("photo"), getUserId, async (req, res) => {
-  try {
-    console.log(req.user);
+router.post(
+  "/",
+  tryCatch(upload.single("photo")),
+  tryCatch(getUserId),
+  tryCatch(async (req, res) => {
     let recipe = JSON.parse(req.body.updatedRecipe);
     var key = null;
     var thumbnailKey = null;
@@ -23,7 +26,7 @@ router.post("/", upload.single("photo"), getUserId, async (req, res) => {
       key = await uploadFileToS3(req.file);
       thumbnailKey = await resizeAndUploadFileToS3(req.file);
     } else if (recipe.imgUrl) {
-      [key, thumbnailKey] = uploadDualSizesUrlToS3(recipe.imgUrl);
+      ({ key, thumbnailKey } = await uploadDualSizesUrlToS3(recipe.imgUrl));
     }
 
     if (recipe.ingredients) {
@@ -37,7 +40,7 @@ router.post("/", upload.single("photo"), getUserId, async (req, res) => {
     const query = {
       text: `WITH r AS
         (
-          INSERT INTO recipes (name, servings, img_url, url, author, nickname, yield_number, yield_description, thumbnail) VALUES ($1, $2, $3, $4, $9, $10, $11, $12, $13 ) RETURNING recipe_id
+          INSERT INTO recipes (name, servings, img_url, url, author, nickname, yield_number, yield_description, thumbnail, public) VALUES ($1, $2, $3, $4, $9, $10, $11, $12, $13, $14 ) RETURNING recipe_id
         ),
          c AS
         (
@@ -78,16 +81,14 @@ router.post("/", upload.single("photo"), getUserId, async (req, res) => {
         recipe.yieldNumber,
         recipe.yieldDescription,
         thumbnailKey, //$13
+        recipe.public,
       ],
     };
 
     const data = await db.query(query);
 
     res.json(data.rows[0]);
-  } catch (error) {
-    console.error(error);
-    res.status(422).send("Error");
-  }
-});
+  })
+);
 
 export default router;

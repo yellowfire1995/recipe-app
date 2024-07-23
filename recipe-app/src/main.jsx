@@ -4,10 +4,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./routes/root";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import "react-toastify/dist/ReactToastify.css";
 
-import ErrorPage from "./errorpage";
+import RouteErrorPage from "./Components/Errors/RouteErrorPage.jsx";
 import Recipe from "./routes/Recipes.jsx";
 import Edit from "./routes/edit.jsx";
 import Ingredients from "./routes/ingredients.jsx";
@@ -36,7 +35,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
-    errorElement: <ErrorPage />,
+    errorElement: <RouteErrorPage />,
     children: [
       {
         element: <Recipe />,
@@ -49,7 +48,6 @@ const router = createBrowserRouter([
       { index: true, element: <Index /> },
       {
         element: <PrivateRoutes />,
-        errorElement: <ErrorPage />,
         children: [
           { path: "planner", element: <Planner /> },
 
@@ -85,7 +83,7 @@ const router = createBrowserRouter([
   {
     element: <Login />,
     path: "/login",
-    errorElement: <ErrorPage />,
+    errorElement: <RouteErrorPage />,
   },
 ]);
 
