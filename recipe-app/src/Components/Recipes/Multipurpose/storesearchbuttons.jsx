@@ -9,7 +9,7 @@ export default function StoreButtons(props) {
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          enable-background="new 0 0 40 40"
+          enableBackground="new 0 0 40 40"
           viewBox="0 0 40 40"
           id="walmart"
           height="25"
@@ -56,9 +56,9 @@ export default function StoreButtons(props) {
           version="1.1"
           id="Layer_1"
           xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
           viewBox="0 0 291.319 291.319"
-          xml:space="preserve"
+          xmlSpace="preserve"
         >
           <g>
             <path

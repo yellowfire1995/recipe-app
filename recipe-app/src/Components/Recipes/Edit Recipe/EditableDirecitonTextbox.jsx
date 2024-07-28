@@ -7,7 +7,6 @@ import { useRecipeContext } from "../RecipeContextProvider";
 import { parseDirections } from "../../../../db/queries";
 
 export function EditableDirectionTextbox() {
-  const [directions, setDirections] = useState("");
   const { recipe, setRecipe } = useRecipeContext();
   return (
     <>
@@ -19,11 +18,11 @@ export function EditableDirectionTextbox() {
       <Row>
         <Col>
           <Form.Control
+            id="directionText"
             required
             as="textarea"
             rows={10}
-            value={directions}
-            onChange={(e) => setDirections(e.target.value)}
+            defaultValue={recipe.directionText}
             placeholder="Enter directions"
           />
         </Col>
@@ -36,7 +35,9 @@ export function EditableDirectionTextbox() {
             onClick={async () => {
               setRecipe({
                 ...recipe,
-                directions: await parseDirections(directions),
+                directions: await parseDirections(
+                  document.getElementById("directionText").value
+                ),
               });
             }}
           >

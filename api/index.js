@@ -20,6 +20,7 @@ import scrapeRecipeRoute from "./routes/Private Routes/Recipes/Scrape/scrapeReci
 import collectionsRoute from "./routes/Private Routes/UserLists/collections.js";
 import plannerRoute from "./routes/Private Routes/UserLists/planner.js";
 import { errorHandler } from "./tools/error/errorHandler.js";
+import contactRoute from "./routes/Public Routes/contact.js";
 
 const ENV = process.env;
 const app = express();
@@ -61,9 +62,10 @@ app.use("/ingredients", ingredientsRoute);
 app.use("/edit", editRoute);
 app.use("/profile", auth0Route);
 app.use("/myrecipes", myRecipesRoute);
-app.use("/getPrice", getPriceRoute);
+app.use("/getprice", getPriceRoute);
 app.use("/collections", collectionsRoute);
 app.use("/planner", plannerRoute);
+app.use("/contact", contactRoute);
 
 app.use(errorHandler);
 

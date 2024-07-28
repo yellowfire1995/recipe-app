@@ -3,8 +3,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIngredientModal from "../EditIngredientModal.jsx";
 import AddPriceModal from "../../AddPriceModal.jsx";
 import { useState } from "react";
-import Button from "react-bootstrap/esm/Button.js";
-import ErrorIcon from "@mui/icons-material/Error";
 import { IngredientError } from "./IngredientError.jsx";
 
 export function EditableIngredientItem({

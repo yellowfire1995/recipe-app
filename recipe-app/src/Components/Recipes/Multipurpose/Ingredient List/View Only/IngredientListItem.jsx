@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import AddPriceModal from "../Multipurpose/AddPriceModal";
+import AddPriceModal from "../../AddPriceModal";
 
 export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
   const { isAuthenticated } = useAuth0();
@@ -47,8 +47,8 @@ export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
               ).toFixed(2)}`
             : ""
         }`}
-        {isAuthenticated && <AddPriceModal ingredient={ingredient} />}
       </label>
+      {isAuthenticated && <AddPriceModal ingredient={ingredient} />}
     </div>
   );
 }

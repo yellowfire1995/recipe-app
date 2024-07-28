@@ -15,7 +15,7 @@ export default function EditIngredientModal({
 }) {
   const element = (id) => document.getElementById(id);
   const { recipe, setRecipe } = useRecipeContext();
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(initialIngredient.newIngredient);
   const [ingredient, setIngredient] = useState(initialIngredient);
   const [searchArray, setSearchArray] = useState(initialIngredient.searchArray);
 
@@ -87,14 +87,19 @@ export default function EditIngredientModal({
             min="0"
             step="1"
             size="5"
-            defaultValue={Math.round((1 / ingredient.userG) * 100) / 100 || ""}
+            defaultValue={
+              Math.round(
+                (1 / (ingredient.userG || ingredient.gramConversion)) * 100
+              ) / 100 || ""
+            }
             onChange={(e) =>
               setIngredient({
                 ...ingredient,
-                userG: 1 / e.target.valueAsNumber,
+                userG: 1 / e.target.valueAsNumber || ingredient.userG,
                 quantity:
                   ingredient.quantity *
-                  (ingredient.userG / (1 / e.target.valueAsNumber)),
+                  ((ingredient.userG || ingredient.gramConversion) /
+                    (1 / e.target.valueAsNumber) || ingredient.gramConversion),
               })
             }
           />

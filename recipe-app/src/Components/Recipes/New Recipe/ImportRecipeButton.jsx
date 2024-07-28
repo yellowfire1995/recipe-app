@@ -26,8 +26,6 @@ async function handleImport({
           .map((direction) => direction.text)
           .join("\r\n");
 
-  // setIngredients(ingredientString);
-  // setDirections(directionString);
   const choices = await parseIngredients(ingredientString);
   const directions = await parseDirections(directionString);
 
@@ -50,6 +48,8 @@ async function handleImport({
       return { ...choice[0], searchArray: choice };
     }),
     servings: servings,
+    ingredientText: ingredientString,
+    directionText: directionString,
   });
 
   setIngredientList(choices);

@@ -4,11 +4,11 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/esm/Container";
 import { useRecipeContext } from "../RecipeContextProvider";
 
-function handleDirectionsUpdate(updatedRecipe, e) {
+function handleDirectionsUpdate(updatedRecipe, e, index) {
   return {
     ...updatedRecipe,
-    directions: updatedRecipe.directions.map((direction) => {
-      if (direction.step_num == e.target.id) {
+    directions: updatedRecipe.directions.map((direction, idx) => {
+      if (index === idx) {
         return {
           ...direction,
           step: e.target.value,
@@ -52,17 +52,19 @@ export default function EditableDirectionsList() {
     <Container className="mt-4">
       <h3> Directions </h3>
       <ol className="d-flex flex-column">
-        {recipe.directions.map((direction) => {
+        {recipe.directions.map((direction, index) => {
           return (
             <div key={direction.id}>
               <li>
                 <Form.Control
-                  key={direction.step_num}
+                  key={direction.step_num + direction.se}
                   id={direction.step_num}
                   as="textarea"
                   rows={3}
-                  defaultValue={`${direction.step}`}
-                  onChange={(e) => setRecipe(handleDirectionsUpdate(recipe, e))}
+                  value={direction.step}
+                  onChange={(e) =>
+                    setRecipe(handleDirectionsUpdate(recipe, e, index))
+                  }
                   style={{ width: "90%" }}
                 />
               </li>

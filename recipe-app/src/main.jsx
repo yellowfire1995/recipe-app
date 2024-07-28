@@ -10,7 +10,7 @@ import RouteErrorPage from "./Components/Errors/RouteErrorPage.jsx";
 import Recipe from "./routes/Recipes.jsx";
 import Edit from "./routes/edit.jsx";
 import Ingredients from "./routes/ingredients.jsx";
-import AddRecipe from "./routes/Import.jsx";
+import AddRecipe from "./routes/AddRecipe.jsx";
 import Login from "./routes/login.jsx";
 import PrivateRoutes from "./utils/PrivateRoutes.jsx";
 import { Auth0Provider } from "@auth0/auth0-react";
@@ -28,6 +28,7 @@ import Collections from "./routes/Collections.jsx";
 import "./index.scss";
 import Planner from "./routes/Planner.jsx";
 import { HelmetProvider } from "react-helmet-async";
+import { ContactPage } from "./routes/Contact.jsx";
 
 export const queryClient = new QueryClient();
 
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
     element: <Root />,
     errorElement: <RouteErrorPage />,
     children: [
+      {
+        element: <ContactPage />,
+        path: "contact",
+      },
       {
         element: <Recipe />,
         path: "recipes/:recipeId",

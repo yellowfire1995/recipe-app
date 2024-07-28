@@ -61,6 +61,7 @@ export async function newRecipe(updatedRecipe) {
     formData.append("updatedRecipe", JSON.stringify(updatedRecipe));
 
     const response = await httpClient.post(`${server}/newrecipe`, formData);
+    console.log(response.data);
     return response.data.recipeId;
   } catch (error) {
     return Promise.reject(error.response);
@@ -76,6 +77,16 @@ export async function savePrice(pkgGrms, pkgCost, url, fdc_id) {
       url: url,
       fdc_id: fdc_id,
     });
+    return data;
+  } catch (error) {
+    return Promise.reject(error.response);
+  }
+}
+
+export async function getPrice(url) {
+  try {
+    console.log(url);
+    const { data } = await httpClient.post(`${server}/getprice`, { url });
     return data;
   } catch (error) {
     return Promise.reject(error.response);
@@ -114,7 +125,7 @@ export async function parseDirections(directions) {
         },
       }
     );
-
+    console.log(directionsArray.data);
     return directionsArray.data;
   } catch (error) {
     return Promise.reject(error.response);
@@ -300,6 +311,21 @@ export async function scrapeRecipe(url) {
     );
 
     return recipe.data;
+  } catch (error) {
+    return Promise.reject(error.response);
+  }
+}
+
+export async function contact({ name, message, email }) {
+  try {
+    console.log(name);
+    const contact = await httpClient.post(`${server}/contact`, {
+      name,
+      email,
+      message,
+    });
+
+    return contact;
   } catch (error) {
     return Promise.reject(error.response);
   }

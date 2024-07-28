@@ -11,7 +11,7 @@ export default function EditHeaderModal({
   ...props
 }) {
   const [ingredient, setIngredient] = useState(originalIngredient);
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(originalIngredient.newHeader);
 
   const handleClose = () => {
     setShow(false);
@@ -52,11 +52,11 @@ export default function EditHeaderModal({
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Change header for {ingredient.description}
+            Change {ingredient.description}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <label htmlFor="ingredientDescription">Ingredient description:</label>
+          <label htmlFor="ingredientDescription">Header text:</label>
           <input
             name="ingredientDescription"
             type="textbox"

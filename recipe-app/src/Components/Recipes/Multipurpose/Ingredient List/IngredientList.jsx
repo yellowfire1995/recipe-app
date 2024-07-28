@@ -84,62 +84,60 @@ export function IngredientList({
     setInitialDragIndex();
   }
 
-  if (recipe.ingredients.length > 0) {
-    return (
-      <>
-        <ListGroup>
-          <span className="h3">
-            Ingredients {price} <br />
-          </span>
-          {recipe.ingredients.map((ingredient, index) => {
-            if (ingredient.isGroupHeader) {
-              header = {
-                ...header,
-                key: ingredient.id,
-                props: {
-                  ingredient,
-                  index,
-                  handleDragStart,
-                  handleDragOver,
-                  handleDragStop,
-                  handleDragEnd,
-                  initialDragIndex,
-                  setInitialDragIndex,
-                  deleteIngredient,
-                  recipe,
-                  setRecipe,
-                },
-              };
-              return header;
-            }
-            if (!ingredient.isGroupHeader) {
-              item = {
-                ...item,
-                key: ingredient.id,
-                props: {
-                  ingredient,
-                  index,
-                  handleDragStart,
-                  handleDragOver,
-                  handleDragStop,
-                  handleDragEnd,
-                  initialDragIndex,
-                  deleteIngredient,
-                  handleIngredientUpdate,
-                  recipe,
-                  setRecipe,
-                  ingredientList,
-                  setIngredientList,
-                  checkedArray,
-                  handleCheck,
-                },
-              };
-              return item;
-            }
-          })}
-        </ListGroup>
-        {buttons}
-      </>
-    );
-  }
+  return (
+    <>
+      <ListGroup>
+        <span className="h3">
+          Ingredients {price} <br />
+        </span>
+        {recipe.ingredients.map((ingredient, index) => {
+          if (ingredient.isGroupHeader) {
+            header = {
+              ...header,
+              key: ingredient.id,
+              props: {
+                ingredient,
+                index,
+                handleDragStart,
+                handleDragOver,
+                handleDragStop,
+                handleDragEnd,
+                initialDragIndex,
+                setInitialDragIndex,
+                deleteIngredient,
+                recipe,
+                setRecipe,
+              },
+            };
+            return header;
+          }
+          if (!ingredient.isGroupHeader) {
+            item = {
+              ...item,
+              key: ingredient.id,
+              props: {
+                ingredient,
+                index,
+                handleDragStart,
+                handleDragOver,
+                handleDragStop,
+                handleDragEnd,
+                initialDragIndex,
+                deleteIngredient,
+                handleIngredientUpdate,
+                recipe,
+                setRecipe,
+                ingredientList,
+                setIngredientList,
+                checkedArray,
+                handleCheck,
+              },
+            };
+            return item;
+          }
+        })}
+      </ListGroup>
+      {buttons}
+    </>
+  );
 }

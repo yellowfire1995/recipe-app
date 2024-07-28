@@ -19,6 +19,7 @@ export function AddToIngredientListButtons() {
                   description: "New Ingredient",
                   id: uuidv4(),
                   nutrients: [],
+                  newIngredient: true,
                 },
               ],
             });
@@ -39,6 +40,7 @@ export function AddToIngredientListButtons() {
                   id: uuidv4(),
                   nutrients: [],
                   isGroupHeader: true,
+                  newHeader: true,
                 },
               ],
             });

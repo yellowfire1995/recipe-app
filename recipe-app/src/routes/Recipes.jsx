@@ -6,7 +6,6 @@ import Row from "react-bootstrap/esm/Row";
 import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router-dom";
 import { getRecipeById } from "../../db/queries";
-import ErrorHandler from "../Components/Errors/NotFound.jsx";
 import Loading from "../Components/Loading";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
 import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";

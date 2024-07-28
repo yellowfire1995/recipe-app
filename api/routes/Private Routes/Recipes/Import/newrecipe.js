@@ -65,7 +65,7 @@ router.post(
         SELECT (t ->> 'category_id')::int, (SELECT recipe_id FROM r)
         from json_array_elements($8::json) t
         )
-        SELECT recipe_id FROM r;
+        SELECT recipe_id as "recipeId" FROM r;
     `,
       values: [
         recipe.name,

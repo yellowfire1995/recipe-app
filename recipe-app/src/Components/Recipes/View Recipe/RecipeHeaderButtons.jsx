@@ -1,8 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Row from "react-bootstrap/esm/Row";
-import PendingIcon from "@mui/icons-material/Pending";
 
 export function RecipeHeaderButtons({ children }) {
   const { isAuthenticated } = useAuth0();

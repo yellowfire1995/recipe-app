@@ -38,7 +38,7 @@ function Header() {
   const navigate = useNavigate();
 
   return (
-    <Navbar expand="xl" sticky="top" className="shadow bg-nav p-0 ">
+    <Navbar expand="xl" sticky="top" className="shadow bg-nav p-0 w-100">
       <Container fluid className="px-0 justify-content-center">
         <Navbar.Offcanvas id="header" placement="start" className="d-xl-none">
           <Offcanvas.Header closeButton>

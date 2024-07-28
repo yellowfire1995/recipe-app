@@ -21,14 +21,18 @@ export function ImportSelector({
           style={{ width: "5rem" }}
           name={ingredient.description}
           defaultValue={
-            Math.round((ingredient.userG || 1) * ingredient.quantity * 100) /
-            100
+            Math.round(
+              (ingredient.userG || ingredient.gramConversion || 1) *
+                ingredient.quantity *
+                100
+            ) / 100
           }
           onChange={(e) => {
             setIngredient({
               ...ingredient,
               quantity:
-                e.target.valueAsNumber / (ingredient.userG || 1) ||
+                e.target.valueAsNumber /
+                  (ingredient.userG || ingredient.gramConversion || 1) ||
                 ingredient.quantity,
             });
           }}

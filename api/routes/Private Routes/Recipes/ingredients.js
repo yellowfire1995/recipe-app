@@ -4,11 +4,15 @@ import db from "../../../database/db.js";
 import "dotenv/config";
 import { searchSolr } from "../../../tools/solr/searchSolr.js";
 import { tryCatch } from "../../../tools/error/tryCatch.js";
+import { AppError } from "../../../tools/error/AppError.js";
 
 router.post(
   "/search",
   tryCatch(async (req, res) => {
     const searchResult = await searchSolr(req.body.ingredient);
+    if (searchResult.length < 0) {
+      new AppError(500, "Ingredient search down, please try again later", 500);
+    }
     const ingredients = await Promise.all(
       searchResult.map(async (doc) => {
         const query = {

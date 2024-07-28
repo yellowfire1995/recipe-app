@@ -60,6 +60,7 @@ export default function AddRecipe() {
       SavingError();
     },
     onSuccess: (data) => {
+      console.log(data);
       queryClient.invalidateQueries({
         queryKey: ["AllRecipes"],
         refetchType: "all",
@@ -139,20 +140,22 @@ export default function AddRecipe() {
               />
             </Col>
             <Col>
-              <RecipeForm.EditableDirectionTextbox />
+              <RecipeForm.IngredientList
+                header={<RecipeForm.EditableHeaderItem />}
+                item={<RecipeForm.EditableIngredientItem />}
+                ingredientList={ingredientList}
+                setIngredientList={setIngredientList}
+                buttons={<RecipeForm.AddToIngredientListButtons />}
+              />
             </Col>
           </Row>
           <Row className="mt-4">
             <Col md>
               <Row>
                 <Col>
-                  <RecipeForm.IngredientList
-                    header={<RecipeForm.EditableHeaderItem />}
-                    item={<RecipeForm.EditableIngredientItem />}
-                    ingredientList={ingredientList}
-                    setIngredientList={setIngredientList}
-                    buttons={<RecipeForm.AddToIngredientListButtons />}
-                  />
+                  <RecipeForm.EditableDirectionTextbox />
+                </Col>
+                <Col>
                   <RecipeForm.EditableDirectionList />
                 </Col>
               </Row>

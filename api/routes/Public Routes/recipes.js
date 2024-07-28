@@ -42,7 +42,6 @@ async function checkAuth(req, res, next) {
   };
 
   const data = await db.query(query);
-  console.log(activeUser);
 
   if (data.rows[0].author == activeUser?.data.sub || data.rows[0].public) {
     next();
