@@ -1,9 +1,18 @@
 import Row from "react-bootstrap/esm/Row";
 import { useRecipeContext } from "../RecipeContextProvider";
 import Col from "react-bootstrap/esm/Col";
+import { RecipeRating } from "../Rating/RecipeRating";
+import { queryClient } from "../../../main";
 
 export function RecipeHeader({ price, buttons, credit }) {
-  const { recipe } = useRecipeContext();
+  const { recipe, setRecipe } = useRecipeContext();
+  const rating = Math.round(recipe.rating * 10) / 10;
+  const refetch = async () => {
+    await queryClient.invalidateQueries({
+      queryKey: [`Recipe${recipe.recipeId}`],
+      refetchType: "all",
+    });
+  };
 
   return (
     <>
@@ -16,6 +25,13 @@ export function RecipeHeader({ price, buttons, credit }) {
           <Col xl={8} className="d-flex align-items-center ">
             <h2>{recipe.name}</h2>
             {buttons}
+            <RecipeRating
+              className="ms-2"
+              recipe={recipe}
+              setRecipe={setRecipe}
+              refetch={refetch}
+            />
+            {`(average ${rating})`}
           </Col>
 
           <hr />

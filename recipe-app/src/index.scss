@@ -191,11 +191,13 @@ input[type=number] {
 
 //For recipe cards with no image
 [data-bs-theme=light] .filler-text {
-  font-size: 3rem;
+  text-decoration-thickness: 50px;
+  font-size: 8rem;
   font-family: "Courier New", "monospace";
   color: rgb(0,0,0, .25);
   overflow: hidden;
-   
+  white-space: nowrap;
+ 
 }
 
 [data-bs-theme=dark] .filler-text {
@@ -203,6 +205,8 @@ input[type=number] {
   font-family: "Courier New", "monospace";
   color: rgb(255,255,255, .25);
   overflow: hidden;
+
+ 
    
 }
 
@@ -226,3 +230,21 @@ input[type=number] {
   
 }
 
+.rating-background{
+  position:absolute;
+  z-index:2;
+  top:.5rem;
+    background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 5px;
+}
+
+.recipe-list-item{
+  background-color: rgba(255,255,255, .5);
+  text-decoration: none;
+}
+img.recipe-list-thumbnail{
+  object-fit: cover;
+  aspect-ratio: 1;
+  width:3rem;
+
+}

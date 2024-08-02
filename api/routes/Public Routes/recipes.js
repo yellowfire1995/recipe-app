@@ -6,11 +6,14 @@ import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { deleteFromS3 } from "../../tools/aws/aws.js";
 import { tryCatch } from "../../tools/error/tryCatch.js";
 import { AppError } from "../../tools/error/AppError.js";
+import format from "pg-format";
+import { authenticate } from "../../index.js";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.ACCESS_KEY;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+const roles = process.env.AUTH0_ROLES;
 
 const S3 = new S3Client({
   credentials: {
@@ -21,21 +24,6 @@ const S3 = new S3Client({
 });
 
 async function checkAuth(req, res, next) {
-  let activeUser;
-
-  if (req.headers.authorization) {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: process.env.AUTH0_VERIFY,
-      headers: {
-        Accept: "application/json",
-        Authorization: `${req.headers.authorization}`,
-      },
-    };
-    activeUser = await axios.request(config);
-    req.body = { user: activeUser.data.sub };
-  }
   const query = {
     text: `SELECT author, public FROM RECIPES where recipe_id = $1`,
     values: [req.params.recipeId],
@@ -43,7 +31,11 @@ async function checkAuth(req, res, next) {
 
   const data = await db.query(query);
 
-  if (data.rows[0].author == activeUser?.data.sub || data.rows[0].public) {
+  if (
+    data.rows[0].author == req.auth?.payload.sub ||
+    data.rows[0].public ||
+    req.auth.payload[roles].includes("Admin")
+  ) {
     next();
   } else {
     throw new AppError(401, "Unauthorized", 401);
@@ -52,10 +44,21 @@ async function checkAuth(req, res, next) {
 
 router.get(
   "/:recipeId",
+  tryCatch((req, res, next) => {
+    req.headers.authorization ? authenticate(req, res, next) : next();
+  }),
   tryCatch(checkAuth),
   tryCatch(async (req, res) => {
+    let userRating;
+    if (req.body?.user) {
+      userRating = `(select rating
+  from ratings r
+  where r.recipe_id = recipes.recipe_id and r.author = '${req.body.user}') as "userRating",`;
+    }
+
     const query = {
-      text: ` select
+      text: format(
+        ` select
 	  recipe_id as "recipeId",
 	  NAME,
 	  img_url as "imgUrl",
@@ -70,6 +73,10 @@ router.get(
 	  yield_number as "yieldNumber",
 	  yield_description as "yieldDescription",
 	  public,
+	        (select AVG(rating) 
+from ratings r
+where r.recipe_id = recipes.recipe_id  ) as rating,
+%s
 	  (
 	  select
 		  coalesce(Json_agg(Json_build_object( 'id',
@@ -248,10 +255,10 @@ router.get(
 	  recipes
   where
 	  recipes.recipe_id = $1
-	  and (recipes.public
-		  or recipes.author = $2 )
   group by
-	  recipes.recipe_id ; `,
+	  recipes.recipe_id ;`,
+        userRating
+      ),
 
       values: [req.params.recipeId, req.body?.user],
     };
@@ -278,6 +285,9 @@ router.get(
 
 router.delete(
   "/:recipeId/delete",
+  tryCatch((req, res, next) => {
+    req.headers.authorization ? authenticate(req, res, next) : next();
+  }),
   tryCatch(checkAuth),
   tryCatch(async (req, res) => {
     const query = {

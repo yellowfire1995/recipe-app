@@ -20,6 +20,7 @@ function Header() {
   const { logout, isAuthenticated, loginWithPopup } = useAuth0();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search");
+  const pageSize = searchParams.get("pageSize");
 
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [theme, setTheme] = useLocalStorage(
@@ -82,7 +83,7 @@ function Header() {
                   navigate(
                     `/recipes?search=${
                       document.getElementById("searchBox").value
-                    }`
+                    }${pageSize ? `&results=${pageSize}` : ""}`
                   );
                 }}
               >

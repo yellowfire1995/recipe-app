@@ -8,13 +8,13 @@ import { EditRecipeButton } from "./View Recipe/EditRecipeButton";
 import { IngredientList } from "./Multipurpose/Ingredient List/IngredientList";
 import { RecipeCredit } from "./View Recipe/RecipeCredit";
 import { RecipeHeader } from "./View Recipe/RecipeHeader";
-import { RecipeHeaderButtons } from "./View Recipe/RecipeHeaderButtons";
+import { RecipeOptionsDropdown } from "./View Recipe/RecipeHeaderButtons";
 import { RecipeHeaderImage } from "./View Recipe/RecipeHeaderImage";
 import { RecipePrice } from "./View Recipe/RecipePrice";
 import { RemixButton } from "./View Recipe/RemixButton";
 import Container from "react-bootstrap/esm/Container";
 import Col from "react-bootstrap/esm/Col";
-import { DeleteRecipeIcon } from "./Edit Recipe/DeleteRecipeIcon";
+import { DeleteRecipeIcon } from "./Edit Recipe/DeleteRecipeButton";
 import { AddPhoto } from "./Edit Recipe/AddPhoto";
 import { AddPhotoButton } from "./Edit Recipe/AddPhotoButton";
 import { AddPhotoPopup } from "./Edit Recipe/AddPhotoPopup";
@@ -58,7 +58,7 @@ RecipeForm.AddRecipeToCollectionModal = AddRecipeToCollectionModal;
 RecipeForm.RecipeHeaderImage = RecipeHeaderImage;
 
 //Buttons
-RecipeForm.RecipeHeaderButtons = RecipeHeaderButtons;
+RecipeForm.RecipeHeaderButtons = RecipeOptionsDropdown;
 RecipeForm.RemixButton = RemixButton;
 RecipeForm.AddToMealPlannerButton = AddToMealPlannerButton;
 RecipeForm.EditRecipeButton = EditRecipeButton;

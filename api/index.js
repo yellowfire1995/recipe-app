@@ -21,10 +21,15 @@ import collectionsRoute from "./routes/Private Routes/UserLists/collections.js";
 import plannerRoute from "./routes/Private Routes/UserLists/planner.js";
 import { errorHandler } from "./tools/error/errorHandler.js";
 import contactRoute from "./routes/Public Routes/contact.js";
+import RatingRoute from "./routes/Private Routes/Recipes/Rating/rating.js";
 
 const ENV = process.env;
 const app = express();
 const port = ENV.SERVER_PORT;
+export const authenticate = auth({
+  audience: [process.env.AUTH0_AUDIENCE, process.env.AUTH0_VERIFY],
+  issuerBaseURL: process.env.AUTH0_BASEURL,
+});
 
 var whitelist = [ENV.HOST];
 var corsOptions = {
@@ -44,13 +49,9 @@ app.use(bodyParser.json());
 
 app.use("/recipecards", recipeCardsRoute);
 app.use("/recipes", recipesRoute);
+app.use("/contact", contactRoute);
 
-app.use(
-  auth({
-    audience: [process.env.AUTH0_AUDIENCE, process.env.AUTH0_VERIFY],
-    issuerBaseURL: process.env.AUTH0_BASEURL,
-  })
-);
+app.use(authenticate);
 
 app.use("/import", importDirectionsRoute);
 app.use("/import", importIngredientsRoute);
@@ -65,7 +66,7 @@ app.use("/myrecipes", myRecipesRoute);
 app.use("/getprice", getPriceRoute);
 app.use("/collections", collectionsRoute);
 app.use("/planner", plannerRoute);
-app.use("/contact", contactRoute);
+app.use("/rating", RatingRoute);
 
 app.use(errorHandler);
 

@@ -40,27 +40,33 @@ export default function PlannerDayList(props) {
       });
     },
   });
-
-  return (
-    <>
-      <h3 key={date}>{date}</h3>
-      {dailyMeals.length > 0
-        ? dailyMeals[0].recipes.map((recipe) => {
-            return (
-              <div key={recipe.planId}>
-                <Link to={`/recipes/${recipe.recipeId}`}>{recipe.name}</Link>
-                <Button size="sm" onClick={() => deleter.mutate(recipe.planId)}>
-                  Delete
-                </Button>
-                <ChangeMealDay
-                  planId={recipe.planId}
-                  date={date}
-                  dateObject={props.date}
-                />
-              </div>
-            );
-          })
-        : null}
-    </>
-  );
+  if (dailyMeals.length > 0) {
+    return (
+      <>
+        <h3 key={date}>{date}</h3>
+        {dailyMeals[0].recipes.map((recipe) => {
+          return (
+            <div key={recipe.planId}>
+              <Link to={`/recipes/${recipe.recipeId}`}>{recipe.name}</Link>
+              <Button size="sm" onClick={() => deleter.mutate(recipe.planId)}>
+                Delete
+              </Button>
+              <ChangeMealDay
+                planId={recipe.planId}
+                date={date}
+                dateObject={props.date}
+              />
+            </div>
+          );
+        })}
+      </>
+    );
+  } else {
+    return (
+      <>
+        <h3 key={date}>{date}</h3>
+        No recipes for this day.
+      </>
+    );
+  }
 }

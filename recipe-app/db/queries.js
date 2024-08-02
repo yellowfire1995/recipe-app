@@ -161,10 +161,10 @@ export async function getRecipeById(recipeId) {
 }
 
 //Get all recipes for recipe cards on home page
-export async function getRecipeCards({ page, search }) {
+export async function getRecipeCards({ page, search, pageSize, sort }) {
   try {
     const recipeCards = await httpClient.get(
-      `${server}/recipecards?page=${page}&search=${search}`
+      `${server}/recipecards?page=${page}&search=${search}&pageSize=${pageSize}}&sort=${sort}`
     );
     return recipeCards.data;
   } catch (error) {
@@ -173,11 +173,13 @@ export async function getRecipeCards({ page, search }) {
 }
 
 //Get all recipes for recipe cards on home page
-export async function getMyRecipeCards({ page, search }) {
+export async function getMyRecipeCards({ page, search, pageSize, sort }) {
   try {
     const recipeCards = await httpClient.get(
-      `${server}/myrecipes?page=${page}&search=${search}`
+      `${server}/myrecipes?page=${page}&search=${search}&pageSize=${pageSize}}&sort=${sort}`
     );
+
+    console.log(recipeCards.data);
     return recipeCards.data;
   } catch (error) {
     return Promise.reject(error.response);
@@ -316,9 +318,8 @@ export async function scrapeRecipe(url) {
   }
 }
 
-export async function contact({ name, message, email }) {
+export async function contact(name, email, message) {
   try {
-    console.log(name);
     const contact = await httpClient.post(`${server}/contact`, {
       name,
       email,
@@ -326,6 +327,31 @@ export async function contact({ name, message, email }) {
     });
 
     return contact;
+  } catch (error) {
+    return Promise.reject(error.response);
+  }
+}
+
+export async function updateRating(recipeId, userRating) {
+  try {
+    const rate = await httpClient.post(`${server}/rating/update`, {
+      recipeId,
+      userRating,
+    });
+
+    return rate;
+  } catch (error) {
+    return Promise.reject(error.response);
+  }
+}
+
+export async function deleteRating(recipeId) {
+  try {
+    const rate = await httpClient.post(`${server}/rating/delete`, {
+      recipeId,
+    });
+
+    return rate;
   } catch (error) {
     return Promise.reject(error.response);
   }

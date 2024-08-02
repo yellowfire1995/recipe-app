@@ -23,7 +23,10 @@ export async function checkAuth(req, res, next) {
 
   let data = await db.query(query);
 
-  if (data.rows[0].author == req.auth.payload.sub) {
+  if (
+    data.rows[0].author == req.auth.payload.sub ||
+    req.auth.payload[process.env.AUTH0_ROLES].includes("Admin")
+  ) {
     next();
   } else {
     throw new AppError(401, "Unauthorized", 401);

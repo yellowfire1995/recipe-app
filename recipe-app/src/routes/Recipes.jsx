@@ -29,7 +29,7 @@ export default function Recipe() {
     queryFn: async () => {
       return await getRecipeById(recipeId);
     },
-    retry: 1,
+    retry: false,
     staleTime: 1000 * 60 * 60 * 24,
   });
 
@@ -62,7 +62,7 @@ export default function Recipe() {
           <Row className="pt-3">
             <RecipeForm.RecipeHeader
               buttons={
-                <RecipeForm.RecipeHeaderButtons>
+                <RecipeForm.RecipeHeaderButtons recipe={recipe}>
                   <RecipeForm.EditRecipeButton />
                   <RecipeForm.RemixButton />
                   <RecipeForm.AddRecipeToCollectionModal />

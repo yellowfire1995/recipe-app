@@ -6,39 +6,37 @@ import Row from "react-bootstrap/esm/Row";
 import { useSearchParams } from "react-router-dom";
 import Loading from "../../Loading.jsx";
 import RecipeCardData from "./RecipeCard.jsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { RecipeSearchOptionsBar } from "../RecipeSearchOptionsBar.jsx";
 
 export default function RecipeCards(props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get("page");
-  const searchQuery = searchParams.get("search");
+  const search = searchParams.get("search");
+  const pageSize = searchParams.get("pageSize");
+  const sort = searchParams.get("sort");
+  const [recipeCards, setRecipeCards] = useState();
+  const { isAuthenticated } = useAuth0();
 
-  const previousPageParams =
-    searchQuery == null
-      ? {
-          page: page ? (parseInt(page) - 1).toString() : "2",
-        }
-      : {
-          page: page ? (parseInt(page) - 1).toString() : "2",
-          search: searchQuery,
-        };
+  const previousPageParams = {
+    ...Object.fromEntries(searchParams),
+    page: page ? (parseInt(page) - 1).toString() : "2",
+  };
 
-  const nextPageParams =
-    searchQuery == null
-      ? {
-          page: page ? (parseInt(page) + 1).toString() : "2",
-        }
-      : {
-          page: page ? (parseInt(page) + 1).toString() : "2",
-          search: searchQuery,
-        };
+  const nextPageParams = {
+    ...Object.fromEntries(searchParams),
+    page: page ? (parseInt(page) + 1).toString() : "2",
+  };
 
-  const { isLoading, refetch, isAuthenticated, data, isError } = useQuery({
-    queryKey: [props.queryKey, page, searchQuery],
+  const { isLoading, refetch, data, isError, isFetched } = useQuery({
+    queryKey: [props.queryKey, page, search, pageSize, sort],
     queryFn: async () =>
       await props.fetcher({
         page: page,
-        search: searchQuery,
+        search: search,
+        pageSize: pageSize,
+        sort: sort,
       }),
   });
 
@@ -46,19 +44,33 @@ export default function RecipeCards(props) {
     refetch();
   }, [refetch, isAuthenticated]);
 
+  useEffect(() => {
+    if (isFetched && !isError && data) {
+      setRecipeCards(data.data);
+    }
+  }, [data, isFetched, isError, isAuthenticated]);
+
   if (isError) {
     return <div>An error has occured</div>;
   }
 
-  return (
-    <>
-      {isLoading ? (
-        <Loading />
-      ) : (
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (recipeCards && isFetched) {
+    return (
+      <>
+        (
         <Container>
+          <RecipeSearchOptionsBar />
           <Row>
             <Col className="d-flex flex-wrap justify-content-center">
-              <RecipeCardData cards={data.data} />
+              <RecipeCardData
+                cards={recipeCards}
+                setCards={setRecipeCards}
+                refetch={refetch}
+              />
             </Col>
           </Row>
           <Row className="w-100">
@@ -80,7 +92,8 @@ export default function RecipeCards(props) {
             </Col>
           </Row>
         </Container>
-      )}
-    </>
-  );
+        )
+      </>
+    );
+  }
 }

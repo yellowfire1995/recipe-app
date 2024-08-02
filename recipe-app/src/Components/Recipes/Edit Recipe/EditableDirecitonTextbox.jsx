@@ -19,7 +19,6 @@ export function EditableDirectionTextbox() {
         <Col>
           <Form.Control
             id="directionText"
-            required
             as="textarea"
             rows={10}
             defaultValue={recipe.directionText}

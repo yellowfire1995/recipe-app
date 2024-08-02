@@ -17,8 +17,8 @@ export function ContactPage() {
     toast.success("Message submitted, please wait 24hrs for a response.");
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (name, email, message) => {
-      return contact({ name, email, message });
+    mutationFn: () => {
+      return contact(name, email, message);
     },
     onError: (error) => {
       console.log(error);
@@ -45,7 +45,7 @@ export function ContactPage() {
           <Form
             onSubmit={(e) => {
               e.preventDefault();
-              mutate(name, message, email);
+              mutate(name, email, message);
             }}
           >
             <Form.Group controlId="name">

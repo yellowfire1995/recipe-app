@@ -36,7 +36,6 @@ export function EditableIngredientTextbox() {
           <Form.Control
             key={recipe.ingredientText}
             id="ingredientText"
-            required
             as="textarea"
             className="table-active"
             rows={10}

@@ -8,11 +8,15 @@ router.post(
   "/",
   tryCatch(async (req, res) => {
     const { name, email, message } = req.body;
+    if (!name || !email || !message) {
+      console.log("Contact form submitted without all information.");
+      new AppError(400, "Missing information", 400);
+    }
     const mailOptions = {
       from: process.env.NODEMAILER_USER,
       to: process.env.NODEMAILER_USER,
       subject: `New Form Submission from ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+      text: `Name: ${name}\n Email: ${email}\n Message: ${message}`,
     };
     transporter.sendMail(mailOptions, (error) => {
       if (error) {

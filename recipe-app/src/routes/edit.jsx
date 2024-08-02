@@ -17,6 +17,7 @@ import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFa
 import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
 import ErrorHandler from "../Components/Errors/NotFound.jsx";
 import { toast } from "react-toastify";
+import { roles } from "../../env/env.js";
 
 export const RecipeContext = createContext();
 
@@ -91,7 +92,11 @@ export default function Edit() {
     return <Loading />;
   }
 
-  if (recipe && isFetched && user.sub === recipe.author) {
+  if (
+    recipe &&
+    isFetched &&
+    (user.sub === recipe.author || user[roles]?.includes("Admin"))
+  ) {
     return (
       <>
         <Helmet>
@@ -107,7 +112,10 @@ export default function Edit() {
           >
             <Row className="mt-3 d-flex">
               <Col className="d-flex justify-content-end">
-                <RecipeForm.DeleteRecipeIcon />
+                <RecipeForm.DeleteRecipeIcon
+                  recipe={recipe}
+                  onSettled={() => navigate("/recipes")}
+                />
               </Col>
             </Row>
             <Row className="mt-1 justify-content-center mx-1 mb-1 ">

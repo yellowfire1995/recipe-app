@@ -6,12 +6,8 @@ import { addRecipeToCollection, getCollectionNames } from "../../../db/queries";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Typeahead } from "react-bootstrap-typeahead";
 import Loading from "../Loading";
-import { useRecipeContext } from "../Recipes/RecipeContextProvider";
 
-export function AddRecipeToCollectionModal() {
-  const {
-    recipe: { recipeId },
-  } = useRecipeContext();
+export function AddRecipeToCollectionModal({ recipe: { recipeId } }) {
   const collections = useQuery({
     queryKey: ["CollectionNames"],
     queryFn: () => getCollectionNames(),

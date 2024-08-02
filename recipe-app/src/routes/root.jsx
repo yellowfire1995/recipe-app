@@ -6,11 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Loading from "../Components/Loading.jsx";
 import { ToastContainer } from "react-toastify";
 import { Footer } from "../Components/Footer/Footer.jsx";
-import Row from "react-bootstrap/esm/Row.js";
-import Col from "react-bootstrap/esm/Col.js";
 import Stack from "react-bootstrap/Stack";
-
-import Container from "react-bootstrap/esm/Container.js";
 
 export default function App() {
   const { getAccessTokenSilently, isLoading, isAuthenticated, error } =
