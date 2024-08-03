@@ -7,28 +7,8 @@ export function RecipeSearchOptionsBar() {
   const sort = searchParams.get("sort");
 
   return (
-    <Row className="mb-3">
-      <Col className="d-flex flex-wrap align-items-center">
-        <label htmlFor="numberOfResults"> Results per page:</label>
-
-        <Form.Select
-          id="numberOfResults"
-          style={{ width: "fit-content" }}
-          defaultValue={pageSize || "15"}
-          onChange={(e) =>
-            setSearchParams({
-              ...Object.fromEntries(searchParams),
-              pageSize: e.target.value,
-            })
-          }
-        >
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="30">30</option>
-          <option value="50">50</option>
-        </Form.Select>
-      </Col>
-      <Col className="d-flex flex-wrap align-items-center justify-content-end">
+    <Row className="mb-3 justify-content-around">
+      <Col className="d-flex align-items-center" xs="auto">
         <label htmlFor="numberOfResults"> Sort by:</label>
 
         <Form.Select
@@ -46,6 +26,26 @@ export function RecipeSearchOptionsBar() {
           <option value="nameAsc">Name ascending</option>
           <option value="newest">Newest</option>
           <option value="oldest">Oldest</option>
+        </Form.Select>
+      </Col>
+      <Col className="d-flex align-items-center" xs="auto">
+        <label htmlFor="numberOfResults"> Results per page:</label>
+
+        <Form.Select
+          id="numberOfResults"
+          style={{ width: "fit-content" }}
+          defaultValue={pageSize || "15"}
+          onChange={(e) =>
+            setSearchParams({
+              ...Object.fromEntries(searchParams),
+              pageSize: e.target.value,
+            })
+          }
+        >
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="30">30</option>
+          <option value="50">50</option>
         </Form.Select>
       </Col>
     </Row>

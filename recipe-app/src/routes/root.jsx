@@ -12,13 +12,12 @@ export default function App() {
   const { getAccessTokenSilently, isLoading, isAuthenticated, error } =
     useAuth0();
 
-  if (isLoading) {
+  if (isLoading && isAuthenticated) {
     return (
       <>
-        <Stack gap={3} style={{ minHeight: "100vh" }}>
+        <Stack gap={3} className="p-0" style={{ minHeight: "100vh" }}>
           <Header />
           <Loading />
-          <div className="break"></div>
         </Stack>
       </>
     );
@@ -28,11 +27,11 @@ export default function App() {
     console.log(error);
   }
 
-  if (!isLoading) {
+  if (!isLoading || !isAuthenticated) {
     addAccessTokenInterceptor({ getAccessTokenSilently, isAuthenticated });
     return (
       <>
-        <Stack gap={3} style={{ minHeight: "100vh" }}>
+        <Stack style={{ minHeight: "100vh" }}>
           <Header />
           <Outlet />
 

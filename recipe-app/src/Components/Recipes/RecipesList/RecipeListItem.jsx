@@ -18,7 +18,7 @@ export function RecipeListItem({ recipe }) {
           />
         </Col>
 
-        <Col className="d-flex ms-2" xs={8}>
+        <Col className="d-flex ms-2" xs={8} lg={true}>
           {name}
         </Col>
       </Link>
@@ -47,8 +47,7 @@ export function RecipeListItem({ recipe }) {
           />
         </Row>
       </Col>
-      <Col xs="auto">
-        {" "}
+      <Col xs="auto" className="ms-auto">
         <RecipeOptionsDropdown recipe={recipe} text="Options">
           <RecipeOptionsDropdown.EditRecipeButton />
           <RecipeOptionsDropdown.RemixButton />

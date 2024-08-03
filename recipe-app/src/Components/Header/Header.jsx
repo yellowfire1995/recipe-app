@@ -67,7 +67,7 @@ function Header() {
         <Row className="w-100 p-0">
           <Nav className="flex-row w-100 p-0">
             <Col className="d-flex align-items-center p-0" xs="auto">
-              <Navbar.Brand href="/recipes" className="ps-1">
+              <Navbar.Brand href="/" className="ps-1">
                 <img src="/calculator.svg" style={{ height: "4rem" }} />
               </Navbar.Brand>
             </Col>

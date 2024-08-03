@@ -61,8 +61,7 @@ export default function RecipeCards(props) {
   if (recipeCards && isFetched) {
     return (
       <>
-        (
-        <Container>
+        <Container className="mt-2">
           <RecipeSearchOptionsBar />
           <Row>
             <Col className="d-flex flex-wrap justify-content-center">

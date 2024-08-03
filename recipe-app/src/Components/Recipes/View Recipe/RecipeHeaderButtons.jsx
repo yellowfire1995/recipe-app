@@ -18,12 +18,8 @@ export function RecipeOptionsDropdown({ children, recipe, text = "" }) {
 
   return (
     <>
-      <Dropdown>
-        <Dropdown.Toggle
-          id="options-dropdown"
-          className="svg-icon me-1"
-          as="h4"
-        >
+      <Dropdown className="">
+        <Dropdown.Toggle id="options-dropdown" className="svg-icon m-0" as="h4">
           {text}
         </Dropdown.Toggle>
 
