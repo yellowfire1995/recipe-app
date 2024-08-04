@@ -68,7 +68,8 @@ export function NutritionFactsTable() {
           return ingredient;
         }
       })
-      .filter((ingredient) => ingredient != undefined);
+      .filter((ingredient) => ingredient != undefined)
+      .filter((ingredient) => ingredient.nutrients);
 
     Object.keys(nutrientsPerServing).forEach((nutrientName) => {
       nutrientsPerServing[nutrientName] = calculateNutrient({

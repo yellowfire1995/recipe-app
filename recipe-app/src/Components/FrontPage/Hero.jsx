@@ -7,7 +7,7 @@ export function FrontPageHero() {
 
   return (
     <Container fluid className="front-page align-items-center d-flex p-0 m-0">
-      <div className="photo-credit">
+      {/* <div className="photo-credit">
         Photo by{" "}
         <a href="https://unsplash.com/@organicdesignco?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">
           Megan Thomas
@@ -16,7 +16,7 @@ export function FrontPageHero() {
         <a href="https://unsplash.com/photos/bundle-of-assorted-vegetable-lot-xMh_ww8HN_Q?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">
           Unsplash
         </a>
-      </div>
+      </div> */}
       <Row className=" w-100 m-0 p-0 ">
         <Col md="auto" className="text-box">
           <Row className="front-page-hero">

@@ -249,8 +249,6 @@ img.recipe-list-thumbnail{
 
 }
 
-
-
 .front-page-hero h1 {
   font-size:4rem;
   font-weight: bold;
@@ -274,18 +272,16 @@ img.recipe-list-thumbnail{
 
 .front-page-hero a {
   font-size: 1.3rem;
-
  line-height: 1.5;
  color: $primary-light;
  text-shadow:
-   0 0 10px rgba(0, 0, 0, 0.5), /* Inner glow */
-   0 0 20px rgba(0, 0, 0, 0.7), /* Outer glow */
-   0 0 30px rgba(0, 0, 0, 1); /* Outermost glow */
+   0 0 10px rgba(0, 0, 0, 0.7), /* Inner glow */
+   0 0 20px rgba(0, 0, 0, 0.9), /* Outer glow */
+   0 0 30px rgba(0, 0, 0, .9); /* Outermost glow */
 }
 
 .front-page-hero a:hover {
   font-size: 1.3rem;
-
  line-height: 1.5;
  color: $primary;
  text-shadow:
@@ -295,16 +291,14 @@ img.recipe-list-thumbnail{
 }
 
 [data-bs-theme=light] .front-page{
-  background-image: url('https://images.unsplash.com/photo-1470549813517-2fa741d25c92?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-image: url('https://d30b48eq3arkah.cloudfront.net/megan-thomas-xMh_ww8HN_Q-unsplash.jpg');
   background-position: center;
   background-size:cover;
   flex:1;
-  
- 
-}
+  }
 
 [data-bs-theme=dark] .front-page{
-  background-image: url('https://images.unsplash.com/photo-1516705051158-795390ef6664?q=80&w=3872&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-image: url('https://d30b48eq3arkah.cloudfront.net/photo-1516705051158-795390ef6664.jpg');
   background-position: center;
   background-size:cover;
   flex:1;
@@ -321,53 +315,13 @@ img.recipe-list-thumbnail{
    max-width: 75rem;
 }
 
-
-.carousel-caption h3{
-  font-size: 2rem;
-  font-weight: 600;
-   color: rgb(255,255,255, .95); /* White text color */
-  text-shadow:
-  0 0 10px rgba(0, 0, 0, 0.6), /* Inner glow */
-  0 0 20px rgba(0, 0, 0, 0.8), /* Outer glow */
-  0 0 30px rgba(0, 0, 0, 1); /* Outermost glow */
-
-}
-
-.carousel-control-next-icon, 
-.carousel-control-prev-icon{
-
-  filter: invert(1) grayscale(100);
-  
-}
-
-.carousel-image{
-  width:100%;
-  height:20rem;
-  object-fit: cover;
-  border-radius: 5px;
- }
-
- .carousel{
-  border-radius:5px;
-  overflow: hidden;
- 
- }
- 
-
-
-.text-box {
-
-  padding: 20px;
-   min-width: 20rem;
-}
-
 .photo-credit{
   position: absolute;
   border-radius: 5px;
-  top:28rem;
+  bottom:3rem;
   right:1rem;
   text-wrap: nowrap;
   z-index: 1;
-  background-color: rgba(255, 255, 255, 0.3) ;
+  background-color: rgba(255, 255, 255, 0.5) ;
   padding: .1rem;
 }

@@ -13,14 +13,14 @@ async function extractSchemaRecipe(url) {
 
     if (
       Array.isArray(scriptText) &&
-      scriptText[0]["@type"][0].match(/recipe/i)
+      /recipe/i.test(scriptText[0]["@type"][0])
     ) {
       const recipe = scriptText[0];
 
       return recipe;
     } else if (scriptText["@graph"]) {
       return scriptText["@graph"].filter((graph) => {
-        if (graph["@type"].match(/recipe/i)) {
+        if (/recipe/i.test(graph["@type"])) {
           return graph;
         }
       })[0];

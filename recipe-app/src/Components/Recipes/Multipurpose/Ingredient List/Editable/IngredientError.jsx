@@ -8,7 +8,7 @@ export function IngredientError({ ingredient }) {
     errors.forEach((error) => toast.error(error));
   };
 
-  if (ingredient.nutrients.length < 1) {
+  if (!ingredient.nutrients || ingredient.nutrients.length < 1) {
     errors.push("No nutrition information for selected ingredient");
   }
   if (!ingredient.fdc_id) {

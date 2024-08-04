@@ -10,6 +10,8 @@ import {
 import { useRecipeContext } from "../RecipeContextProvider";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 async function handleImport({
   scrapedData,
@@ -62,6 +64,27 @@ export function ImportRecipeButton({ setIngredientList }) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async () => {
+      return await scrapeRecipe(document.getElementById("importURL").value);
+    },
+    onError: () =>
+      toast.error("Error importing recipe, please try again later."),
+    onSuccess: (data) => {
+      setRecipe({
+        ...recipe,
+        url: document.getElementById("importURL").value,
+      });
+      handleImport({
+        scrapedData: data,
+        recipe,
+        setRecipe,
+        setIngredientList,
+      });
+      handleClose();
+    },
+  });
+
   return (
     <>
       <Row>
@@ -89,26 +112,8 @@ export function ImportRecipeButton({ setIngredientList }) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button
-            variant="primary"
-            type="button"
-            onClick={async () => {
-              setRecipe({
-                ...recipe,
-                url: document.getElementById("importURL").value,
-              });
-              handleImport({
-                scrapedData: await scrapeRecipe(
-                  document.getElementById("importURL").value
-                ),
-                recipe,
-                setRecipe,
-                setIngredientList,
-              });
-              handleClose();
-            }}
-          >
-            Import
+          <Button variant="primary" type="button" onClick={mutateAsync}>
+            {isPending ? "Importing..." : "Import"}
           </Button>
         </Modal.Footer>
       </Modal>
