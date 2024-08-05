@@ -250,7 +250,7 @@ img.recipe-list-thumbnail{
 }
 
 .front-page-hero h1 {
-  font-size:4rem;
+  font-size: calc(2em + 1vw);
   font-weight: bold;
   margin-bottom: 10px;
   color: #fff5f5; /* White text color */
@@ -260,22 +260,25 @@ img.recipe-list-thumbnail{
     0 0 30px rgba(0, 0, 0, 0.9); /* Outermost glow */
 }
 
+
 .front-page-hero p {
    font-size: 1.2rem;
+   font-weight: 600;
   line-height: 1.5;
   color: #fff; /* White text color */
   text-shadow:
-    0 0 10px rgba(0, 0, 0, 0.5), /* Inner glow */
-    0 0 20px rgba(0, 0, 0, 0.7), /* Outer glow */
-    0 0 30px rgba(0, 0, 0, 0.9); /* Outermost glow */
+    0 0 10px rgba(0, 0, 0, 0.7), /* Inner glow */
+    0 0 20px rgba(0, 0, 0, 0.9), /* Outer glow */
+    0 0 30px rgba(0, 0, 0, 0.1); /* Outermost glow */
 }
 
 .front-page-hero a {
   font-size: 1.3rem;
+  font-weight:bold;
  line-height: 1.5;
  color: $primary-light;
  text-shadow:
-   0 0 10px rgba(0, 0, 0, 0.7), /* Inner glow */
+   0 0 10px rgba(0, 0, 0, 0.9), /* Inner glow */
    0 0 20px rgba(0, 0, 0, 0.9), /* Outer glow */
    0 0 30px rgba(0, 0, 0, .9); /* Outermost glow */
 }

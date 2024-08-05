@@ -133,7 +133,7 @@ export default function AddRecipe() {
               <RecipeForm.EditableVisibilityCheckbox />
             </Col>
           </Row>
-          <Row className="">
+          <Row>
             <Col md>
               <RecipeForm.EditableIngredientTextbox
                 setIngredientList={setIngredientList}
@@ -151,14 +151,10 @@ export default function AddRecipe() {
           </Row>
           <Row className="mt-4">
             <Col md>
-              <Row>
-                <Col>
-                  <RecipeForm.EditableDirectionTextbox />
-                </Col>
-                <Col>
-                  <RecipeForm.EditableDirectionList />
-                </Col>
-              </Row>
+              <RecipeForm.EditableDirectionTextbox />
+            </Col>
+            <Col>
+              <RecipeForm.EditableDirectionList />
             </Col>
           </Row>
           <Row className="mt-3 mb-1">

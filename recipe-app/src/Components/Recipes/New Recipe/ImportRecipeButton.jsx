@@ -33,7 +33,7 @@ async function handleImport({
 
   let servings = 1;
 
-  if (scrapedData.recipeYield.length > 0) {
+  if (scrapedData.recipeYield) {
     try {
       servings = parseInt(scrapedData.recipeYield[0]);
     } catch (error) {

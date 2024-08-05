@@ -100,7 +100,7 @@ export async function matchIngredients(ingredients) {
                     : data.rows[0].gram_label
                     ? data.rows[0].gram_label
                     : null,
-                  userLabel: weightConversion ? ingredient.unitOfMeasure : null,
+                  userLabel: ingredient.unitOfMeasure || null,
                   userG: weightConversion ? weightConversion : null,
                   nutrients: data.rows[0].nutrients ?? [],
                 };

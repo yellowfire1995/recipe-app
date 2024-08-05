@@ -49,9 +49,9 @@ export default function EditableDirectionsList() {
   const { recipe, setRecipe } = useRecipeContext();
 
   return (
-    <Container className="mt-4">
+    <>
       <h3> Directions </h3>
-      <ol className="d-flex flex-column">
+      <ol className="d-flex flex-column mb-0">
         {recipe.directions.map((direction, index) => {
           return (
             <div key={direction.id}>
@@ -90,6 +90,6 @@ export default function EditableDirectionsList() {
       >
         Add New Step
       </Button>
-    </Container>
+    </>
   );
 }

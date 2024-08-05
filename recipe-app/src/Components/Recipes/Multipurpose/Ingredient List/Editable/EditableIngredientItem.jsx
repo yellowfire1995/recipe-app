@@ -4,6 +4,7 @@ import EditIngredientModal from "../EditIngredientModal.jsx";
 import AddPriceModal from "../../AddPriceModal.jsx";
 import { useState } from "react";
 import { IngredientError } from "./IngredientError.jsx";
+import _ from "lodash";
 
 export function EditableIngredientItem({
   ingredient,
@@ -21,6 +22,20 @@ export function EditableIngredientItem({
   setIngredientList,
 }) {
   const [draggable, setDraggable] = useState(true);
+  const ingredientQuantity = _.round(
+    ingredient.quantity * (ingredient.userG || ingredient.gramConversion || 1),
+    2
+  );
+
+  const ingredientQuantityGrams =
+    ingredient.userG || ingredient.gramConversion
+      ? `(${_.round(ingredient.quantity)}g)`
+      : "";
+
+  const ingredientLabel = ingredient.userLabel || ingredient.engLabel || "g";
+  const erroredIngredient =
+    (!ingredient.matchedMeasure && !ingredient.userLabel) ||
+    (!ingredient.userG && !ingredient.gramConversion);
 
   try {
     return (
@@ -29,11 +44,7 @@ export function EditableIngredientItem({
         className={
           `form-check d-flex ps-1 ingredientItem align-items-center ` +
           `${index === initialDragIndex ? "draggedItem" : ""} ${
-            !ingredient.matchedMeasure &&
-            !ingredient.userLabel &&
-            !ingredient.gramConversion
-              ? "erroredIngredient"
-              : ""
+            erroredIngredient ? "erroredIngredient" : ""
           }`
         }
         draggable={draggable}
@@ -66,15 +77,7 @@ export function EditableIngredientItem({
           htmlFor={ingredient.description}
           style={{ width: "3rem" }}
           name={ingredient.description}
-          defaultValue={
-            (ingredient.userG
-              ? Math.round(ingredient.userG * ingredient.quantity * 100) / 100
-              : ingredient.gramConversion
-              ? Math.round(
-                  ingredient.quantity * ingredient.gramConversion * 100
-                ) / 100
-              : ingredient.quantity) || ""
-          }
+          defaultValue={ingredientQuantity}
           onChange={(e) => {
             setRecipe(handleIngredientUpdate(recipe, e));
           }}
@@ -82,23 +85,10 @@ export function EditableIngredientItem({
           onMouseUp={() => setDraggable(true)}
         />
         <p className="m-0 align-self-center d-flex align-items-center">
-          {ingredient.userLabel
-            ? ingredient.userLabel
-            : ingredient.gramConversion
-            ? ingredient.engLabel || ingredient.matchedMeasure
-            : "g"}{" "}
-          {ingredient.description}{" "}
-          {`(${
-            ingredient.gramConversion || ingredient.userG
-              ? parseInt(ingredient.quantity) + "g"
-              : ""
-          } )`}
+          {ingredientLabel} {ingredient.description} {ingredientQuantityGrams}
           <AddPriceModal ingredient={ingredient} />
           <EditIngredientModal
             ingredient={ingredient}
-            color={
-              ingredient.gramConversion || ingredient.userG ? "black" : "red"
-            }
             ingredientList={ingredientList}
             setIngredientList={setIngredientList}
             origIdx={index}

@@ -92,16 +92,20 @@ export default function EditIngredientModal({
                 (1 / (ingredient.userG || ingredient.gramConversion)) * 100
               ) / 100 || ""
             }
-            onChange={(e) =>
+            onChange={(e) => {
               setIngredient({
                 ...ingredient,
                 userG: 1 / e.target.valueAsNumber || ingredient.userG,
                 quantity:
                   ingredient.quantity *
-                  ((ingredient.userG || ingredient.gramConversion) /
-                    (1 / e.target.valueAsNumber) || ingredient.gramConversion),
-              })
-            }
+                  ((ingredient.userG ||
+                    ingredient.gramConversion ||
+                    e.target.valueAsNumber) /
+                    (1 / e.target.valueAsNumber) ||
+                    ingredient.gramConversion ||
+                    ingredient.quantity),
+              });
+            }}
           />
           <br />
           <label htmlFor="ingredientDescription">Ingredient description:</label>

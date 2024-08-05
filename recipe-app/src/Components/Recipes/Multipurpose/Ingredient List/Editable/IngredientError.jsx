@@ -8,18 +8,18 @@ export function IngredientError({ ingredient }) {
     errors.forEach((error) => toast.error(error));
   };
 
-  if (!ingredient.nutrients || ingredient.nutrients.length < 1) {
+  if (!ingredient.nutrients) {
     errors.push("No nutrition information for selected ingredient");
   }
   if (!ingredient.fdc_id) {
     errors.push("No ingredient matched to database");
   }
-  if (
-    !ingredient.matchedMeasure &&
-    !ingredient.userLabel &&
-    !ingredient.gramConversion
-  ) {
+  if (!ingredient.matchedMeasure && !ingredient.userLabel) {
     errors.push("No measurement information found for ingredient");
+  }
+
+  if (!ingredient.gramConversion && !ingredient.userG) {
+    errors.push("Please add measurement weight to calculate nutrition.");
   }
 
   if (errors.length > 0) {
