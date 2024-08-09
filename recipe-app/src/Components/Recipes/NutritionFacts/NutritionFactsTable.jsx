@@ -248,7 +248,8 @@ export function NutritionFactsTable() {
         </table>
         <p className="small-info">Calories per gram:</p>
         <p className="small-info text-center">
-          Fat 9 • Carbohydrate 4 • Protein 4
+          Fat 9 • Carbohydrate 4 • Protein 4<br />
+          *Indicates no nutritional informaton for that ingredient
         </p>
       </>
     );

@@ -50,10 +50,10 @@ router.get(
   tryCatch(checkAuth),
   tryCatch(async (req, res) => {
     let userRating;
-    if (req.body?.user) {
+    if (req.auth?.payload.sub) {
       userRating = `(select rating
   from ratings r
-  where r.recipe_id = recipes.recipe_id and r.author = '${req.body.user}') as "userRating",`;
+  where r.recipe_id = recipes.recipe_id and r.author = '${req.auth.payload.sub}') as "userRating",`;
     }
 
     const query = {
@@ -73,7 +73,7 @@ router.get(
 	  yield_number as "yieldNumber",
 	  yield_description as "yieldDescription",
 	  public,
-	        (select AVG(rating) 
+	        (select COUNT(rating) 
 from ratings r
 where r.recipe_id = recipes.recipe_id  ) as rating,
 %s
@@ -133,6 +133,8 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
 				  and fn.fdc_id = food.fdc_id) ,
 		  'id',
 		  ingredients.id,
+		  'displayOriginalName',
+		  show_user_name,
 		  'userG',
 		  coalesce(ingredients.alt_g_conv,
 		  null),
@@ -142,10 +144,9 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
 		  'quantity',
 		  amt,
 		  'description',
-		  coalesce(user_ingredient_name,
-		  Split_part(food.description,
-		  ',',
-		  1)),
+				  food.description,
+				  'userIngredientName',
+		  user_ingredient_name,
 		  'fdc_id',
 		  ingredients.fdc_id,
 		  'sr_id',
@@ -260,7 +261,7 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
         userRating
       ),
 
-      values: [req.params.recipeId, req.body?.user],
+      values: [req.params.recipeId, req.auth?.payload.sub],
     };
 
     let data = await db.query(query);

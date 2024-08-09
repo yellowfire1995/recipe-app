@@ -6,10 +6,10 @@ import { CuisineBadge } from "./View Recipe/CuisineBadge";
 import { DirectionList } from "./View Recipe/DirectionList";
 import { EditRecipeButton } from "./View Recipe/EditRecipeButton";
 import { IngredientList } from "./Multipurpose/Ingredient List/IngredientList";
-import { RecipeCredit } from "./View Recipe/RecipeCredit";
-import { RecipeHeader } from "./View Recipe/RecipeHeader";
-import { RecipeOptionsDropdown } from "./View Recipe/RecipeHeaderButtons";
-import { RecipeHeaderImage } from "./View Recipe/RecipeHeaderImage";
+import { RecipeCredit } from "./Recipe Header/RecipeCredit";
+import { RecipeHeader } from "./Recipe Header/RecipeHeader";
+import { RecipeOptionsDropdown } from "./Recipe Header/RecipeHeaderButtons";
+import { RecipeHeaderImage } from "./Recipe Header/RecipeHeaderImage";
 import { RecipePrice } from "./View Recipe/RecipePrice";
 import { RemixButton } from "./View Recipe/RemixButton";
 import Container from "react-bootstrap/esm/Container";
@@ -31,8 +31,8 @@ import { EditableHeaderItem } from "./Multipurpose/Ingredient List/Editable/Edit
 import EditableDirectionsList from "./Multipurpose/EditableDirectionList";
 import { EditableDirectionTextbox } from "./Edit Recipe/EditableDirecitonTextbox";
 import { EditableIngredientTextbox } from "./Edit Recipe/EditableIngredientTextbox";
-import { ImportRecipeButton } from "./New Recipe/ImportRecipeButton";
 import { AddToIngredientListButtons } from "./Multipurpose/Ingredient List/AddToIngredientListButtons";
+import { EditableUrlField } from "./Edit Recipe/EditableUrlField";
 
 export function RecipeForm({ children, recipe, setRecipe }) {
   return (
@@ -63,7 +63,6 @@ RecipeForm.RemixButton = RemixButton;
 RecipeForm.AddToMealPlannerButton = AddToMealPlannerButton;
 RecipeForm.EditRecipeButton = EditRecipeButton;
 RecipeForm.DeleteRecipeIcon = DeleteRecipeIcon;
-RecipeForm.ImportRecipeButton = ImportRecipeButton;
 
 //Editable recipe options
 RecipeForm.AddPhoto = AddPhoto;
@@ -83,3 +82,4 @@ RecipeForm.EditableDirectionList = EditableDirectionsList;
 RecipeForm.EditableDirectionTextbox = EditableDirectionTextbox;
 RecipeForm.EditableIngredientTextbox = EditableIngredientTextbox;
 RecipeForm.AddToIngredientListButtons = AddToIngredientListButtons;
+RecipeForm.EditableUrlField = EditableUrlField;

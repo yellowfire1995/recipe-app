@@ -1,6 +1,6 @@
 import DragHandle from "../../../../../Icons/dragHandle.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIngredientModal from "../EditIngredientModal.jsx";
+import EditIngredientModal from "./EditIngredientModal.jsx";
 import AddPriceModal from "../../AddPriceModal.jsx";
 import { useState } from "react";
 import { IngredientError } from "./IngredientError.jsx";
@@ -23,19 +23,29 @@ export function EditableIngredientItem({
 }) {
   const [draggable, setDraggable] = useState(true);
   const ingredientQuantity = _.round(
-    ingredient.quantity * (ingredient.userG || ingredient.gramConversion || 1),
+    ingredient.quantity * (ingredient.userG || 1),
     2
   );
 
   const ingredientQuantityGrams =
-    ingredient.userG || ingredient.gramConversion
+    (ingredient.userG || ingredient.gramConversion) && ingredient.quantity > 0
       ? `(${_.round(ingredient.quantity)}g)`
       : "";
 
-  const ingredientLabel = ingredient.userLabel || ingredient.engLabel || "g";
+  const ingredientWeightLabel = ingredient.quantity > 0 && ingredient.userLabel;
+  const ingredientDescription =
+    (ingredient.quantity > 0 && !ingredient.displayOriginalName) ||
+    !ingredient.userIngredientName
+      ? ingredient.description
+      : ingredient.userIngredientName;
+
+  const warnedIngredient =
+    ingredient.quantity === 0 ||
+    (ingredient.matchedMeasure != ingredient.unitOfMeasure &&
+      ingredient.matchedMeasure == ingredient.userLabel);
   const erroredIngredient =
-    (!ingredient.matchedMeasure && !ingredient.userLabel) ||
-    (!ingredient.userG && !ingredient.gramConversion);
+    (!ingredient.userG && !ingredient.gramConversion && !warnedIngredient) ||
+    !ingredient.nutrients;
 
   try {
     return (
@@ -44,8 +54,8 @@ export function EditableIngredientItem({
         className={
           `form-check d-flex ps-1 ingredientItem align-items-center ` +
           `${index === initialDragIndex ? "draggedItem" : ""} ${
-            erroredIngredient ? "erroredIngredient" : ""
-          }`
+            erroredIngredient ? "errored-ingredient" : ""
+          } ${warnedIngredient ? "warned-ingredient" : ""}`
         }
         draggable={draggable}
         style={{ borderRadius: "20px" }}
@@ -71,7 +81,7 @@ export function EditableIngredientItem({
         <input
           id={ingredient.id}
           type="number"
-          min=".01"
+          min="0"
           step=".01"
           className="form-check-label ingredientAmountInput"
           htmlFor={ingredient.description}
@@ -85,7 +95,8 @@ export function EditableIngredientItem({
           onMouseUp={() => setDraggable(true)}
         />
         <p className="m-0 align-self-center d-flex align-items-center">
-          {ingredientLabel} {ingredient.description} {ingredientQuantityGrams}
+          {ingredientWeightLabel} {ingredientDescription}{" "}
+          {ingredientQuantityGrams}
           <AddPriceModal ingredient={ingredient} />
           <EditIngredientModal
             ingredient={ingredient}

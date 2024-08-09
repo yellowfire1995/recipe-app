@@ -72,39 +72,43 @@ export async function matchIngredients(ingredients) {
                   data.rows[0].gram_amt
                 );
 
+                const comment = ingredient.comment
+                  ? `${ingredient.comment.join("")}`
+                  : "";
+
                 //Create final ingredient structure
                 const finalIngredient = {
                   ...ingredient,
                   category: data.rows[0].category,
-                  quantity:
-                    Math.round(
-                      (ingredient.quantity /
-                        (weightConversion
-                          ? weightConversion
-                          : data.rows[0].gram_amt
-                          ? data.rows[0].gram_amt
-                          : 1)) *
-                        100
-                    ) / 100,
+                  quantity: roundToTwoDecimals(
+                    ingredient.quantity / getConversionFactor()
+                  ),
                   id: uuidv4(),
+                  userIngredientName: `${ingredient.description}${comment}`,
                   description: data.rows[0].description.toLowerCase(),
                   fdc_id: data.rows[0].fdc_id,
                   sr_id: data.rows[0].sr_id,
-                  gramConversion: weightConversion
-                    ? weightConversion
-                    : data.rows[0].gram_amt
-                    ? data.rows[0].gram_amt
-                    : null,
-                  matchedMeasure: weightConversion
-                    ? ingredient.unitOfMeasure
-                    : data.rows[0].gram_label
-                    ? data.rows[0].gram_label
-                    : null,
-                  userLabel: ingredient.unitOfMeasure || null,
-                  userG: weightConversion ? weightConversion : null,
+                  gramConversion: getConversionFactor(),
+                  matchedMeasure: getMatchedMeasure(),
+                  userLabel: getMatchedMeasure(),
+                  userG: getConversionFactor(),
                   nutrients: data.rows[0].nutrients ?? [],
+                  displayOriginalName: false,
                 };
 
+                function getConversionFactor() {
+                  return weightConversion || data.rows[0].gram_amt || 1;
+                }
+
+                function roundToTwoDecimals(value) {
+                  return Math.round(value * 100) / 100;
+                }
+
+                function getMatchedMeasure() {
+                  return weightConversion
+                    ? ingredient.unitOfMeasure
+                    : data.rows[0].gram_label || null;
+                }
                 return finalIngredient;
               })
             );

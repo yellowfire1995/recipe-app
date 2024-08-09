@@ -7,6 +7,9 @@ export function ImportSelector({
   setIngredient,
 }) {
   try {
+    const weightError = isNaN(parseInt(ingredient.userG));
+    const conversionRatio = weightError ? 1 : ingredient.userG;
+
     return (
       <div className="d-inline-flex align-items-center">
         <Form.Control
@@ -21,19 +24,13 @@ export function ImportSelector({
           style={{ width: "5rem" }}
           name={ingredient.description}
           defaultValue={
-            Math.round(
-              (ingredient.userG || ingredient.gramConversion || 1) *
-                ingredient.quantity *
-                100
-            ) / 100
+            Math.round(conversionRatio * ingredient.quantity * 100) / 100
           }
           onChange={(e) => {
             setIngredient({
               ...ingredient,
               quantity:
-                e.target.valueAsNumber /
-                  (ingredient.userG || ingredient.gramConversion || 1) ||
-                ingredient.quantity,
+                e.target.valueAsNumber / conversionRatio || ingredient.quantity,
             });
           }}
         />
@@ -49,11 +46,30 @@ export function ImportSelector({
             setIngredient({
               ...searchArray[ingredientIndex],
               searchArray: searchArray,
+              userG: searchArray[ingredientIndex].gramConversion,
+              userLabel: searchArray[ingredientIndex].matchedMeasure,
             });
           }}
           className="py-1"
         >
           {searchArray.map((choice, idx) => {
+            const activeSelection = choice.id == ingredient.id;
+            const choiceMeasurementLabel = activeSelection
+              ? ingredient.userLabel
+              : choice.matchedMeasure || "";
+
+            const choiceGramsDenomenator =
+              choice.userG || choice.gramConversion || 1;
+
+            const ingredientGramsDenomenator = ingredient.userG || 1;
+
+            const choiceGramAmount = activeSelection
+              ? Math.round(ingredient.quantity)
+              : Math.round(
+                  ingredient.quantity *
+                    (ingredientGramsDenomenator / choiceGramsDenomenator)
+                );
+
             return (
               <option
                 value={choice.id}
@@ -63,29 +79,12 @@ export function ImportSelector({
                   color: choice.gramConversion ? "green" : "black",
                 }}
               >
-                {`${
-                  ingredient.userLabel
-                    ? ingredient.userLabel
-                    : choice.matchedMeasure
-                    ? choice.matchedMeasure
-                    : "g"
-                } ${
+                {`${choiceMeasurementLabel} ${
                   choice.id == ingredient.id
                     ? ingredient.description
                     : choice.description
-                } ${
-                  choice.userG || choice.gramConversion
-                    ? Math.round(
-                        ((ingredient.quantity * ingredient.gramConversion ||
-                          ingredient.userG ||
-                          1) /
-                          (choice.userG || choice.gramConversion)) *
-                          100
-                      ) /
-                        100 +
-                      "g"
-                    : "(No density information)"
-                }`}
+                } (${choiceGramAmount}g)                
+                `}
               </option>
             );
           })}

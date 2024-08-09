@@ -1,6 +1,6 @@
 import DragHandle from "../../../../../Icons/dragHandle.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditHeaderModal from "../EditHeaderModal.jsx";
+import EditHeaderModal from "./EditHeaderModal.jsx";
 
 export function EditableHeaderItem({
   ingredient,

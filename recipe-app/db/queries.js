@@ -33,8 +33,7 @@ export async function deleteRecipe(recipeId, recipe) {
 }
 
 //Edit Recipe
-export async function editRecipe({ e, recipe }) {
-  e.preventDefault();
+export async function editRecipe({ recipe }) {
   console.log(recipe);
   try {
     const formData = new FormData();
@@ -61,7 +60,7 @@ export async function newRecipe(updatedRecipe) {
     formData.append("updatedRecipe", JSON.stringify(updatedRecipe));
 
     const response = await httpClient.post(`${server}/newrecipe`, formData);
-    console.log(response.data);
+
     return response.data.recipeId;
   } catch (error) {
     return Promise.reject(error.response);
@@ -85,7 +84,6 @@ export async function savePrice(pkgGrms, pkgCost, url, fdc_id) {
 
 export async function getPrice(url) {
   try {
-    console.log(url);
     const { data } = await httpClient.post(`${server}/getprice`, { url });
     return data;
   } catch (error) {
@@ -125,7 +123,7 @@ export async function parseDirections(directions) {
         },
       }
     );
-    console.log(directionsArray.data);
+
     return directionsArray.data;
   } catch (error) {
     return Promise.reject(error.response);
@@ -179,7 +177,6 @@ export async function getMyRecipeCards({ page, search, pageSize, sort }) {
       `${server}/myrecipes?page=${page}&search=${search}&pageSize=${pageSize}}&sort=${sort}`
     );
 
-    console.log(recipeCards.data);
     return recipeCards.data;
   } catch (error) {
     return Promise.reject(error.response);
@@ -212,7 +209,6 @@ export async function addToMeallPlan(recipeId, date) {
 
 export async function deleteFromMealPlan(planId) {
   try {
-    console.log(planId);
     const deletedMealPlanRecipe = await httpClient.delete(
       `${server}/planner/delete/${planId}`
     );
@@ -263,7 +259,6 @@ export async function getCollectionNames() {
 //Add recipe to collection
 export async function addRecipeToCollection(recipeId, collection) {
   try {
-    console.log(recipeId);
     const { data } = await httpClient.post(
       `${server}/collections/add/recipe/${recipeId}`,
       { collection: collection }

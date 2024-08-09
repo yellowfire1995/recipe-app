@@ -1,20 +1,17 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Col from "react-bootstrap/esm/Col";
-import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/esm/Row";
+import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { getRecipeById, newRecipe } from "../../db/queries";
 import CategorySelector from "../Components/Recipes/Multipurpose/categoryselector";
 import CuisineSelector from "../Components/Recipes/Multipurpose/cuisineselector";
-import { queryClient } from "../main";
-import { RecipeForm } from "../Components/Recipes/RecipeForm";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts";
-import { toast } from "react-toastify";
-import { Helmet } from "react-helmet-async";
+import { ShowOriginalingredientSwitch } from "../Components/Recipes/Recipe Header/ShowOriginalIngredientSwitch";
+import { RecipeForm } from "../Components/Recipes/RecipeForm";
+import { queryClient } from "../main";
 
 export default function AddRecipe() {
   const [params] = useSearchParams();
@@ -86,14 +83,7 @@ export default function AddRecipe() {
           }}
           encType="multipart/form-data"
         >
-          <Row className="mt-3 d-flex">
-            <Col className="d-flex justify-content-end">
-              <RecipeForm.DeleteRecipeIcon />
-            </Col>
-          </Row>{" "}
-          <RecipeForm.ImportRecipeButton
-            setIngredientList={setIngredientList}
-          />
+          <RecipeForm.EditableUrlField setIngredientList={setIngredientList} />
           <Row className="mt-1 justify-content-center mx-1 mb-1 ">
             <RecipeForm.AddPhoto
               style={{
@@ -110,11 +100,11 @@ export default function AddRecipe() {
               <Row className="mb-1">
                 <RecipeForm.EditableServingsField />
               </Row>
-              <Row className="d-flex">
-                <Col className="ps-0">
+              <Row className="d-flex flex-wrap">
+                <Col md className="m-0 p-0 mb-1">
                   <RecipeForm.EditableYieldNumber />
                 </Col>
-                <Col xs={10} className="p-0">
+                <Col md={10} className="m-0 p-0">
                   <RecipeForm.EditableYieldDescription />
                 </Col>
               </Row>
@@ -143,9 +133,11 @@ export default function AddRecipe() {
               <RecipeForm.IngredientList
                 header={<RecipeForm.EditableHeaderItem />}
                 item={<RecipeForm.EditableIngredientItem />}
+                headerText={<>Ingredients </>}
                 ingredientList={ingredientList}
                 setIngredientList={setIngredientList}
                 buttons={<RecipeForm.AddToIngredientListButtons />}
+                optionalIngredientHeader={<ShowOriginalingredientSwitch />}
               />
             </Col>
           </Row>

@@ -1,13 +1,13 @@
 import EditIcon from "@mui/icons-material/Edit";
 import { Container } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import { parseIngredients } from "../../../../../db/queries";
-import { ImportSelector } from "../../New Recipe/importSelector";
-import { NutritionFacts } from "../../NutritionFacts/NutritionFacts";
-import { useRecipeContext } from "../../RecipeContextProvider";
+import { parseIngredients } from "../../../../../../db/queries";
+import { ImportSelector } from "../../../New Recipe/importSelector";
+import { NutritionFacts } from "../../../NutritionFacts/NutritionFacts";
+import { useRecipeContext } from "../../../RecipeContextProvider";
 
 export default function EditIngredientModal({
   ingredient: initialIngredient,
@@ -18,6 +18,10 @@ export default function EditIngredientModal({
   const [show, setShow] = useState(initialIngredient.newIngredient);
   const [ingredient, setIngredient] = useState(initialIngredient);
   const [searchArray, setSearchArray] = useState(initialIngredient.searchArray);
+
+  useEffect(() => {
+    setIngredient(initialIngredient);
+  }, [initialIngredient]);
 
   const handleClose = () => {
     setShow(false);
@@ -30,7 +34,6 @@ export default function EditIngredientModal({
   };
 
   function handleSave() {
-    console.log(ingredient);
     setRecipe({
       ...recipe,
       ingredients: recipe.ingredients.map((recipeIngredient, index) => {
@@ -46,6 +49,31 @@ export default function EditIngredientModal({
     });
 
     setShow(false);
+  }
+
+  function formatWeight(denomenator) {
+    return Math.round((1 / denomenator) * 100) / 100 || "";
+  }
+
+  function handleWeightChange(e) {
+    const newGramWeight = e.target.valueAsNumber;
+    const isValidWeight = !isNaN(newGramWeight);
+
+    if (isValidWeight) {
+      const newGramDenomenator = 1 / newGramWeight;
+      const conversionRatio = (ingredient.userG || 1) / newGramDenomenator;
+      setIngredient({
+        ...ingredient,
+        userG: newGramDenomenator,
+        quantity: ingredient.quantity * conversionRatio,
+      });
+    } else {
+      setIngredient({
+        ...ingredient,
+        userG: "",
+        quantity: ingredient.quantity * (ingredient.userG || 1),
+      });
+    }
   }
 
   return (
@@ -69,11 +97,7 @@ export default function EditIngredientModal({
           <input
             name="weightDescription"
             type="textbox"
-            value={
-              ingredient.userLabel
-                ? ingredient.userLabel
-                : ingredient.matchedMeasure || ""
-            }
+            value={ingredient.userLabel ?? ""}
             onChange={(e) =>
               setIngredient({ ...ingredient, userLabel: e.target.value })
             }
@@ -87,36 +111,37 @@ export default function EditIngredientModal({
             min="0"
             step="1"
             size="5"
-            defaultValue={
-              Math.round(
-                (1 / (ingredient.userG || ingredient.gramConversion)) * 100
-              ) / 100 || ""
-            }
-            onChange={(e) => {
-              setIngredient({
-                ...ingredient,
-                userG: 1 / e.target.valueAsNumber || ingredient.userG,
-                quantity:
-                  ingredient.quantity *
-                  ((ingredient.userG ||
-                    ingredient.gramConversion ||
-                    e.target.valueAsNumber) /
-                    (1 / e.target.valueAsNumber) ||
-                    ingredient.gramConversion ||
-                    ingredient.quantity),
-              });
-            }}
+            value={formatWeight(ingredient.userG)}
+            onChange={handleWeightChange}
           />
           <br />
-          <label htmlFor="ingredientDescription">Ingredient description:</label>
+          <label htmlFor="ingredientDescription">
+            Original ingredient name:
+          </label>
           <input
             name="ingredientDescription"
             type="textbox"
-            value={ingredient.description}
+            value={ingredient.userIngredientName}
             onChange={(e) =>
-              setIngredient({ ...ingredient, description: e.target.value })
+              setIngredient({
+                ...ingredient,
+                userIngredientName: e.target.value,
+              })
             }
             id="ingredientDescription"
+          />
+          <br />
+          <Form.Check
+            type="switch"
+            id="showOriginalName"
+            label="Show as original ingredient name"
+            defaultChecked={recipe.ingredients[origIdx].displayOriginalName}
+            onChange={(e) => {
+              setIngredient({
+                ...ingredient,
+                displayOriginalName: e.target.checked,
+              });
+            }}
           />
           <br />
           {ingredient.fdc_id ? (

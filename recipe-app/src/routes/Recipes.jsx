@@ -16,6 +16,7 @@ export default function Recipe() {
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState();
   const { isAuthenticated } = useAuth0();
+  console.log(recipe);
 
   const {
     data: loadedRecipe,
@@ -62,7 +63,10 @@ export default function Recipe() {
           <Row className="pt-3">
             <RecipeForm.RecipeHeader
               buttons={
-                <RecipeForm.RecipeHeaderButtons recipe={recipe}>
+                <RecipeForm.RecipeHeaderButtons
+                  recipe={recipe}
+                  text={recipe.name}
+                >
                   <RecipeForm.EditRecipeButton />
                   <RecipeForm.RemixButton />
                   <RecipeForm.AddRecipeToCollectionModal />
@@ -87,7 +91,7 @@ export default function Recipe() {
               />
               <RecipeForm.DirectionList />
             </Col>
-            <Col xl>
+            <Col xl className="d-flex justify-content-center">
               <NutritionFacts>
                 <NutritionFacts.Header />
                 <NutritionFacts.Table />

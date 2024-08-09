@@ -3,10 +3,14 @@ import { useRecipeContext } from "../RecipeContextProvider";
 import Col from "react-bootstrap/esm/Col";
 import { RecipeRating } from "../Rating/RecipeRating";
 import { queryClient } from "../../../main";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export function RecipeHeader({ price, buttons, credit }) {
   const { recipe, setRecipe } = useRecipeContext();
-  const rating = Math.round(recipe.rating * 10) / 10;
+  const { isAuthenticated } = useAuth0();
+  const title = isAuthenticated ? buttons : recipe.name;
+
+  const ratingCount = recipe.rating > 0 ? `(${recipe.rating} rating)` : "";
   const refetch = async () => {
     await queryClient.invalidateQueries({
       queryKey: [`Recipe${recipe.recipeId}`],
@@ -20,22 +24,17 @@ export function RecipeHeader({ price, buttons, credit }) {
         <Col className="d-flex justify-content-between">{credit}</Col>
       </Row>
       <Row>
-        {" "}
-        <Col className="d-flex flex-wrap">
-          <Col xl={8} className="d-flex align-items-center ">
-            <h2>{recipe.name}</h2>
-            {buttons}
+        <Col className="d-inline-flex flex-wrap align-items-center">
+          <h2 className="d-flex flex-wrap align-items-center">{title}</h2>
+          <div className="d-flex text-nowrap">
             <RecipeRating
               className="ms-2"
               recipe={recipe}
               setRecipe={setRecipe}
               refetch={refetch}
             />
-            {`(average ${rating})`}
-          </Col>
-
-          <hr />
-          <div className="d-flex">{price}</div>
+            {ratingCount}
+          </div>
         </Col>
       </Row>
     </>

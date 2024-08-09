@@ -3,7 +3,6 @@ const router = express.Router();
 import db from "../../database/db.js";
 import { tryCatch } from "../../tools/error/tryCatch.js";
 import format from "pg-format";
-import { auth } from "express-oauth2-jwt-bearer";
 import { authenticate } from "../../index.js";
 
 router.get(

@@ -18,6 +18,7 @@ import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
 import ErrorHandler from "../Components/Errors/NotFound.jsx";
 import { toast } from "react-toastify";
 import { roles } from "../../env/env.js";
+import { ShowOriginalingredientSwitch } from "../Components/Recipes/Recipe Header/ShowOriginalIngredientSwitch.jsx";
 
 export const RecipeContext = createContext();
 
@@ -118,6 +119,11 @@ export default function Edit() {
                 />
               </Col>
             </Row>
+            <Row>
+              <Col>
+                <RecipeForm.EditableUrlField />
+              </Col>
+            </Row>
             <Row className="mt-1 justify-content-center mx-1 mb-1 ">
               <RecipeForm.AddPhoto
                 style={{
@@ -168,6 +174,9 @@ export default function Edit() {
                       ingredientList={ingredientList}
                       setIngredientList={setIngredientList}
                       buttons={<RecipeForm.AddToIngredientListButtons />}
+                      optionalIngredientHeader={
+                        <ShowOriginalingredientSwitch />
+                      }
                     />
                     <RecipeForm.EditableDirectionList />
                   </Col>

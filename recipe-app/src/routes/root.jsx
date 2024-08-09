@@ -12,7 +12,7 @@ export default function App() {
   const { getAccessTokenSilently, isLoading, isAuthenticated, error } =
     useAuth0();
 
-  if (isLoading && isAuthenticated) {
+  if (isLoading) {
     return (
       <>
         <Stack gap={3} className="p-0" style={{ minHeight: "100vh" }}>

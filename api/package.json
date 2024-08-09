@@ -28,6 +28,7 @@
     "numeric-quantity": "^2.0.1",
     "parse-ingredient": "^1.2.0",
     "pg": "^8.11.3",
+    "pg-cursor": "^2.11.0",
     "pg-format": "^1.0.4",
     "pg-pool": "^3.6.1",
     "playwright": "^1.44.1",

@@ -2,7 +2,7 @@ import { Col, ListGroup, Row } from "react-bootstrap";
 import { useRecipeListContext } from "./RecipeListContextProvider";
 import { Link } from "react-router-dom";
 import { RecipeRating } from "../Rating/RecipeRating";
-import { RecipeOptionsDropdown } from "../View Recipe/RecipeHeaderButtons";
+import { RecipeOptionsDropdown } from "../Recipe Header/RecipeHeaderButtons";
 
 export function RecipeListItem({ recipe }) {
   const { recipeId, name } = recipe;

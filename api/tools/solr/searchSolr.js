@@ -3,10 +3,17 @@ import "dotenv/config";
 
 export async function searchSolr(ingredient, measure) {
   try {
+    console.log(measure);
+    const ingredientString = ingredient.toString();
+    const addFuzzySearch = ingredientString
+      .split(" ")
+      .map((word) => word + "~")
+      .join(" ");
+
     const searchResult = await axios.post(
       `${process.env.SOLR_HOST}/solr/allIngredients/select`,
       {
-        query: `price:* sr_secondary:${measure}^2 branded_secondary:${measure}^1 ${ingredient.toString()}`,
+        query: `price:* description:raw^2 sr_secondary:${measure}^10 sr_secondary:*^6 branded_secondary:${"*"} desc1:${ingredient.toString()}^5  ${ingredient.toString()}`,
         params: {
           defType: "edismax",
           indent: "true",

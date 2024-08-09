@@ -50,21 +50,6 @@ export default function AddPriceModal(props) {
     },
   });
 
-  // const priceScrapeError = () =>
-  //   toast.error("Error getting price, you may want to do it manually.");
-  // const { mutate: scrapePrice, isPending: pricePending } = useMutation({
-  //   mutationFn: () => {
-  //     return getPrice({ url: document.getElementById("url").value });
-  //   },
-  //   onError: (error) => {
-  //     console.log(error);
-  //     priceScrapeError();
-  //   },
-  //   onSuccess: async () => {
-  //     console.log(scrapePrice.data);
-  //   },
-  // });
-
   return (
     <>
       <AttachMoneyIcon onClick={handleShow} className="svg-icon" />
@@ -120,7 +105,6 @@ export default function AddPriceModal(props) {
                 id="url"
                 style={{ width: "100%" }}
               />
-              {/* <Button onClick={scrapePrice}>Get price (experimental)</Button> */}
             </div>
           </form>
           Search: <StoreButtons ingredient={ingredient.description} />
@@ -130,11 +114,6 @@ export default function AddPriceModal(props) {
             {savePending ? "Saving..." : "Save"}
           </Button>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button
-            onClick={() => console.log(Math.round(pkgGrms * weightChoice))}
-          >
-            Test
-          </Button>
         </Modal.Footer>
       </Modal>
     </>

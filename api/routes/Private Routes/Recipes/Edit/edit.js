@@ -38,24 +38,36 @@ router.post(
   tryCatch(upload.single("photo")),
   tryCatch(checkAuth),
   tryCatch(async (req, res) => {
+    console.log(req.body);
     let recipe = JSON.parse(req.body.recipe);
     let key = recipe.imgName;
     let thumbnailKey;
-
-    if (recipe.ingredients) {
-      recipe = {
-        ...recipe,
-        ingredients: recipe.ingredients.map((ingredient, index) => {
-          return { ...ingredient, order: index };
-        }),
-      };
-    }
 
     if (req.file) {
       key = await uploadFileToS3(req.file);
       thumbnailKey = await resizeAndUploadFileToS3(req.file);
     } else if (recipe.imgUrl != recipe.originalUrl) {
       ({ key, thumbnailKey } = await uploadDualSizesUrlToS3(recipe.imgUrl));
+    }
+
+    if (recipe.ingredients) {
+      recipe = {
+        ...recipe,
+        ingredients: recipe.ingredients.map((ingredient, index) => {
+          const ingredientDescription =
+            (ingredient.quantity > 0 &&
+              !ingredient.displayOriginalName &&
+              !recipe.allAsOriginal) ||
+            !ingredient.userIngredientName
+              ? ingredient.description
+              : ingredient.userIngredientName;
+          return {
+            ...ingredient,
+            order: index,
+            description: ingredientDescription,
+          };
+        }),
+      };
     }
 
     const query = {
@@ -86,8 +98,8 @@ router.post(
   WHERE recipe_id = (SELECT recipe_id FROM r)
       ),	i AS
       (
-      insert into ingredients (recipe_id,  amt, fdc_id, sr_id,  alt_g_conv, alt_label, "order", header, user_ingredient_name)
-      SELECT (SELECT recipe_id FROM r),(t ->> 'quantity')::real,(t ->> 'fdc_id')::int, (t ->> 'sr_id')::int,(t ->> 'userG')::float, (t ->> 'userLabel'), (t ->> 'order')::int,(t ->> 'isGroupHeader')::bool, (t ->> 'description')
+      insert into ingredients (recipe_id,  amt, fdc_id, sr_id,  alt_g_conv, alt_label, "order", header, user_ingredient_name, show_user_name)
+      SELECT (SELECT recipe_id FROM r),(t ->> 'quantity')::real,(t ->> 'fdc_id')::int, (t ->> 'sr_id')::int,(t ->> 'userG')::float, (t ->> 'userLabel'), (t ->> 'order')::int,(t ->> 'isGroupHeader')::bool, (t ->> 'userIngredientName'), (t ->> 'displayOriginalName')::bool
       from json_array_elements($7::json) t 
       ), cusdel AS 
       (
@@ -120,7 +132,7 @@ router.post(
         isNaN(recipe.yieldNumber) ? null : recipe.yieldNumber,
         recipe.yieldDescription == "" ? null : recipe.yieldDescription,
         thumbnailKey || recipe.thumbnail,
-        recipe.public,
+        recipe.public, //13
       ],
     };
 

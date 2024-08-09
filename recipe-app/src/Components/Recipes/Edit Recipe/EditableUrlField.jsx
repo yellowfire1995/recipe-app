@@ -1,23 +1,22 @@
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { Col, FloatingLabel, Row } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import { toast } from "react-toastify";
 import {
   parseDirections,
   parseIngredients,
   scrapeRecipe,
 } from "../../../../db/queries";
+import { isValidUrl } from "../../../utils/isValidUrl";
 import { useRecipeContext } from "../RecipeContextProvider";
-import Row from "react-bootstrap/esm/Row";
-import Col from "react-bootstrap/esm/Col";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 
 async function handleImport({
   scrapedData,
   recipe,
   setRecipe,
   setIngredientList,
+  url,
 }) {
   const ingredientString = scrapedData.recipeIngredient.join("\r\n");
 
@@ -43,6 +42,7 @@ async function handleImport({
 
   setRecipe({
     ...recipe,
+    url: url,
     directions: directions,
     img_url: scrapedData.image?.url,
     name: scrapedData.name ? scrapedData.name : "",
@@ -57,12 +57,8 @@ async function handleImport({
   setIngredientList(choices);
 }
 
-export function ImportRecipeButton({ setIngredientList }) {
+export function EditableUrlField({ setIngredientList }) {
   const { recipe, setRecipe } = useRecipeContext();
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async () => {
@@ -70,55 +66,51 @@ export function ImportRecipeButton({ setIngredientList }) {
     },
     onError: () =>
       toast.error("Error importing recipe, please try again later."),
-    onSuccess: (data) => {
-      setRecipe({
-        ...recipe,
-        url: document.getElementById("importURL").value,
-      });
-      handleImport({
+    onSuccess: async (data) => {
+      await handleImport({
+        url: recipe.url,
         scrapedData: data,
         recipe,
         setRecipe,
         setIngredientList,
       });
-      handleClose();
     },
   });
 
   return (
     <>
-      <Row>
-        <Col>
-          <Button variant="primary" className="w-100" onClick={handleShow}>
-            Add Recipe from Link
+      <Row className="d-flex flex-wrap">
+        <Col className="d-flex">
+          <FloatingLabel
+            label="Original recipe URL (optional)"
+            className="w-100"
+          >
+            <Form.Control
+              id="importURL"
+              size="lg"
+              type="text"
+              value={recipe.url || ""}
+              onChange={(e) =>
+                setRecipe({
+                  ...recipe,
+                  url: e.target.value,
+                })
+              }
+            />
+          </FloatingLabel>
+        </Col>
+        <Col md={2} className="d-flex ps-md-0">
+          <Button
+            className="w-100"
+            variant="primary"
+            disabled={!isValidUrl(recipe.url)}
+            type="button"
+            onClick={mutateAsync}
+          >
+            {isPending ? "Importing..." : "Import"}
           </Button>
         </Col>
       </Row>
-
-      <Modal show={show} onHide={handleClose} animation={false}>
-        <Modal.Header closeButton>
-          <Modal.Title>Import Recipe</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <Form.Control
-            className=""
-            type="text"
-            id="importURL"
-            placeholder="Enter URL"
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" type="button" onClick={mutateAsync}>
-            {isPending ? "Importing..." : "Import"}
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 }
-
-export default ImportRecipeButton;

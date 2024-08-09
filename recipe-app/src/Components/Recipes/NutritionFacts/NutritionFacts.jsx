@@ -12,7 +12,7 @@ export function NutritionFacts({
     <NutritionFactsContext.Provider
       value={{ ingredientArray, setRecipe, servings }}
     >
-      <section className="performance-facts">{children}</section>
+      <section className="performance-facts ">{children}</section>
     </NutritionFactsContext.Provider>
   );
 }

@@ -15,8 +15,8 @@ const upload = multer({ storage: storage });
 
 router.post(
   "/",
-  tryCatch(upload.single("photo")),
   tryCatch(getUserId),
+  tryCatch(upload.single("photo")),
   tryCatch(async (req, res) => {
     let recipe = JSON.parse(req.body.updatedRecipe);
     var key = null;
@@ -33,10 +33,22 @@ router.post(
       recipe = {
         ...recipe,
         ingredients: recipe.ingredients.map((ingredient, index) => {
-          return { ...ingredient, order: index };
+          const ingredientDescription =
+            (ingredient.quantity > 0 &&
+              !ingredient.displayOriginalName &&
+              !recipe.allAsOriginal) ||
+            !ingredient.userIngredientName
+              ? ingredient.description
+              : ingredient.userIngredientName;
+          return {
+            ...ingredient,
+            order: index,
+            description: ingredientDescription,
+          };
         }),
       };
     }
+
     const query = {
       text: `WITH r AS
         (
@@ -56,8 +68,8 @@ router.post(
         ),
         i AS
         (
-        insert into ingredients (recipe_id,  amt, fdc_id, sr_id,  alt_g_conv, alt_label, user_ingredient_name, "order", header)
-        SELECT (SELECT recipe_id FROM r),(t ->> 'quantity')::real,(t ->> 'fdc_id')::int, (t ->> 'sr_id')::int,(t ->> 'userG')::float, (t ->> 'userLabel'), (t ->> 'description'), (t ->> 'order')::int,(t ->> 'isGroupHeader')::bool
+        insert into ingredients (recipe_id,  amt, fdc_id, sr_id,  alt_g_conv, alt_label, user_ingredient_name, "order", header, show_user_name)
+        SELECT (SELECT recipe_id FROM r),(t ->> 'quantity')::real,(t ->> 'fdc_id')::int, (t ->> 'sr_id')::int,(t ->> 'userG')::float, (t ->> 'userLabel'), (t ->> 'userIngredientName'), (t ->> 'order')::int,(t ->> 'isGroupHeader')::bool,(t ->> 'displayOriginalName')::bool
         from json_array_elements($7::json) t
         ),
         cat as (
@@ -80,8 +92,8 @@ router.post(
         req.user.nickname,
         recipe.yieldNumber,
         recipe.yieldDescription,
-        thumbnailKey, //$13
-        recipe.public,
+        thumbnailKey,
+        recipe.public, //14
       ],
     };
 

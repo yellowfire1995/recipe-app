@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { useRecipeContext } from "../../RecipeContextProvider";
-import ListGroup from "react-bootstrap/ListGroup";
 import _ from "lodash";
+import { useState } from "react";
+import { Col, Row } from "react-bootstrap";
+import ListGroup from "react-bootstrap/ListGroup";
+import { useRecipeContext } from "../../RecipeContextProvider";
 
 function deleteIngredient(updatedRecipe, e) {
   const buttonId = e.target.id ? e.target.id : e.target.viewportElement.id;
@@ -18,12 +19,15 @@ function handleIngredientUpdate(recipe, e) {
     ...recipe,
     ingredients: recipe.ingredients.map((ingredient) => {
       if (ingredient.id == e.target.id) {
+        const gramConversionDenominator =
+          ingredient.userG || ingredient.gramConversion || 1;
+        const quantityInput = isNaN(parseInt(e.target.value))
+          ? 0
+          : e.target.valueAsNumber;
+
         return {
           ...ingredient,
-          quantity:
-            e.target.valueAsNumber /
-              (ingredient.userG || ingredient.gramConversion || 1) ||
-            ingredient.quantity,
+          quantity: quantityInput / gramConversionDenominator,
         };
       } else {
         return { ...ingredient };
@@ -38,7 +42,9 @@ export function IngredientList({
   ingredientList,
   setIngredientList,
   buttons,
-  price,
+  price = "",
+  headerText = "Ingredients",
+  optionalIngredientHeader = "",
 }) {
   const { recipe, setRecipe } = useRecipeContext();
   const [checkedArray, setCheckedArray] = useState([]);
@@ -87,9 +93,15 @@ export function IngredientList({
   return (
     <>
       <ListGroup>
-        <span className="h3">
-          Ingredients {price} <br />
-        </span>
+        <Row className="d-flex align-items-center">
+          <Col xs="auto">
+            <h3>
+              {headerText} {price}
+            </h3>
+          </Col>
+          <Col className="p-0 d-flex">{optionalIngredientHeader}</Col>
+        </Row>
+
         {recipe.ingredients.map((ingredient, index) => {
           if (ingredient.isGroupHeader) {
             header = {
