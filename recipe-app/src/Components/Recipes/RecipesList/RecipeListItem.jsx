@@ -1,8 +1,8 @@
 import { Col, ListGroup, Row } from "react-bootstrap";
-import { useRecipeListContext } from "./RecipeListContextProvider";
 import { Link } from "react-router-dom";
 import { RecipeRating } from "../Rating/RecipeRating";
 import { RecipeOptionsDropdown } from "../Recipe Header/RecipeHeaderButtons";
+import { useRecipeListContext } from "./RecipeListContextProvider";
 
 export function RecipeListItem({ recipe }) {
   const { recipeId, name } = recipe;
@@ -53,7 +53,7 @@ export function RecipeListItem({ recipe }) {
           <RecipeOptionsDropdown.RemixButton />
           <RecipeOptionsDropdown.AddRecipeToCollectionModal />
           <RecipeOptionsDropdown.AddToMealPlannerButton />
-          <RecipeOptionsDropdown.DeleteRecipeIcon
+          <RecipeOptionsDropdown.DeleteRecipeButton
             onSuccess={() => {
               refetch();
             }}

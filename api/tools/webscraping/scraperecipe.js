@@ -8,7 +8,7 @@ async function extractSchemaRecipe(url) {
     const $ = cheerio.load(html.data);
 
     const scriptText = JSON.parse(
-      $('script[type="application/ld+json"]').text()
+      $('script[type="application/ld+json"]:first').text()
     );
 
     if (

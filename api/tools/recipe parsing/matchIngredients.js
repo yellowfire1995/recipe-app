@@ -1,9 +1,9 @@
-import { findMeasureMatch } from "./findMeasureMatch.js";
 import "dotenv/config";
-import db from "../../database/db.js";
-import { searchSolr } from "../solr/searchSolr.js";
 import { v4 as uuidv4 } from "uuid";
+import db from "../../database/db.js";
 import { AppError } from "../error/AppError.js";
+import { searchSolr } from "../solr/searchSolr.js";
+import { findMeasureMatch } from "./findMeasureMatch.js";
 
 export async function matchIngredients(ingredients) {
   try {
@@ -85,6 +85,7 @@ export async function matchIngredients(ingredients) {
                   ),
                   id: uuidv4(),
                   userIngredientName: `${ingredient.description}${comment}`,
+                  originalName: `${ingredient.description}${comment}`,
                   description: data.rows[0].description.toLowerCase(),
                   fdc_id: data.rows[0].fdc_id,
                   sr_id: data.rows[0].sr_id,

@@ -15,15 +15,16 @@ function deleteIngredient(updatedRecipe, e) {
 }
 
 function handleIngredientUpdate(recipe, e) {
+  console.log(parseFloat(e.target.value));
   return {
     ...recipe,
     ingredients: recipe.ingredients.map((ingredient) => {
       if (ingredient.id == e.target.id) {
         const gramConversionDenominator =
           ingredient.userG || ingredient.gramConversion || 1;
-        const quantityInput = isNaN(parseInt(e.target.value))
+        const quantityInput = isNaN(parseFloat(e.target.value))
           ? 0
-          : e.target.valueAsNumber;
+          : parseFloat(e.target.value);
 
         return {
           ...ingredient,

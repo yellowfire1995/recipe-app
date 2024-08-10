@@ -1,16 +1,17 @@
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { deleteRecipe } from "../../../../db/queries";
-import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { deleteRecipe } from "../../../../db/queries";
 
-export function DeleteRecipeIcon({
+export function DeleteRecipeButton({
   recipe,
   onSettled = () => {
     return recipe;
   },
   onSuccess = () => {},
+  ...props
 }) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -35,7 +36,9 @@ export function DeleteRecipeIcon({
 
   return (
     <>
-      <Button onClick={handleShow}>Delete Recipe</Button>
+      <Button onClick={handleShow} {...props}>
+        Delete Recipe
+      </Button>
 
       <Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>

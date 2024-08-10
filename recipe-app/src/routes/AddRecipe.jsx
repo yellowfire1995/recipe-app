@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -150,20 +150,18 @@ export default function AddRecipe() {
             </Col>
           </Row>
           <Row className="mt-3 mb-1">
-            <Col>
-              <Container className="d-flex">
-                <Button
-                  type="submit"
-                  className="flex-grow-1"
-                  style={{ height: "3rem" }}
-                >
-                  Save Recipe
-                </Button>
-              </Container>
+            <Col className="d-flex">
+              <Button
+                type="submit"
+                className="flex-grow-1"
+                style={{ height: "3rem" }}
+              >
+                Save Recipe
+              </Button>
             </Col>
           </Row>
-          <Row className="justify-content-center">
-            <Col lg={6}>
+          <Row className="d-flex justify-content-center">
+            <Col xs="auto">
               <NutritionFacts>
                 <NutritionFacts.Table />
               </NutritionFacts>

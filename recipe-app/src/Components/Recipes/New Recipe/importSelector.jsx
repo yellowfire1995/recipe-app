@@ -55,7 +55,7 @@ export function ImportSelector({
           {searchArray.map((choice, idx) => {
             const activeSelection = choice.id == ingredient.id;
             const choiceMeasurementLabel = activeSelection
-              ? ingredient.userLabel
+              ? ingredient.userLabel || ""
               : choice.matchedMeasure || "";
 
             const choiceGramsDenomenator =
@@ -76,7 +76,10 @@ export function ImportSelector({
                 key={`${origIdx}${idx}`}
                 id={idx}
                 style={{
-                  color: choice.gramConversion ? "green" : "black",
+                  color:
+                    choice.matchedMeasure == choice.unitOfMeasure
+                      ? "green"
+                      : "black",
                 }}
               >
                 {`${choiceMeasurementLabel} ${

@@ -1,13 +1,13 @@
 import express from "express";
-import { tryCatch } from "../../../../tools/error/tryCatch.js";
 import db from "../../../../database/db.js";
+import { tryCatch } from "../../../../tools/error/tryCatch.js";
 const router = express.Router();
 
 router.post(
   "/update",
   tryCatch(async (req, res) => {
     // const query = {text:`DELETE from ratings r WHERE author = $1 and r.recipe_id = $2`, values: [req.auth.payload.sub, req.query.recipeId]}
-    console.log(req.body);
+
     const query = {
       text: `WITH del AS (
   DELETE FROM ratings r
@@ -26,7 +26,6 @@ VALUES ($1, $2, $3)`,
 router.post(
   "/delete",
   tryCatch(async (req, res) => {
-    console.log(req.body);
     const query = {
       text: `DELETE from ratings r WHERE author = $1 and r.recipe_id = $2`,
       values: [req.auth.payload.sub, req.body.recipeId],

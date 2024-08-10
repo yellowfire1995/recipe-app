@@ -3,11 +3,11 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Row from "react-bootstrap/esm/Row";
 
 import React from "react";
-import { RemixButton } from "../View Recipe/RemixButton";
-import { AddToMealPlannerButton } from "../../Planner/AddToMealPlannerButton";
-import { EditRecipeButton } from "../View Recipe/EditRecipeButton";
-import { DeleteRecipeIcon } from "../Edit Recipe/DeleteRecipeButton";
 import { AddRecipeToCollectionModal } from "../../Collections/AddRecipeToCollectionModal";
+import { AddToMealPlannerButton } from "../../Planner/AddToMealPlannerButton";
+import { DeleteRecipeButton } from "../Edit Recipe/DeleteRecipeButton";
+import { EditRecipeButton } from "../View Recipe/EditRecipeButton";
+import { RemixButton } from "../View Recipe/RemixButton";
 
 export function RecipeOptionsDropdown({ children, recipe, text = "" }) {
   const { isAuthenticated } = useAuth0();
@@ -53,4 +53,4 @@ RecipeOptionsDropdown.RemixButton = RemixButton;
 RecipeOptionsDropdown.AddToMealPlannerButton = AddToMealPlannerButton;
 RecipeOptionsDropdown.EditRecipeButton = EditRecipeButton;
 RecipeOptionsDropdown.AddRecipeToCollectionModal = AddRecipeToCollectionModal;
-RecipeOptionsDropdown.DeleteRecipeIcon = DeleteRecipeIcon;
+RecipeOptionsDropdown.DeleteRecipeButton = DeleteRecipeButton;

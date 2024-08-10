@@ -1,10 +1,9 @@
-import { useState } from "react";
 import Button from "react-bootstrap/esm/Button";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
 import Form from "react-bootstrap/Form";
-import { useRecipeContext } from "../RecipeContextProvider";
 import { parseDirections } from "../../../../db/queries";
+import { useRecipeContext } from "../RecipeContextProvider";
 
 export function EditableDirectionTextbox() {
   const { recipe, setRecipe } = useRecipeContext();
@@ -21,7 +20,10 @@ export function EditableDirectionTextbox() {
             id="directionText"
             as="textarea"
             rows={10}
-            defaultValue={recipe.directionText}
+            value={recipe.directionText}
+            onChange={(e) =>
+              setRecipe({ ...recipe, directionText: e.target.value })
+            }
             placeholder="Enter directions"
           />
         </Col>

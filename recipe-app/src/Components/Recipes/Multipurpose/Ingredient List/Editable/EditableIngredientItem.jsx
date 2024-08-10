@@ -1,10 +1,10 @@
-import DragHandle from "../../../../../Icons/dragHandle.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIngredientModal from "./EditIngredientModal.jsx";
-import AddPriceModal from "../../AddPriceModal.jsx";
-import { useState } from "react";
-import { IngredientError } from "./IngredientError.jsx";
 import _ from "lodash";
+import { useState } from "react";
+import DragHandle from "../../../../../Icons/dragHandle.jsx";
+import AddPriceModal from "../../AddPriceModal.jsx";
+import EditIngredientModal from "./EditIngredientModal.jsx";
+import { IngredientError } from "./IngredientError.jsx";
 
 export function EditableIngredientItem({
   ingredient,
@@ -22,35 +22,48 @@ export function EditableIngredientItem({
   setIngredientList,
 }) {
   const [draggable, setDraggable] = useState(true);
-  const ingredientQuantity = _.round(
-    ingredient.quantity * (ingredient.userG || 1),
-    2
-  );
+  const [isActive, setIsActive] = useState(false);
+  const {
+    id,
+    ingredientVersion,
+    quantity,
+    userG,
+    gramConversion,
+    userLabel,
+    displayOriginalName,
+    userIngredientName,
+    description,
+    matchedMeasure,
+    unitOfMeasure,
+    nutrients,
+  } = ingredient;
+
+  const ingredientQuantity = _.round(quantity * (userG || 1), 2);
+  const hasQuantity = quantity > 0;
 
   const ingredientQuantityGrams =
-    (ingredient.userG || ingredient.gramConversion) && ingredient.quantity > 0
-      ? `(${_.round(ingredient.quantity)}g)`
-      : "";
+    hasQuantity && (userG || gramConversion) ? `(${_.round(quantity)}g)` : "";
 
-  const ingredientWeightLabel = ingredient.quantity > 0 && ingredient.userLabel;
+  const ingredientWeightLabel =
+    (hasQuantity && !isActive) || isActive ? userLabel : "";
+
   const ingredientDescription =
-    (ingredient.quantity > 0 && !ingredient.displayOriginalName) ||
-    !ingredient.userIngredientName
-      ? ingredient.description
-      : ingredient.userIngredientName;
+    (hasQuantity && !displayOriginalName && !isActive && userIngredientName) ||
+    (isActive && !displayOriginalName)
+      ? description
+      : userIngredientName;
 
   const warnedIngredient =
-    ingredient.quantity === 0 ||
-    (ingredient.matchedMeasure != ingredient.unitOfMeasure &&
-      ingredient.matchedMeasure == ingredient.userLabel);
+    (!hasQuantity && !isActive) ||
+    (matchedMeasure !== unitOfMeasure && matchedMeasure === userLabel);
+
   const erroredIngredient =
-    (!ingredient.userG && !ingredient.gramConversion && !warnedIngredient) ||
-    !ingredient.nutrients;
+    (!userG && !gramConversion && !warnedIngredient) || !nutrients;
 
   try {
     return (
       <div
-        key={ingredient.id + ingredient.ingredientVersion}
+        key={id + ingredientVersion}
         className={
           `form-check d-flex ps-1 ingredientItem align-items-center ` +
           `${index === initialDragIndex ? "draggedItem" : ""} ${
@@ -79,25 +92,25 @@ export function EditableIngredientItem({
           <DragHandle />
         </div>
         <input
-          id={ingredient.id}
-          type="number"
-          min="0"
-          step=".01"
+          id={id}
+          type="text"
           className="form-check-label ingredientAmountInput"
-          htmlFor={ingredient.description}
+          htmlFor={description}
           style={{ width: "3rem" }}
-          name={ingredient.description}
+          name={description}
           defaultValue={ingredientQuantity}
           onChange={(e) => {
             setRecipe(handleIngredientUpdate(recipe, e));
           }}
           onMouseDown={() => setDraggable(false)}
           onMouseUp={() => setDraggable(true)}
+          onFocus={() => setIsActive(true)}
+          onBlur={() => setIsActive(false)}
         />
         <p className="m-0 align-self-center d-flex align-items-center">
           {ingredientWeightLabel} {ingredientDescription}{" "}
           {ingredientQuantityGrams}
-          <AddPriceModal ingredient={ingredient} />
+          {!erroredIngredient && <AddPriceModal ingredient={ingredient} />}
           <EditIngredientModal
             ingredient={ingredient}
             ingredientList={ingredientList}
@@ -105,7 +118,7 @@ export function EditableIngredientItem({
             origIdx={index}
           />
           <DeleteIcon
-            id={ingredient.id}
+            id={id}
             aria-label="delete"
             type="button"
             onClick={(e) => {

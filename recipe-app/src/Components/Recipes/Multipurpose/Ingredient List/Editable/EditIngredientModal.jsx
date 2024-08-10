@@ -1,4 +1,5 @@
 import EditIcon from "@mui/icons-material/Edit";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { Container } from "@mui/material";
 import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
@@ -76,6 +77,14 @@ export default function EditIngredientModal({
     }
   }
 
+  function resetIngredientName() {
+    setIngredient({
+      ...ingredient,
+      userIngredientName:
+        initialIngredient.originalName || ingredient.originalName,
+    });
+  }
+
   return (
     <>
       <EditIcon onClick={handleShow} className="svg-icon" />
@@ -115,22 +124,28 @@ export default function EditIngredientModal({
             onChange={handleWeightChange}
           />
           <br />
-          <label htmlFor="ingredientDescription">
-            Original ingredient name:
-          </label>
-          <input
-            name="ingredientDescription"
-            type="textbox"
-            value={ingredient.userIngredientName}
-            onChange={(e) =>
-              setIngredient({
-                ...ingredient,
-                userIngredientName: e.target.value,
-              })
-            }
-            id="ingredientDescription"
-          />
-          <br />
+          <div className="d-flex">
+            <label htmlFor="ingredientDescription">
+              Original ingredient name:
+            </label>
+            <input
+              name="ingredientDescription"
+              type="textbox"
+              value={ingredient.userIngredientName}
+              onChange={(e) =>
+                setIngredient({
+                  ...ingredient,
+                  userIngredientName: e.target.value,
+                })
+              }
+              id="ingredientDescription"
+            />
+            {ingredient.originalName ? (
+              <RestartAltIcon onClick={resetIngredientName} />
+            ) : (
+              ""
+            )}
+          </div>
           <Form.Check
             type="switch"
             id="showOriginalName"

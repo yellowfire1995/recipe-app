@@ -1,7 +1,7 @@
 import express from "express";
-const router = express.Router();
 import db from "../../../database/db.js";
 import { tryCatch } from "../../../tools/error/tryCatch.js";
+const router = express.Router();
 
 router.get(
   "/recipes",
@@ -97,7 +97,7 @@ router.post(
       values: [req.body.planId, req.body.date, req.auth.payload.sub],
     };
     const editor = await db.query(query);
-    console.log(req.body.date);
+
     res.send(editor);
   })
 );

@@ -1,7 +1,7 @@
 import express from "express";
-const router = express.Router();
 import db from "../../../database/db.js";
 import { tryCatch } from "../../../tools/error/tryCatch.js";
+const router = express.Router();
 
 router.get(
   "/recipes",
@@ -135,7 +135,7 @@ router.delete(
       values: [req.body.ids, req.auth.payload.sub],
     };
     const deleter = await db.query(query);
-    console.log(deleter);
+
     res.send(deleter);
   })
 );

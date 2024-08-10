@@ -1,24 +1,22 @@
-import { useNavigate, useParams } from "react-router-dom";
-import Container from "react-bootstrap/esm/Container";
-import { createContext, useEffect, useState } from "react";
-import { getRecipeById } from "../../db/queries";
-import Col from "react-bootstrap/esm/Col";
-import Row from "react-bootstrap/esm/Row";
-import Button from "react-bootstrap/Button";
-import CuisineSelector from "../Components/Recipes/Multipurpose/cuisineselector.jsx";
-import CategorySelector from "../Components/Recipes/Multipurpose/categoryselector.jsx";
-import { editRecipe } from "../../db/queries";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Loading from "../Components/Loading";
+import { createContext, useEffect, useState } from "react";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/esm/Col";
+import Row from "react-bootstrap/esm/Row";
 import Form from "react-bootstrap/Form";
 import { Helmet } from "react-helmet-async";
-import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
-import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
-import ErrorHandler from "../Components/Errors/NotFound.jsx";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { editRecipe, getRecipeById } from "../../db/queries";
 import { roles } from "../../env/env.js";
+import ErrorHandler from "../Components/Errors/NotFound.jsx";
+import Loading from "../Components/Loading";
+import CategorySelector from "../Components/Recipes/Multipurpose/categoryselector.jsx";
+import CuisineSelector from "../Components/Recipes/Multipurpose/cuisineselector.jsx";
+import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
 import { ShowOriginalingredientSwitch } from "../Components/Recipes/Recipe Header/ShowOriginalIngredientSwitch.jsx";
+import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
 
 export const RecipeContext = createContext();
 
@@ -111,14 +109,6 @@ export default function Edit() {
             }}
             encType="multipart/form-data"
           >
-            <Row className="mt-3 d-flex">
-              <Col className="d-flex justify-content-end">
-                <RecipeForm.DeleteRecipeIcon
-                  recipe={recipe}
-                  onSettled={() => navigate("/recipes")}
-                />
-              </Col>
-            </Row>
             <Row>
               <Col>
                 <RecipeForm.EditableUrlField />
@@ -184,20 +174,30 @@ export default function Edit() {
               </Col>
             </Row>
             <Row className="mt-3 mb-1">
-              <Col>
-                <Container className="d-flex">
-                  <Button
-                    type="submit"
-                    className="flex-grow-1"
-                    style={{ height: "3rem" }}
-                  >
-                    {isPending ? "Saving..." : "Save Recipe"}
-                  </Button>
-                </Container>
+              <Col className="d-flex">
+                <Button
+                  type="submit"
+                  className="flex-grow-1"
+                  style={{ height: "3rem" }}
+                >
+                  {isPending ? "Saving..." : "Save Recipe"}
+                </Button>
               </Col>
             </Row>
-            <Row className="justify-content-center">
-              <Col lg={6}>
+            <hr />
+            <Row>
+              <Col className="d-flex">
+                <RecipeForm.DeleteRecipeButton
+                  recipe={recipe}
+                  onSettled={() => navigate("/recipes")}
+                  style={{ height: "3rem" }}
+                  className="w-100 btn-danger"
+                />
+              </Col>
+            </Row>
+
+            <Row className="d-flex justify-content-center">
+              <Col xs="auto">
                 <NutritionFacts>
                   <NutritionFacts.Table />
                 </NutritionFacts>

@@ -1,14 +1,14 @@
 import express from "express";
-const router = express.Router();
-import db from "../../../../database/db.js";
 import multer from "multer";
+import db from "../../../../database/db.js";
 import {
   resizeAndUploadFileToS3,
   uploadDualSizesUrlToS3,
   uploadFileToS3,
 } from "../../../../tools/aws/aws.js";
-import { tryCatch } from "../../../../tools/error/tryCatch.js";
 import { AppError } from "../../../../tools/error/AppError.js";
+import { tryCatch } from "../../../../tools/error/tryCatch.js";
+const router = express.Router();
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage, limits: { fileSize: 5242880 } });
@@ -38,7 +38,6 @@ router.post(
   tryCatch(upload.single("photo")),
   tryCatch(checkAuth),
   tryCatch(async (req, res) => {
-    console.log(req.body);
     let recipe = JSON.parse(req.body.recipe);
     let key = recipe.imgName;
     let thumbnailKey;

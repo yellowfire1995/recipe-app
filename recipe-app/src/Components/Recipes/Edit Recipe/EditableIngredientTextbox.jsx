@@ -2,8 +2,8 @@ import Button from "react-bootstrap/esm/Button";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
 import Form from "react-bootstrap/Form";
-import { useRecipeContext } from "../RecipeContextProvider";
 import { parseIngredients } from "../../../../db/queries";
+import { useRecipeContext } from "../RecipeContextProvider";
 
 export function EditableIngredientTextbox() {
   const { recipe, setRecipe } = useRecipeContext();
@@ -34,12 +34,15 @@ export function EditableIngredientTextbox() {
         <Col>
           {" "}
           <Form.Control
-            key={recipe.ingredientText}
+            key="ingredientText"
             id="ingredientText"
             as="textarea"
             className="table-active"
             rows={10}
-            defaultValue={recipe.ingredientText}
+            value={recipe.ingredientText}
+            onChange={(e) =>
+              setRecipe({ ...recipe, ingredientText: e.target.value })
+            }
             placeholder="Enter ingredients- one ingredient per line:&#10;1 cup flour&#10;2 ounces butter, softened "
           />
         </Col>

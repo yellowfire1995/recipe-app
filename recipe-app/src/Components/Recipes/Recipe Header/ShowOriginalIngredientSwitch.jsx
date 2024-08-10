@@ -6,7 +6,7 @@ export function ShowOriginalingredientSwitch({ label = "Original Names" }) {
   const { recipe, setRecipe } = useRecipeContext();
 
   const popover = (
-    <Popover id="popover-basic">
+    <Popover id="ShowOriginalExplanation">
       <Popover.Body>
         This does not change the underlying ingredient information, just how it
         is displayed.
@@ -36,7 +36,11 @@ export function ShowOriginalingredientSwitch({ label = "Original Names" }) {
           }}
           label={label}
         ></Form.Check>{" "}
-        <OverlayTrigger placement="bottom-end" overlay={popover}>
+        <OverlayTrigger
+          trigger={["hover", "focus", "click"]}
+          placement="bottom-end"
+          overlay={popover}
+        >
           <InfoIcon />
         </OverlayTrigger>
       </>
