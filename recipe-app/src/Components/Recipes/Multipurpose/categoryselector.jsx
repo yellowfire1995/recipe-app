@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FloatingLabel } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { getCategories as getCats } from "../../../../db/queries";
 
@@ -16,15 +17,16 @@ export default function CategorySelector(props) {
   }, []);
 
   return (
-    <Typeahead
-      id="categories"
-      multiple
-      options={categories}
-      labelKey="category"
-      placeholder="Categories (optional)"
-      onChange={(selected) =>
-        setUpdatedRecipe({ ...updatedRecipe, category: selected })
-      }
-    />
+    <FloatingLabel id="categoriesLabel" label="Categories (optional)">
+      <Typeahead
+        id="categoriesSelector"
+        multiple
+        options={categories}
+        labelKey="category"
+        onChange={(selected) =>
+          setUpdatedRecipe({ ...updatedRecipe, category: selected })
+        }
+      />
+    </FloatingLabel>
   );
 }

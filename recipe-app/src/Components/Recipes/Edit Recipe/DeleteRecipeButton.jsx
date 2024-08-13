@@ -36,7 +36,7 @@ export function DeleteRecipeButton({
 
   return (
     <>
-      <Button onClick={handleShow} {...props}>
+      <Button onClick={handleShow} className="btn-danger" {...props}>
         Delete Recipe
       </Button>
 

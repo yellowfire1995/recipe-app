@@ -1,16 +1,19 @@
-import { Button, Col, Container, ListGroup, Row } from "react-bootstrap";
-import { RecipeListItem } from "./RecipeListItem";
-import { RecipeListContext } from "./RecipeListContextProvider";
 import { useQuery } from "@tanstack/react-query";
-import { getMyRecipeCards } from "../../../../db/queries";
-import { useEffect, useState } from "react";
-import Loading from "../../Loading";
+import { useState } from "react";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
+import { getMyRecipeCards } from "../../../../db/queries";
+import Loading from "../../Loading";
 import { RecipeSearchOptionsBar } from "../RecipeSearchOptionsBar";
+import { CardItemsContainer } from "./CardView/CardItemsContainer";
+import { ListItemsContainer } from "./ListView/ListItemsContainer";
+import { RecipeListContext } from "./MultiRecipeContext";
 
-export function RecipeList({
+export function MultiRecipeViewer({
   query = getMyRecipeCards,
   queryKey = "MyRecipes",
+  listViewDefault = false,
+  queryParams = {},
   ...props
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,6 +21,7 @@ export function RecipeList({
   const search = searchParams.get("search");
   const pageSize = searchParams.get("pageSize");
   const sort = searchParams.get("sort");
+  const [isListView, setIsListView] = useState(listViewDefault);
 
   const previousPageParams = {
     ...Object.fromEntries(searchParams),
@@ -37,22 +41,24 @@ export function RecipeList({
         search: search,
         pageSize: pageSize,
         sort: sort,
+        queryParams,
       }),
   });
-
-  const [myRecipes, setMyRecipes] = useState([]);
-
-  useEffect(() => {
-    if (data && isFetched && !isError) {
-      setMyRecipes(data.recipes);
-    }
-  }, [data, isFetched, isError]);
 
   if (isLoading) {
     return <Loading />;
   }
 
-  if (data) {
+  if (isError) {
+    <Row>
+      <Col>
+        <p>An error occured! Please try again.</p>
+      </Col>
+    </Row>;
+  }
+
+  if (data && isFetched && !isError) {
+    console.log(data);
     const { recipes, lastPage } = data;
 
     return (
@@ -63,24 +69,15 @@ export function RecipeList({
           recipes,
           lastPage,
           isError,
-          isFetched,
-          myRecipes,
-          setMyRecipes,
         }}
       >
-        <Container className="recipeList" {...props}>
-          <RecipeSearchOptionsBar />
+        <Container fluid="lg" className="recipe-list" {...props}>
+          <RecipeSearchOptionsBar
+            isListView={isListView}
+            setIsListView={setIsListView}
+          />
           <Row>
-            <ListGroup {...props}>
-              {recipes.map((recipe, index) => {
-                return (
-                  <RecipeListItem
-                    key={`${index} ${page} ${recipe.recipeId}`}
-                    recipe={recipe}
-                  />
-                );
-              })}{" "}
-            </ListGroup>
+            {isListView ? <ListItemsContainer /> : <CardItemsContainer />}
           </Row>
 
           <Row className="w-100">

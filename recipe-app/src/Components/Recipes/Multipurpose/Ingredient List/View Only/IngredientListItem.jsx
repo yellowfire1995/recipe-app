@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import AddPriceModal from "../../AddPriceModal";
 import _ from "lodash";
+import AddPriceModal from "../../AddPriceModal";
 
 export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
   const { isAuthenticated } = useAuth0();
@@ -45,7 +45,7 @@ export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
   return (
     <div className="form-check d-flex py-2" key={ingredient.id}>
       <input
-        className="form-check-input"
+        className="form-check-input me-1"
         type="checkbox"
         id={ingredient.id}
         onClick={() => handleCheck(ingredient.id)}

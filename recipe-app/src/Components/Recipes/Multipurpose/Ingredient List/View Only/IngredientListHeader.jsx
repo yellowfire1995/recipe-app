@@ -1,3 +1,6 @@
 export function IngredientListHeader({ ingredient }) {
-  return <h4 key={ingredient.id}>{ingredient.description.toUpperCase()}</h4>;
+  const ingredientDescription =
+    ingredient.userIngredientName || ingredient.description;
+
+  return <h4 key={ingredient.id}>{ingredientDescription.toUpperCase()}</h4>;
 }

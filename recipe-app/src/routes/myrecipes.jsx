@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
-import { RecipeList } from "../Components/Recipes/RecipesList/RecipesList.jsx";
+import { getMyRecipeCards } from "../../db/queries.js";
+import { MultiRecipeViewer } from "../Components/Recipes/MultiRecipeViewer/MultiRecipeViewer.jsx";
 
 export default function MyRecipes() {
   return (
@@ -7,7 +8,7 @@ export default function MyRecipes() {
       <Helmet>
         <title>CookbookCalc | My Recipes</title>
       </Helmet>
-      <RecipeList />
+      <MultiRecipeViewer query={getMyRecipeCards} queryKey="MyRecipes" />
     </>
   );
 }

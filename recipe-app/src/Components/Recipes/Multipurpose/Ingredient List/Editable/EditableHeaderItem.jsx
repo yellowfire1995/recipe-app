@@ -1,5 +1,5 @@
-import DragHandle from "../../../../../Icons/dragHandle.jsx";
 import DeleteIcon from "@mui/icons-material/Delete";
+import DragHandle from "../../../../../Icons/dragHandle.jsx";
 import EditHeaderModal from "./EditHeaderModal.jsx";
 
 export function EditableHeaderItem({
@@ -15,6 +15,8 @@ export function EditableHeaderItem({
   recipe,
   setRecipe,
 }) {
+  const ingredientDescription =
+    ingredient.userIngredientName || ingredient.description;
   return (
     <div
       key={ingredient.id}
@@ -45,7 +47,7 @@ export function EditableHeaderItem({
       </div>
 
       <h4 id={ingredient.id} className="m-0 align-self-center">
-        {ingredient.description.toUpperCase()}
+        {ingredientDescription.toUpperCase()}
       </h4>
       <EditHeaderModal
         ingredient={ingredient}

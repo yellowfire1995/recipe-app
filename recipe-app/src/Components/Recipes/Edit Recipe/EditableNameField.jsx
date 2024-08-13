@@ -1,6 +1,6 @@
 import FloatingLabel from "react-bootstrap/esm/FloatingLabel";
-import { useRecipeContext } from "../RecipeContextProvider";
 import Form from "react-bootstrap/Form";
+import { useRecipeContext } from "../RecipeContextProvider";
 
 export function EditableNameField() {
   const { recipe, setRecipe } = useRecipeContext();
@@ -12,6 +12,7 @@ export function EditableNameField() {
           size="lg"
           required
           minLength="2"
+          maxLength="40"
           type="text"
           value={recipe.name}
           onChange={(e) =>

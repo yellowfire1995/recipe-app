@@ -1,5 +1,5 @@
-import httpClient from "./axiosConfig";
 import { server } from "../env/env.js";
+import httpClient from "./axiosConfig";
 
 //Get category list for new recipe page
 export async function getCategories() {
@@ -159,10 +159,16 @@ export async function getRecipeById(recipeId) {
 }
 
 //Get all recipes for recipe cards on home page
-export async function getRecipeCards({ page, search, pageSize, sort }) {
+export async function getRecipeCards({
+  page,
+  search,
+  pageSize,
+  sort,
+  queryParams: { collectionId },
+}) {
   try {
     const recipeCards = await httpClient.get(
-      `${server}/recipecards?page=${page}&search=${search}&pageSize=${pageSize}}&sort=${sort}`
+      `${server}/recipecards?page=${page}&search=${search}&pageSize=${pageSize}}&sort=${sort}&collectionId=${collectionId}`
     );
     return recipeCards.data;
   } catch (error) {
@@ -233,10 +239,11 @@ export async function changeMealDay(planId, date) {
 }
 
 //Get recipes by collection
-export async function getCollectionRecipes() {
+export async function getCollectionRecipes({ collectionId }) {
+  console.log(collectionId);
   try {
     const collectionRecipes = await httpClient.get(
-      `${server}/collections/recipes`
+      `${server}/collections/${collectionId}`
     );
 
     return collectionRecipes.data;
@@ -281,8 +288,9 @@ export async function deleteCollection(collection) {
 }
 
 export async function deleteCollectionRecipe(arrayOfRecipes) {
+  console.log(arrayOfRecipes);
   try {
-    const arrayOfIds = arrayOfRecipes.map((recipe) => recipe.key);
+    const arrayOfIds = arrayOfRecipes.map((recipe) => recipe.key || recipe);
 
     const deleteCollectionRecipe = await httpClient.delete(
       `${server}/collections/delete/recipe`,

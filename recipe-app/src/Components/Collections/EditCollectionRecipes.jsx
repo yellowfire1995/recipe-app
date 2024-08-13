@@ -3,13 +3,14 @@ import { useState } from "react";
 import { Typeahead } from "react-bootstrap-typeahead";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { useNavigate } from "react-router-dom";
 import { deleteCollectionRecipe } from "../../../db/queries";
 import { queryClient } from "../../main";
 
 export default function EditCollectionRecipes(props) {
-  const params = props.params;
   const collection = props.collection;
   const [itemsToRemove, setItemsToRemove] = useState([]);
+  const navigate = useNavigate();
 
   const deleter = useMutation({
     mutationFn: () => {
@@ -50,7 +51,7 @@ export default function EditCollectionRecipes(props) {
             id="collections"
             options={collection.recipes}
             labelKey="name"
-            placeholder="Please choose an existing collection or type a new collection name..."
+            placeholder="Please select recipes you would like to delete"
             onChange={(selected) => setItemsToRemove(selected)}
           />
         </Modal.Body>

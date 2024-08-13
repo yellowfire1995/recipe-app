@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 
 export const RecipeListContext = createContext();
 
-export function useRecipeListContext() {
+export function useMultiRecipeViewerContext() {
   const context = useContext(RecipeListContext);
   if (!context) {
     throw new Error(

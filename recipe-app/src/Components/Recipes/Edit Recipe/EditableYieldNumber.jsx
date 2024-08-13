@@ -1,13 +1,13 @@
 import FloatingLabel from "react-bootstrap/esm/FloatingLabel";
-import { useRecipeContext } from "../RecipeContextProvider";
 import Form from "react-bootstrap/Form";
+import { useRecipeContext } from "../RecipeContextProvider";
 
 export function EditableYieldNumber() {
   const { recipe, setRecipe } = useRecipeContext();
 
   return (
     <>
-      <FloatingLabel id="Yield number" label="Yield (optional)">
+      <FloatingLabel id="Yield number" label="Yield Number (optional)">
         <Form.Control
           type="number"
           id="yieldNumber"

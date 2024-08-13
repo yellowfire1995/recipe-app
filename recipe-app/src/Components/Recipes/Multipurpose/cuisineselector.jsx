@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { getCuisines } from "../../../../db/queries";
+import { FloatingLabel } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
+import { getCuisines } from "../../../../db/queries";
 
 export default function CuisineSelector(props) {
   const [cuisines, setCuisines] = useState([]);
@@ -16,15 +17,16 @@ export default function CuisineSelector(props) {
   }, []);
 
   return (
-    <Typeahead
-      id="categories"
-      multiple
-      options={cuisines}
-      labelKey="cuisine"
-      placeholder="Cuisines (optional)"
-      onChange={(selected) =>
-        setUpdatedRecipe({ ...updatedRecipe, cuisine: selected })
-      }
-    />
+    <FloatingLabel id="cuisinesLabel" label="Cuisines (optional)">
+      <Typeahead
+        id="cuisinesSelector"
+        multiple
+        options={cuisines}
+        labelKey="cuisine"
+        onChange={(selected) =>
+          setUpdatedRecipe({ ...updatedRecipe, cuisine: selected })
+        }
+      />
+    </FloatingLabel>
   );
 }

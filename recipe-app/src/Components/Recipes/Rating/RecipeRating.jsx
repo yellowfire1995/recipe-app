@@ -1,9 +1,11 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { Rating } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
+import _ from "lodash";
 import { useState } from "react";
-import { deleteRating, updateRating } from "../../../../db/queries";
 import { toast } from "react-toastify";
+import { deleteRating, updateRating } from "../../../../db/queries";
 
 export function RecipeRating({
   recipe = {},
@@ -14,12 +16,19 @@ export function RecipeRating({
   refetch = () => {
     return recipe;
   },
+  showCount = false,
+  showRatingNumber = false,
   ...props
 }) {
-  const { mutateAsync } = useMutation({
+  const { userRating, rating, ratingCount, recipeId } = recipe;
+  const recipeRating = _.round(rating, 1).toFixed(1);
+  const [color, setColor] = useState(userRating ? "#c4361e" : "");
+  const [precision, setPrecision] = useState(0.5);
+  const { isAuthenticated } = useAuth0();
+
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: ({ recipeId, userRating, deleter }) => {
       if (deleter) {
-        console.log("delete recipe");
         return deleteRating(recipeId, userRating);
       }
       return updateRating(recipeId, userRating);
@@ -34,36 +43,58 @@ export function RecipeRating({
     const newRating = parseInt(e.target.value);
 
     if (newRating === recipe.userRating) {
+      // setRecipe({ ...recipe, userRating: null });
       await mutateAsync({
-        recipeId: recipe.recipeId,
+        recipeId: recipeId,
         deleter: true,
       });
-      setRecipe({ ...recipe, userRating: null });
 
       refetch();
     } else {
+      // setRecipe({ ...recipe, userRating: newRating });
       await mutateAsync({
-        recipeId: recipe.recipeId,
+        recipeId: recipeId,
         userRating: newRating,
         deleter: false,
       });
-      setRecipe({ ...recipe, userRating: newRating });
+
       refetch();
     }
   };
 
-  const [color, setColor] = useState(recipe.userRating ? "#c4361e" : "");
-  const { isAuthenticated } = useAuth0();
-
   return (
-    <Rating
-      onMouseEnter={() => (isAuthenticated ? setColor("#c4361e") : "")}
-      onMouseLeave={() => (recipe.userRating ? "" : setColor(""))}
-      style={{ color: color }}
-      value={parseFloat(value)}
-      readOnly={!isAuthenticated}
-      onChange={(e) => updateRecipeRating(e)}
-      {...props}
-    />
+    <>
+      {showRatingNumber && rating && recipeRating}
+      <Rating
+        emptyIcon={
+          <StarBorderIcon className="empty-rating-icon" fontSize="inherit" />
+        }
+        disabled={isPending}
+        precision={precision}
+        onMouseEnter={() => {
+          isAuthenticated ? setColor("#c4361e") : "";
+          setPrecision(1);
+        }}
+        onMouseLeave={() => {
+          recipe.userRating ? "" : setColor("");
+          setPrecision(0.5);
+        }}
+        style={{
+          color: color,
+          lineHeight: ".5em",
+          marginLeft: "0px",
+        }}
+        value={_.round(value, 1)}
+        readOnly={!isAuthenticated}
+        onChange={(e) => {
+          updateRecipeRating(e);
+        }}
+        {...props}
+      />
+      {(showCount &&
+        ratingCount > 0 &&
+        `${ratingCount} rating${ratingCount != 1 ? "s" : ""} `) ||
+        (showCount && "No ratings")}
+    </>
   );
 }

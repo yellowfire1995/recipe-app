@@ -17,7 +17,7 @@
   background-color:$dark-background;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  color:rgb(255,255,255, .60)
+  color:rgba(255, 255, 255, 0.692)
 }
 
 .content-container{
@@ -36,28 +36,29 @@
 }
 
 body {
-  $font-family-sans-serif:
-  // Cross-platform generic font family (default user interface font)
-  system-ui,
-  // Safari for macOS and iOS (San Francisco)
-  -apple-system,
-  // Windows
-  "Segoe UI",
-  // Android
-  Roboto,
-  // older macOS and iOS
-  "Helvetica Neue"
-  // Linux
-  "Noto Sans",
-  "Liberation Sans",
-  // Basic web fallback
-  Arial,
-  // Sans serif fallback
-  sans-serif,
-  // Emoji fonts
-  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+  // $font-family-sans-serif:
+  // // Cross-platform generic font family (default user interface font)
+  // system-ui,
+  // // Safari for macOS and iOS (San Francisco)
+  // -apple-system,
+  // // Windows
+  // "Segoe UI",
+  // // Android
+  // Roboto,
+  // // older macOS and iOS
+  // "Helvetica Neue"
+  // // Linux
+  // "Noto Sans",
+  // "Liberation Sans",
+  // // Basic web fallback
+  // Arial,
+  // // Sans serif fallback
+  // sans-serif,
+  // // Emoji fonts
+  // "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
 
-
+  font-family: "Courier New", "monospace";
+  letter-spacing: -.6px;
 
 
 }
@@ -67,21 +68,43 @@ body {
   height: 0;
 }
 
-.recipecard:hover {
-    transform: scale(1.1);
-}
-
-
-
-.recipecard {
-  transition: transform .5s;
-}
 
 
 
 [data-bs-theme=dark] .form-control,[data-bs-theme=dark] label {
   --bs-body-bg: rgb(41, 40, 40);
 }
+
+.rbt-input-multi.focus {
+  border-color:$secondary;
+  box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+  border-color:rgba($primary, .5)
+}
+
+.rbt-token{
+  background-color: $primary ;
+  color:white;
+
+}
+
+.form-floating > .rbt .form-control {
+  height: calc(3.5rem + calc(var(--bs-border-width) * 2));
+  min-height: calc(3.5rem + calc(var(--bs-border-width) * 2));
+  line-height: 1.25;
+}
+
+.form-floating > .rbt .form-control:focus,
+.form-floating > .rbt .form-control:not(:placeholder-shown) {
+  padding-top: 1.625rem;
+  padding-bottom: 0.625rem;
+}
+
+.form-floating > .rbt:has(.form-control:focus) ~ label,
+.form-floating > .rbt:has(.form-control:not(:placeholder-shown)) ~ label {
+  color: rgba(var(--bs-body-color-rgb), 0.65);
+  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
 
 
 
@@ -149,8 +172,7 @@ dark
   margin:2px;
   background-color: rgba(255, 255, 255, 0.2);
   border:1px dashed rgb(41, 40, 40, .5);
-  
-  transition:.5s;
+    transition:.5s;
    }
 .draggedItem, .ingrdientItem:active{
  background-color: rgb(41, 40, 40, .1);
@@ -194,24 +216,39 @@ input[type=number] {
 
 
 //For recipe cards with no image
+.recipe-card:hover {
+  transform: scale(1.1);
+}
+
+
+
+.recipe-card {
+transition: transform .5s;
+height:17rem;
+width:15rem;
+position:relative;
+}
+
+
 [data-bs-theme=light] .filler-text {
   text-decoration-thickness: 50px;
-  font-size: 8rem;
   font-family: "Courier New", "monospace";
   color: rgb(0,0,0, .25);
-  overflow: hidden;
-  white-space: nowrap;
- 
 }
 
 [data-bs-theme=dark] .filler-text {
-  font-size: 3rem;
+  text-decoration-thickness: 50px;
   font-family: "Courier New", "monospace";
-  color: rgb(255,255,255, .25);
-  overflow: hidden;
+  color: rgba(255, 255, 255, 0.25);
+}
 
- 
-   
+.recipe-card-background{
+  background-color: rgb(0,0,0, .2);
+  background-position: 50% 50%;
+  width:15rem;
+  height:13rem;
+  background-size: cover;
+
 }
 
 .recipe-dropdown-menu{
@@ -234,18 +271,29 @@ input[type=number] {
   
 }
 
-.rating-background{
+[data-bs-theme=light] .rating-background{
   position:absolute;
   z-index:2;
   top:.5rem;
-    background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(219, 219, 219, 0.849);
   border-radius: 5px;
 }
 
-.recipe-list-item{
-  background-color: rgba(255,255,255, .5);
+[data-bs-theme=dark] .rating-background{
+  position:absolute;
+  z-index:2;
+  top:.5rem;
+  background-color: rgba(100, 100, 100, 0.849);
+  border-radius: 5px;
+}
+
+[data-bs-theme=light] .recipe-list-item{
+  background-color: rgba(247, 247, 247, 0.644);
   text-decoration: none;
 }
+
+
+
 img.recipe-list-thumbnail{
   object-fit: cover;
   aspect-ratio: 1;
@@ -335,4 +383,8 @@ img.recipe-list-thumbnail{
 
 .recipe-buttons-dropdown{
   text-wrap: auto;
+}
+
+[data-bs-theme=dark] .empty-rating-icon{
+  color: rgb(167, 167, 167)
 }

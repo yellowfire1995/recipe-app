@@ -6,8 +6,6 @@ import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getRecipeById, newRecipe } from "../../db/queries";
-import CategorySelector from "../Components/Recipes/Multipurpose/categoryselector";
-import CuisineSelector from "../Components/Recipes/Multipurpose/cuisineselector";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts";
 import { ShowOriginalingredientSwitch } from "../Components/Recipes/Recipe Header/ShowOriginalIngredientSwitch";
 import { RecipeForm } from "../Components/Recipes/RecipeForm";
@@ -83,46 +81,7 @@ export default function AddRecipe() {
           }}
           encType="multipart/form-data"
         >
-          <RecipeForm.EditableUrlField setIngredientList={setIngredientList} />
-          <Row className="mt-1 justify-content-center mx-1 mb-1 ">
-            <RecipeForm.AddPhoto
-              style={{
-                width: "10rem",
-                height: "12rem",
-              }}
-              className="photo-add ps-2"
-            />
-            <Col md>
-              <Row className="mb-1">
-                <RecipeForm.EditableNameField />
-              </Row>
-
-              <Row className="mb-1">
-                <RecipeForm.EditableServingsField />
-              </Row>
-              <Row className="d-flex flex-wrap">
-                <Col md className="m-0 p-0 mb-1">
-                  <RecipeForm.EditableYieldNumber />
-                </Col>
-                <Col md={10} className="m-0 p-0">
-                  <RecipeForm.EditableYieldDescription />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row className="">
-            <Col md className="">
-              <CategorySelector updatedRecipe={[recipe, setRecipe]} />
-            </Col>{" "}
-            <Col md className="">
-              <CuisineSelector updatedRecipe={[recipe, setRecipe]} />
-            </Col>
-          </Row>
-          <Row className="px-0 py-2">
-            <Col className="align-content-center d-flex">
-              <RecipeForm.EditableVisibilityCheckbox />
-            </Col>
-          </Row>
+          <RecipeForm.EditableRecipeHeader />
           <Row>
             <Col md>
               <RecipeForm.EditableIngredientTextbox

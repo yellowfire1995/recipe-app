@@ -1,11 +1,13 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { Typeahead } from "react-bootstrap-typeahead";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { addRecipeToCollection, getCollectionNames } from "../../../db/queries";
-
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Typeahead } from "react-bootstrap-typeahead";
-import Loading from "../Loading";
+import {
+  addRecipeToCollection,
+  getCollectionNames,
+} from "../../../../db/queries";
+import Loading from "../../Loading";
 
 export function AddRecipeToCollectionModal({ recipe: { recipeId } }) {
   const collections = useQuery({

@@ -12,8 +12,6 @@ import { editRecipe, getRecipeById } from "../../db/queries";
 import { roles } from "../../env/env.js";
 import ErrorHandler from "../Components/Errors/NotFound.jsx";
 import Loading from "../Components/Loading";
-import CategorySelector from "../Components/Recipes/Multipurpose/categoryselector.jsx";
-import CuisineSelector from "../Components/Recipes/Multipurpose/cuisineselector.jsx";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
 import { ShowOriginalingredientSwitch } from "../Components/Recipes/Recipe Header/ShowOriginalIngredientSwitch.jsx";
 import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
@@ -109,51 +107,7 @@ export default function Edit() {
             }}
             encType="multipart/form-data"
           >
-            <Row>
-              <Col>
-                <RecipeForm.EditableUrlField />
-              </Col>
-            </Row>
-            <Row className="mt-1 justify-content-center mx-1 mb-1 ">
-              <RecipeForm.AddPhoto
-                style={{
-                  width: "10rem",
-                  height: "12rem",
-                }}
-                className="photo-add ps-2"
-              />
-              <Col md>
-                <Row className="mb-1">
-                  <RecipeForm.EditableNameField />
-                </Row>
-
-                <Row className="mb-1">
-                  <RecipeForm.EditableServingsField />
-                </Row>
-                <Row className="d-flex">
-                  <Col className="ps-0">
-                    <RecipeForm.EditableYieldNumber />
-                  </Col>
-                  <Col xs={10} className="p-0">
-                    <RecipeForm.EditableYieldDescription />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-
-            <Row className="">
-              <Col md className="">
-                <CategorySelector updatedRecipe={[recipe, setRecipe]} />
-              </Col>{" "}
-              <Col md className="">
-                <CuisineSelector updatedRecipe={[recipe, setRecipe]} />
-              </Col>
-            </Row>
-            <Row className="px-0 py-2">
-              <Col className="align-content-center d-flex">
-                <RecipeForm.EditableVisibilityCheckbox />
-              </Col>
-            </Row>
+            <RecipeForm.EditableRecipeHeader />
             <Row className="mt-4">
               <Col md>
                 <Row>
