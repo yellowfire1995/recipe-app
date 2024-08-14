@@ -62,6 +62,7 @@ group by
 router.post(
   "/add/recipe/:recipeId",
   tryCatch(async (req, res) => {
+    console.log(req.body.date);
     const query = {
       text: `INSERT INTO planner
       (recipe_id, date, "user")
@@ -90,6 +91,7 @@ router.delete(
 router.post(
   "/edit",
   tryCatch(async (req, res) => {
+    console.log(req.body.date);
     const query = {
       text: ` update planner
       set date = $2

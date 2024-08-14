@@ -4,7 +4,7 @@
 @import "./stylesheets/LoginPage.scss";
 @import "./stylesheets/buttons.scss";
 @import "./stylesheets/navbar.scss";
-
+@import "react-datepicker/dist/react-datepicker.css";
 
 
 [data-bs-theme=light] body{
@@ -215,19 +215,10 @@ input[type=number] {
 }
 
 
-//For recipe cards with no image
-.recipe-card:hover {
-  transform: scale(1.1);
-}
 
 
 
-.recipe-card {
-transition: transform .5s;
-height:17rem;
-width:15rem;
-position:relative;
-}
+
 
 
 [data-bs-theme=light] .filler-text {
@@ -242,34 +233,8 @@ position:relative;
   color: rgba(255, 255, 255, 0.25);
 }
 
-.recipe-card-background{
-  background-color: rgb(0,0,0, .2);
-  background-position: 50% 50%;
-  width:15rem;
-  height:13rem;
-  background-size: cover;
-
-}
-
-.recipe-dropdown-menu{
-   background-color: rgb(0,0,0, .25);
-  backdrop-filter: blur(2px) ;
-  border-radius: 10px;
-  border:1px;
-  
-}
 
 
-.recipe-dropdown-item:hover{
-  background: none
-
-
-}
-
-.recipe-dropdown-item .btn {
-  width:100%
-  
-}
 
 [data-bs-theme=light] .rating-background{
   position:absolute;
@@ -388,3 +353,72 @@ img.recipe-list-thumbnail{
 [data-bs-theme=dark] .empty-rating-icon{
   color: rgb(167, 167, 167)
 }
+
+.card-dropdown{
+  position:absolute;
+  z-index:3;
+  top:11rem;
+  left:11.75rem;
+  border-radius: 5px;
+}
+
+.recipe-dropdown-menu{
+  background-color: rgb(0,0,0, .25);
+ backdrop-filter: blur(2px) ;
+ border-radius: 10px;
+ border:1px;
+
+}
+
+
+.recipe-dropdown-item:hover{
+  background: none
+
+
+}
+
+.recipe-dropdown-item .btn {
+  width:100%
+  
+}
+
+//For recipe cards with no image
+
+.recipe-card:hover .recipe-card-background{
+
+}
+
+.recipe-card-background{
+transition: transform .5s;
+  background-color: rgb(0,0,0, .2);
+  background-position: 50% 50%;
+  width:15rem;
+  height:13rem;
+  background-size: cover;
+
+}
+
+
+.recipe-card {
+  transition: transform .5s;
+  height:17rem;
+  width:15rem;
+  position:relative;
+  }
+
+ .recipe-card .dropdown-toggle::after {
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='MuiSvgIcon-root MuiSvgIcon-fontSizeLarge css-c1sh5i' focusable='false' aria-hidden='true' viewBox='0 0 24 24' data-testid='AddCircleIcon' aria-label='fontSize large' fill='%23c4361e'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z' fill='%23c4361e'%3E%3C/path%3E%3C/svg%3E");
+    fill:$primary;
+    border:0px;
+    height:2rem;
+    width:2rem;
+    
+  }
+ .recipe-card .dropdown-toggle:hover:after{
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='MuiSvgIcon-root MuiSvgIcon-fontSizeLarge css-c1sh5i' focusable='false' aria-hidden='true' viewBox='0 0 24 24' data-testid='AddCircleIcon' aria-label='fontSize large' fill='%23812514'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z' fill='%23812514'%3E%3C/path%3E%3C/svg%3E");
+    fill:$primary;
+    border:0px;
+    height:2rem;
+    width:2rem;
+   
+  }

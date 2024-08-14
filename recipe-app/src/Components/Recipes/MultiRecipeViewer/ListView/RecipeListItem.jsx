@@ -1,7 +1,7 @@
 import { Col, ListGroup, Row } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { RecipeRating } from "../../Rating/RecipeRating";
-import { RecipeOptionsDropdown } from "../../Recipe Header/RecipeHeaderButtons";
+import { RecipeOptionsDropdown } from "../../Recipe Header/Buttons/RecipeHeaderButtons";
 
 export function RecipeListItem({
   recipe,
@@ -10,10 +10,6 @@ export function RecipeListItem({
   },
 }) {
   const { recipeId, name } = recipe;
-  const { collectionId } = useParams();
-  console.log(collectionId);
-
-  console.log(recipe);
 
   return (
     <ListGroup.Item className="mt-1 recipe-list-item d-flex align-items-center  ">
@@ -63,21 +59,7 @@ export function RecipeListItem({
         </Col>
       </Col>
       <Col xs="auto" className="d-flex mb-0 pb-0">
-        <RecipeOptionsDropdown recipe={recipe}>
-          <RecipeOptionsDropdown.EditRecipeButton />
-          <RecipeOptionsDropdown.RemixButton />
-          <RecipeOptionsDropdown.AddToMealPlannerButton />
-          {collectionId ? (
-            <RecipeOptionsDropdown.RemoveFromCollectionButton />
-          ) : (
-            <RecipeOptionsDropdown.AddRecipeToCollectionModal />
-          )}
-          <RecipeOptionsDropdown.DeleteRecipeButton
-            onSuccess={() => {
-              refetch();
-            }}
-          />
-        </RecipeOptionsDropdown>
+        <RecipeOptionsDropdown recipe={recipe} refetch={refetch} />
       </Col>
     </ListGroup.Item>
   );

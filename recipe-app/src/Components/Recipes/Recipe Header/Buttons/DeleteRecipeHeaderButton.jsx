@@ -3,17 +3,17 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { toast } from "react-toastify";
-import { deleteRecipe } from "../../../../db/queries";
-import { useRecipeContext } from "../RecipeContextProvider";
+import { deleteRecipe } from "../../../../../db/queries";
+import { useRecipeHeaderButtonsContext } from "./RecipeHeaderButtonsContext";
 
-export function DeleteRecipeButton({
+export function DeleteRecipeHeaderButton({
   onSettled = () => {
     return;
   },
   onSuccess = () => {},
   ...props
 }) {
-  const { recipe } = useRecipeContext();
+  const { recipe } = useRecipeHeaderButtonsContext();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);

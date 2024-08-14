@@ -8,8 +8,11 @@ import {
   getCollectionNames,
 } from "../../../../db/queries";
 import Loading from "../../Loading";
+import { useRecipeHeaderButtonsContext } from "../Recipe Header/Buttons/RecipeHeaderButtonsContext";
 
-export function AddRecipeToCollectionModal({ recipe: { recipeId } }) {
+export function AddRecipeToCollectionModal() {
+  const { recipe } = useRecipeHeaderButtonsContext();
+  const { recipeId } = recipe;
   const collections = useQuery({
     queryKey: ["CollectionNames"],
     queryFn: () => getCollectionNames(),

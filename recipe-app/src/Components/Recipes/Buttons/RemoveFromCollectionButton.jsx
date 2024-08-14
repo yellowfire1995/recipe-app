@@ -4,8 +4,10 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { deleteCollectionRecipe } from "../../../../db/queries";
 import { queryClient } from "../../../main";
+import { useRecipeHeaderButtonsContext } from "../Recipe Header/Buttons/RecipeHeaderButtonsContext";
 
-export function RemoveFromCollectionButton({ recipe }) {
+export function RemoveFromCollectionButton() {
+  const { recipe } = useRecipeHeaderButtonsContext();
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page");
   const search = searchParams.get("search");

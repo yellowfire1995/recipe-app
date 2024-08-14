@@ -1,9 +1,9 @@
 import express from "express";
-const router = express.Router();
-import db from "../../database/db.js";
-import { tryCatch } from "../../tools/error/tryCatch.js";
 import format from "pg-format";
+import db from "../../database/db.js";
 import { authenticate } from "../../index.js";
+import { tryCatch } from "../../tools/error/tryCatch.js";
+const router = express.Router();
 
 router.get(
   "/",
@@ -11,6 +11,9 @@ router.get(
     req.headers.authorization ? authenticate(req, res, next) : next();
   }),
   tryCatch(async (req, res) => {
+    const isLoggedIn = !!req.auth.payload;
+    const isCollectionView = req.query.collectionId != "undefined";
+
     const sqlSearch =
       req.query.search == "null" || req.query.search == "undefined"
         ? "%"
@@ -20,11 +23,26 @@ router.get(
 
     let sort = "ORDER BY recipes.create_date DESC";
     let userRating;
+    let filter;
+    let collectionJoin;
+    let collectionWhere;
+    let collectionSelect;
 
-    if (req.auth?.payload.sub) {
+    if (isLoggedIn) {
       userRating = `(select rating
 from ratings r
 where r.recipe_id = recipes.recipe_id and r.author = '${req.auth.payload.sub}') as "userRating",`;
+      filter = `or recipes.author = '${req.auth.payload.sub}'`;
+
+      if (isCollectionView) {
+        collectionJoin =
+          "right join recipe_collections rc on rc.recipe_id = recipes.recipe_id";
+        collectionWhere = format(
+          `and rc.collection_id = %s`,
+          req.query.collectionId
+        );
+        collectionSelect = `rc.id as "collectionRecipeId", rc.collection_id as "collectionId",`;
+      }
     }
 
     if (req.query.sort === "oldest") {
@@ -38,7 +56,7 @@ where r.recipe_id = recipes.recipe_id and r.author = '${req.auth.payload.sub}') 
     const query = {
       text: format(
         `
-      SELECT recipe_id as "recipeId", name, thumbnail, servings, url, author, nickname, create_date,
+      SELECT recipes.recipe_id as "recipeId", name, thumbnail, servings, url, author, nickname, create_date, %s
       (select AVG(rating) 
 from ratings r
 where r.recipe_id = recipes.recipe_id  ) as rating,
@@ -53,14 +71,18 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
           JOIN cuisines ON cuisines.id = recipe_cuisines.cuisine_id
   WHERE recipes.recipe_id = recipe_cuisines.recipe_id
         ) as cuisine
-                  FROM recipes
-                  WHERE lower(recipes.name) LIKE $2 and (recipes.public)
-              GROUP BY recipes.recipe_id
+                       FROM recipes
+              %s
+              WHERE lower(recipes.name) LIKE $2 and (recipes.public %s) %s
               %s
               LIMIT $3
               Offset $1
               ;`,
+        collectionSelect,
         userRating,
+        collectionJoin,
+        filter,
+        collectionWhere,
         sort
       ),
       values: [
@@ -90,7 +112,7 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
 
     const cardData = await Promise.all(getThumbnailUrls);
 
-    res.json({ data: cardData, lastPage: lastPage });
+    res.json({ recipes: cardData, lastPage: lastPage });
   })
 );
 

@@ -1,9 +1,11 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import Button from "react-bootstrap/esm/Button";
 import { useNavigate } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 import { roles } from "../../../../env/env";
+import { useRecipeHeaderButtonsContext } from "../Recipe Header/Buttons/RecipeHeaderButtonsContext";
 
-export function EditRecipeButton({ recipe }) {
+export function EditRecipeButton() {
+  const { recipe } = useRecipeHeaderButtonsContext();
   const { user } = useAuth0();
   const navigate = useNavigate();
 

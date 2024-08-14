@@ -1,9 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
-import Button from "react-bootstrap/esm/Button";
-import { Link } from "react-router-dom";
-import { deleteFromMealPlan } from "../../../db/queries";
-import { queryClient } from "../../main";
-import ChangeMealDay from "./ChangePlannerDateButton";
+import { ListGroup } from "react-bootstrap";
+import { RecipeListItem } from "../Recipes/MultiRecipeViewer/ListView/RecipeListItem";
 
 export default function PlannerDayList(props) {
   const options = {
@@ -29,36 +25,31 @@ export default function PlannerDayList(props) {
       return day !== undefined;
     });
 
-  const deleter = useMutation({
-    mutationFn: (planId) => {
-      return deleteFromMealPlan(planId);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["MealPlan"],
-        refetchType: "all",
-      });
-    },
-  });
   if (dailyMeals.length > 0) {
     return (
       <>
         <h3 key={date}>{date}</h3>
-        {dailyMeals[0].recipes.map((recipe) => {
-          return (
-            <div key={recipe.planId}>
-              <Link to={`/recipes/${recipe.recipeId}`}>{recipe.name}</Link>
-              <Button size="sm" onClick={() => deleter.mutate(recipe.planId)}>
-                Delete
-              </Button>
-              <ChangeMealDay
-                planId={recipe.planId}
-                date={date}
-                dateObject={props.date}
+        <ListGroup>
+          {dailyMeals[0].recipes.map((recipe) => {
+            return (
+              // <div key={recipe.planId}>
+              //   <Link to={`/recipes/${recipe.recipeId}`}>{recipe.name}</Link>
+              //   <Button size="sm" onClick={() => deleter.mutate(recipe.planId)}>
+              //     Delete
+              //   </Button>
+              //   <ChangeMealDay
+              //     planId={recipe.planId}
+              //     date={date}
+              //     dateObject={props.date}
+              //   />
+              // </div
+              <RecipeListItem
+                key={recipe.planId}
+                recipe={{ ...recipe, planDate: props.date }}
               />
-            </div>
-          );
-        })}
+            );
+          })}
+        </ListGroup>
       </>
     );
   } else {

@@ -26,9 +26,10 @@ import { EditableIngredientItem } from "./Multipurpose/Ingredient List/Editable/
 import { IngredientList } from "./Multipurpose/Ingredient List/IngredientList";
 import { IngredientListHeader } from "./Multipurpose/Ingredient List/View Only/IngredientListHeader";
 import { IngredientListItem } from "./Multipurpose/Ingredient List/View Only/IngredientListItem";
+import { DeleteRecipeHeaderButton } from "./Recipe Header/Buttons/DeleteRecipeHeaderButton";
+import { RecipeOptionsDropdown } from "./Recipe Header/Buttons/RecipeHeaderButtons";
 import { RecipeCredit } from "./Recipe Header/RecipeCredit";
 import { RecipeHeader } from "./Recipe Header/RecipeHeader";
-import { RecipeOptionsDropdown } from "./Recipe Header/RecipeHeaderButtons";
 import { RecipeHeaderImage } from "./Recipe Header/RecipeHeaderImage";
 import { RecipeContext } from "./RecipeContextProvider";
 import { CategoryBadge } from "./View Recipe/CategoryBadge";
@@ -65,6 +66,7 @@ RecipeForm.RecipeHeaderButtons = RecipeOptionsDropdown;
 RecipeForm.RemixButton = RemixButton;
 RecipeForm.AddToMealPlannerButton = AddToMealPlannerButton;
 RecipeForm.EditRecipeButton = EditRecipeButton;
+RecipeForm.DeleteRecipeHeaderButton = DeleteRecipeHeaderButton;
 RecipeForm.DeleteRecipeButton = DeleteRecipeButton;
 
 //Editable recipe options

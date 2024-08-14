@@ -4,69 +4,15 @@ import { tryCatch } from "../../../tools/error/tryCatch.js";
 const router = express.Router();
 
 router.get(
-  "/recipes",
-  tryCatch(async (req, res) => {
-    const query = {
-      text: `select
-    array_agg(json_build_object('recipeId',
-    r.recipe_id,
-    'key',
-    rc.id,
-    'name',
-    r."name",
-    'thumbnail',
-     thumbnail,
-    'servings',
-    servings,
-    'url',
-    url,
-    'author',
-    author,
-    'nickname',
-    nickname,
-    'createDate',
-    r.create_date)) as recipes,
-    c."name",
-    c.id
-from
-    recipe_collections rc
-join collections c on
-    collection_id = c.id
-join recipes r on
-    r.recipe_id = rc.recipe_id
-where rc.user = $1
-group by
-    c."name",
-    c.id
-
-`,
-      values: [req.auth.payload.sub],
-    };
-    const data = await db.query(query);
-    const cardData = data.rows.map((collection) => {
-      return {
-        ...collection,
-        recipes: collection.recipes.map((recipe) => {
-          return {
-            ...recipe,
-            thumbnail: recipe.thumbnail
-              ? "https://d30b48eq3arkah.cloudfront.net/" + recipe.thumbnail
-              : null,
-          };
-        }),
-      };
-    });
-
-    res.send(cardData);
-  })
-);
-
-router.get(
   "/names",
   tryCatch(async (req, res) => {
     const query = {
-      text: `select * from collections c 
-      where c.user = $1`,
+      text: `select c.id, name, count(rc.id), c.user  from collections c 
+join recipe_collections rc on rc.collection_id = c.id
+where c.user = $1
+group by c.id, name
+
+`,
       values: [req.auth.payload.sub],
     };
     const data = await db.query(query);

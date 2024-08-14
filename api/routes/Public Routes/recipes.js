@@ -1,13 +1,12 @@
+import { S3Client } from "@aws-sdk/client-s3";
 import express from "express";
-const router = express.Router();
-import db from "../../database/db.js";
-import axios from "axios";
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
-import { deleteFromS3 } from "../../tools/aws/aws.js";
-import { tryCatch } from "../../tools/error/tryCatch.js";
-import { AppError } from "../../tools/error/AppError.js";
 import format from "pg-format";
+import db from "../../database/db.js";
 import { authenticate } from "../../index.js";
+import { deleteFromS3 } from "../../tools/aws/aws.js";
+import { AppError } from "../../tools/error/AppError.js";
+import { tryCatch } from "../../tools/error/tryCatch.js";
+const router = express.Router();
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -74,6 +73,9 @@ router.get(
 	  yield_description as "yieldDescription",
 	  public,
 	        (select COUNT(rating) 
+from ratings r
+where r.recipe_id = recipes.recipe_id  ) as "ratingCount",
+ (select avg(rating) 
 from ratings r
 where r.recipe_id = recipes.recipe_id  ) as rating,
 %s

@@ -2,27 +2,40 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { changeMealDay } from "../../../db/queries";
+import DatePicker from "react-datepicker";
+import { toast } from "react-toastify";
+import { addToMeallPlan } from "../../../db/queries";
+import { useRecipeHeaderButtonsContext } from "../Recipes/Recipe Header/Buttons/RecipeHeaderButtonsContext";
 
-export function AddToMealPlannerButton({ recipe: { recipeId } }) {
+export function AddToMealPlannerButton() {
+  const { recipe } = useRecipeHeaderButtonsContext();
+  const { recipeId, name } = recipe;
   const [show, setShow] = useState(false);
-  const addToPlanner = useMutation({
-    mutationFn: () =>
-      changeMealDay(recipeId, document.getElementById("date").value),
-    onSuccess: () => setTimeout(handleClose, 1000),
+  const [date, setDate] = useState(new Date());
+  const { mutate, reset, isError, isPending } = useMutation({
+    mutationFn: () => addToMeallPlan(recipeId, date.toLocaleDateString()),
+    onSuccess: () => {
+      toast.success(
+        `${name} added to planner on ${date.toLocaleDateString()}!`
+      );
+      handleClose();
+    },
   });
 
   const handleClose = () => {
+    setDate(new Date());
     setShow(false);
-    addToPlanner.reset();
+    reset();
   };
   const handleShow = () => setShow(true);
 
   function handleSave() {
-    if (document.getElementById("date").value) {
-      addToPlanner.mutate(recipeId, document.getElementById("date").value);
+    if (date) {
+      console.log("saving...");
+      mutate();
     } else {
-      alert("Please choose a date.");
+      console.log("save rejected");
+      return;
     }
   }
 
@@ -35,11 +48,20 @@ export function AddToMealPlannerButton({ recipe: { recipeId } }) {
             Add recipe to meal plan
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <input id="date" type="date" />
+        <Modal.Body className="d-flex align-items-center">
+          <DatePicker selected={date} onChange={(date) => setDate(date)} />{" "}
+          {isError ? (
+            <div className="text-danger">
+              Error saving to planner, please try again later.
+            </div>
+          ) : (
+            ""
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={handleSave}>Add</Button>
+          <Button onClick={handleSave}>
+            {isPending ? "Saving..." : "Save"}
+          </Button>
           <Button onClick={handleClose}>Cancel</Button>{" "}
         </Modal.Footer>
       </Modal>

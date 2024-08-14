@@ -1,21 +1,22 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Stack from "react-bootstrap/Stack";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
 import { Helmet } from "react-helmet-async";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getRecipeById } from "../../db/queries";
+import AppErrorPage from "../Components/Errors/AppErrorPage.jsx";
 import Loading from "../Components/Loading";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
 import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
-import { useAuth0 } from "@auth0/auth0-react";
-import AppErrorPage from "../Components/Errors/AppErrorPage.jsx";
 
 export default function Recipe() {
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState();
   const { isAuthenticated } = useAuth0();
+  const navigate = useNavigate();
   console.log(recipe);
 
   const {
@@ -66,12 +67,8 @@ export default function Recipe() {
                 <RecipeForm.RecipeHeaderButtons
                   recipe={recipe}
                   text={recipe.name}
-                >
-                  <RecipeForm.EditRecipeButton />
-                  <RecipeForm.RemixButton />
-                  <RecipeForm.AddRecipeToCollectionModal />
-                  <RecipeForm.AddToMealPlannerButton />
-                </RecipeForm.RecipeHeaderButtons>
+                  onDeleteSuccess={() => navigate("/recipes")}
+                />
               }
               credit={<RecipeForm.RecipeCredit />}
             />
