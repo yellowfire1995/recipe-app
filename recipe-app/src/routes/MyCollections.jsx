@@ -7,7 +7,6 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { getCollectionNames } from "../../db/queries";
 import DeleteCollectionModal from "../Components/Collections/DeleteCollectionModal";
-import EditCollectionRecipes from "../Components/Collections/EditCollectionRecipes";
 import Loading from "../Components/Loading";
 
 export default function MyCollections() {
@@ -52,7 +51,6 @@ export default function MyCollections() {
                           </Col>
                           <Col className="d-flex text-nowrap" xs="auto">
                             <DeleteCollectionModal collection={collection} />
-                            <EditCollectionRecipes collection={collection} />
                           </Col>
                         </ListGroupItem>
                       </ListGroup>

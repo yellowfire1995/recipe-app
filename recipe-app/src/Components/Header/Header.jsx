@@ -1,17 +1,17 @@
 import Container from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import Nav from "react-bootstrap/Nav";
-import Offcanvas from "react-bootstrap/Offcanvas";
 import Form from "react-bootstrap/Form";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import Offcanvas from "react-bootstrap/Offcanvas";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
 import Col from "react-bootstrap/esm/Col";
 
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Row from "react-bootstrap/esm/Row";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
 import useLocalStorage from "use-local-storage";
 import { HeaderLinklist } from "./HeaderLinkList";
 import { PopoutMenuLogout } from "./PopoutMenuLogout";
@@ -39,7 +39,7 @@ function Header() {
   const navigate = useNavigate();
 
   return (
-    <Navbar expand="xl" sticky="top" className="shadow bg-nav p-0 w-100">
+    <Navbar expand="xl" sticky="top" className="bg-nav p-0 w-100">
       <Container fluid className="px-0 justify-content-center">
         <Navbar.Offcanvas id="header" placement="start" className="d-xl-none">
           <Offcanvas.Header closeButton>

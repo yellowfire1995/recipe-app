@@ -1,3 +1,4 @@
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import { Card, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { RecipeRating } from "../../Rating/RecipeRating";
@@ -12,44 +13,58 @@ export function RecipeCardItem({
   collectionId = "",
   ...props
 }) {
+  const { recipeId, thumbnailLink, thumbnail, name, ratingCount, rating } =
+    recipe;
+
   return (
     <>
       <Container
         id={id + "" + collectionId}
-        className="mb-3  scrollable d-flex text-center recipe-card align-self-stretch  justify-content-center flex-wrap align-content-start"
-        key={recipe.recipeId}
+        className="d-flex recipe-card rounded align-self-stretch text-center justify-content-center flex-wrap align-content-start m-2 p-0"
+        key={recipeId}
         {...props}
       >
         <Container className="card-dropdown">
-          <RecipeOptionsDropdown recipe={recipe} refetch={() => refetch()} />
+          <RecipeOptionsDropdown
+            recipe={recipe}
+            refetch={() => refetch()}
+            text={
+              <AddCircleOutlinedIcon
+                className="recipe-card-dropdown-button"
+                fontSize="large"
+              />
+            }
+          />
         </Container>
-        <Container className="rating-background">
-          <RecipeRating recipe={recipe} refetch={refetch} />
-        </Container>
+
         <Link
-          to={`/recipes/${recipe.recipeId}`}
-          className="d-flex p-2 text-decoration-none rounded flex-wrap text-body"
+          to={`/recipes/${recipeId}`}
+          className={`d-flex  text-decoration-none rounded-top flex-wrap text-body w-100 recipe-card-image-link`}
         >
           <Card
-            className="d-flex border-0 shadow recipe-card-background"
+            className={`d-flex rounded-top rounded-bottom-0 recipe-card-background`}
             style={{
-              backgroundImage: `url(${recipe.thumbnailLink})`,
+              backgroundImage: `url(${thumbnailLink})`,
             }}
           >
             <Container className="justify-content-center text-center filler-text my-auto">
-              {recipe.thumbnail ? "" : recipe.name}
+              {thumbnail ? "" : name}
             </Container>
           </Card>
         </Link>
 
-        <p
-          className="d-flex align-self-start pt-1 text-secondary-subtle text-break recipe-card-title"
-          style={{
-            maxWidth: "15rem",
-          }}
-        >
-          {recipe.name}
-        </p>
+        <div className="fs-5 fw-semibold text-capitalize">{name}</div>
+        <Container className="rating-background m-0 p-0 d-flex justify-content-center align-items-center">
+          {ratingCount > 0 && (
+            <RecipeRating
+              recipe={recipe}
+              refetch={refetch}
+              size="small"
+              value={rating}
+              showCount={true}
+            />
+          )}
+        </Container>
       </Container>
     </>
   );

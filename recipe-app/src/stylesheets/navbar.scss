@@ -4,6 +4,10 @@
     --bs-heading-color: #fff4ee;
   }
 
+  nav a.nav-link, a.nav-link:active{
+    color:$primary-accent
+  }
+
   [data-bs-theme=light] .nav-text a.nav-drop{
     color: black;
     --bs-navbar-active-color: black;
@@ -13,6 +17,10 @@
     -color: #1b1b1b !important;
   
   }
+
+  [data-bs-theme=light] .nav-drop.dropdown-item:hover{
+    background-color: $primary-accent;
+  }
     
   .nav-text a{
     color: #fff4ee;
@@ -21,7 +29,7 @@
     
   .nav-text 
   a:hover{
-    color: #d8cfcb;
+    color: #EBAA98;
   }
 
   [data-bs-theme=dark] .bg-nav {
@@ -30,4 +38,28 @@
 
   nav {
     height: 5rem;
+  }
+
+  [data-bs-theme=light] input.mainSearchBox{
+    background-color: $light-background;
+  }
+
+  [data-bs-theme=dark] input.mainSearchBox{
+    background-color: $dark-background;
+  }
+
+  [data-bs-theme=light] nav .dropdown-menu{
+    background-color: $light-background;
+  }
+  
+  [data-bs-theme=dark] nav .dropdown-menu{
+    background-color: $dark-background;
+  }
+
+  [data-bs-theme=light] .offcanvas-body, .offcanvas-header{
+    background-color: $light-background;
+  }
+
+  [data-bs-theme=dark] .offcanvas-body, .offcanvas-header{
+    background-color: $dark-background;
   }

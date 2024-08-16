@@ -32,7 +32,6 @@ async function checkAuth(req, res, next) {
 
   if (
     data.rows[0].author == req.auth?.payload.sub ||
-    data.rows[0].public ||
     req.auth.payload[roles].includes("Admin")
   ) {
     next();
@@ -46,7 +45,6 @@ router.get(
   tryCatch((req, res, next) => {
     req.headers.authorization ? authenticate(req, res, next) : next();
   }),
-  tryCatch(checkAuth),
   tryCatch(async (req, res) => {
     let userRating;
     if (req.auth?.payload.sub) {
@@ -268,8 +266,14 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
 
     let data = await db.query(query);
 
-    if (data.rows.length < 1) {
-      throw new Error("Recipe not found or is private");
+    if (
+      data.rows[0].author == req.auth?.payload.sub ||
+      data.rows[0].public ||
+      req.auth?.payload[roles].includes("Admin") ||
+      data.rows.length < 1
+    ) {
+    } else {
+      throw new AppError(404, "Recipe not found or is private", 404);
     }
 
     if (

@@ -11,7 +11,7 @@ router.get(
     req.headers.authorization ? authenticate(req, res, next) : next();
   }),
   tryCatch(async (req, res) => {
-    const isLoggedIn = !!req.auth.payload;
+    const isLoggedIn = !!req.auth?.payload;
     const isCollectionView = req.query.collectionId != "undefined";
 
     const sqlSearch =
@@ -60,6 +60,9 @@ where r.recipe_id = recipes.recipe_id and r.author = '${req.auth.payload.sub}') 
       (select AVG(rating) 
 from ratings r
 where r.recipe_id = recipes.recipe_id  ) as rating,
+(select COUNT(rating) 
+from ratings r
+where r.recipe_id = recipes.recipe_id  ) as "ratingCount",
 %s
   (
          Select COALESCE(JSON_AGG(json_build_object(

@@ -1,31 +1,26 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { FloatingLabel } from "react-bootstrap";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { getCategories as getCats } from "../../../../db/queries";
+import { useRecipeContext } from "../RecipeContextProvider";
 
-export default function CategorySelector(props) {
-  const [categories, setCategories] = useState([]);
-  const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
+export default function CategorySelector() {
+  const { recipe, setRecipe } = useRecipeContext();
 
-  useEffect(() => {
-    async function startFetching() {
-      const result = await getCats();
-      setCategories(result);
-    }
-
-    startFetching();
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ["CategoryList"],
+    queryFn: () => getCats(),
+  });
 
   return (
     <FloatingLabel id="categoriesLabel" label="Categories (optional)">
       <Typeahead
+        isLoading={isLoading}
         id="categoriesSelector"
         multiple
-        options={categories}
+        options={isLoading ? [] : data}
         labelKey="category"
-        onChange={(selected) =>
-          setUpdatedRecipe({ ...updatedRecipe, category: selected })
-        }
+        onChange={(selected) => setRecipe({ ...recipe, category: selected })}
       />
     </FloatingLabel>
   );

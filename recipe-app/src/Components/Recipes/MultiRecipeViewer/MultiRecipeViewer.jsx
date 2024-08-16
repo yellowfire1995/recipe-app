@@ -71,7 +71,7 @@ export function MultiRecipeViewer({
           isError,
         }}
       >
-        <Container fluid="lg" className="recipe-list" {...props}>
+        <Container fluid="xxl" className="recipe-list" {...props}>
           <RecipeSearchOptionsBar
             isListView={isListView}
             setIsListView={setIsListView}

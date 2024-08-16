@@ -51,10 +51,16 @@ export function AddRecipeToCollectionModal() {
             Add recipe to collection
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body
+          onKeyDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+          onFocus={(e) => e.stopPropagation()}
+          onMouseOver={(e) => e.stopPropagation()}
+        >
           <Typeahead
             id="collections"
             allowNew={true}
+            newSelectionPrefix="Add:"
             options={collections.isLoading ? <Loading /> : collections.data}
             labelKey="name"
             placeholder="Type a collection name..."

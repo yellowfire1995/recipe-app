@@ -10,13 +10,15 @@ export function EditableHeaderItem({
   handleDragStop,
   handleDragEnd,
   initialDragIndex,
-  setInitialDragIndex,
   deleteIngredient,
   recipe,
   setRecipe,
 }) {
   const ingredientDescription =
-    ingredient.userIngredientName || ingredient.description;
+    ingredient.userIngredientName ||
+    ingredient.description ||
+    ingredient.userLabel ||
+    "";
   return (
     <div
       key={ingredient.id}

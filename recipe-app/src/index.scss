@@ -25,43 +25,40 @@
 }
 
 .footer{
-  background-color: rgb(0,0,0, .1); /* Light red background color */
-
+  background-color: rgb(0,0,0, .1); 
   border-color: rgb(0,0,0, .2);
-  box-shadow: 0 -1px 16px rgba(0, 0, 0, 0.1); /* Drop shadow effect */
-  padding: 1em; /* Add some padding for content */
-  text-align: center; /* Center align the text */
-  color: #333; /* Dark gray text color */
+  padding: 1em; 
+  text-align: center; 
+  color: #333; 
   font-size: 12px;
 }
 
 body {
-  // $font-family-sans-serif:
-  // // Cross-platform generic font family (default user interface font)
-  // system-ui,
-  // // Safari for macOS and iOS (San Francisco)
-  // -apple-system,
-  // // Windows
-  // "Segoe UI",
-  // // Android
-  // Roboto,
-  // // older macOS and iOS
-  // "Helvetica Neue"
-  // // Linux
-  // "Noto Sans",
-  // "Liberation Sans",
-  // // Basic web fallback
-  // Arial,
-  // // Sans serif fallback
-  // sans-serif,
-  // // Emoji fonts
-  // "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
-
-  font-family: "Courier New", "monospace";
-  letter-spacing: -.6px;
-
+  $font-family-sans-serif:
+  // Cross-platform generic font family (default user interface font)
+  system-ui,
+  // Safari for macOS and iOS (San Francisco)
+  -apple-system,
+  // Windows
+  "Segoe UI",
+  // Android
+  Roboto,
+  // older macOS and iOS
+  "Helvetica Neue"
+  // Linux
+  "Noto Sans",
+  "Liberation Sans",
+  // Basic web fallback
+  Arial,
+  // Sans serif fallback
+  sans-serif,
+  // Emoji fonts
+  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
 
 }
+
+
+
 
 .break {
   flex-basis: 100%;
@@ -76,16 +73,28 @@ body {
 }
 
 .rbt-input-multi.focus {
-  border-color:$secondary;
-  box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
-  border-color:rgba($primary, .5)
+  box-shadow:  0 0 0 0.2rem rgba($primary, 0.25) !important;
+  -webkit-box-shadow: 0 0 0 0.2rem rgba($primary, 0.25) !important; 
+  -moz-box-shadow: 0 0 0 0.2rem rgba($primary, 0.25) !important;
+  border-color:rgba($primary, .5) !important; 
+
 }
 
-.rbt-token{
+.rbt-token-label{
   background-color: $primary ;
   color:white;
-
 }
+
+.rbt-token-remove-button{
+  background-color:$primary;
+  filter:grayscale(20%);
+}
+
+.rbt-close-content{
+  color:white;
+}
+
+
 
 .form-floating > .rbt .form-control {
   height: calc(3.5rem + calc(var(--bs-border-width) * 2));
@@ -212,6 +221,7 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 
@@ -236,21 +246,29 @@ input[type=number] {
 
 
 
-[data-bs-theme=light] .rating-background{
-  position:absolute;
-  z-index:2;
-  top:.5rem;
-  background-color: rgba(219, 219, 219, 0.849);
-  border-radius: 5px;
-}
+// [data-bs-theme=light] .rating-background{
+//   // position:absolute;
+//   // z-index:2;
+//   // top:.5rem;
+//   // background-color: rgba( #ffffff ,.1);
+//   // border-radius: 5px 5px 0px 0px;
+// }
 
-[data-bs-theme=dark] .rating-background{
-  position:absolute;
-  z-index:2;
-  top:.5rem;
-  background-color: rgba(100, 100, 100, 0.849);
-  border-radius: 5px;
-}
+
+
+
+// [data-bs-theme=light] .recipe-card:hover .rating-background{
+//   opacity:100;
+//   transition: opacity .3s ease-in-out;
+// }
+
+// [data-bs-theme=dark] .rating-background{
+//   position:absolute;
+//   z-index:2;
+//   top:.5rem;
+//   background-color: rgba(100, 100, 100, 0.849);
+//   border-radius: 5px;
+// }
 
 [data-bs-theme=light] .recipe-list-item{
   background-color: rgba(247, 247, 247, 0.644);
@@ -293,7 +311,7 @@ img.recipe-list-thumbnail{
   font-size: 1.3rem;
   font-weight:bold;
  line-height: 1.5;
- color: $primary-light;
+ color: $primary-accent;
  text-shadow:
    0 0 10px rgba(0, 0, 0, 0.9), /* Inner glow */
    0 0 20px rgba(0, 0, 0, 0.9), /* Outer glow */
@@ -301,9 +319,10 @@ img.recipe-list-thumbnail{
 }
 
 .front-page-hero a:hover {
+  filter:contrast(200%);
   font-size: 1.3rem;
  line-height: 1.5;
- color: $primary;
+
  text-shadow:
    0 0 10px rgba(0, 0, 0, 0.5), /* Inner glow */
    0 0 20px rgba(0, 0, 0, 0.7), /* Outer glow */
@@ -357,8 +376,8 @@ img.recipe-list-thumbnail{
 .card-dropdown{
   position:absolute;
   z-index:3;
-  top:11rem;
-  left:11.75rem;
+  top:.5rem;
+  left:12.75rem;
   border-radius: 5px;
 }
 
@@ -384,41 +403,92 @@ img.recipe-list-thumbnail{
 
 //For recipe cards with no image
 
-.recipe-card:hover .recipe-card-background{
 
-}
 
 .recipe-card-background{
-transition: transform .5s;
-  background-color: rgb(0,0,0, .2);
+  border:0px;
+  background-color: rgba(#fff7d6, 0);
   background-position: 50% 50%;
-  width:15rem;
+  width:16rem;
   height:13rem;
   background-size: cover;
-
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
+
+.recipe-card:hover .recipe-card-background{
+  transform: scale(1.1);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+
 
 
 .recipe-card {
-  transition: transform .5s;
-  height:17rem;
-  width:15rem;
+   height:19rem;
+  width:16rem;
   position:relative;
   }
 
+[data-bs-theme=light] .recipe-card{
+  border: 1px solid lightgray;
+}
+
+[data-bs-theme=dark] .recipe-card{
+  border: 1px solid gray;
+}
+
+
  .recipe-card .dropdown-toggle::after {
-    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='MuiSvgIcon-root MuiSvgIcon-fontSizeLarge css-c1sh5i' focusable='false' aria-hidden='true' viewBox='0 0 24 24' data-testid='AddCircleIcon' aria-label='fontSize large' fill='%23c4361e'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z' fill='%23c4361e'%3E%3C/path%3E%3C/svg%3E");
-    fill:$primary;
-    border:0px;
-    height:2rem;
-    width:2rem;
-    
-  }
- .recipe-card .dropdown-toggle:hover:after{
-    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='MuiSvgIcon-root MuiSvgIcon-fontSizeLarge css-c1sh5i' focusable='false' aria-hidden='true' viewBox='0 0 24 24' data-testid='AddCircleIcon' aria-label='fontSize large' fill='%23812514'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z' fill='%23812514'%3E%3C/path%3E%3C/svg%3E");
-    fill:$primary;
+    display: none;
     border:0px;
     height:2rem;
     width:2rem;
    
+  }
+//  .recipe-card .dropdown-toggle:hover:after{
+//     content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='MuiSvgIcon-root MuiSvgIcon-fontSizeLarge css-c1sh5i' focusable='false' aria-hidden='true' viewBox='0 0 24 24' data-testid='AddCircleIcon' aria-label='fontSize large' %3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z'  %3E%3C/path%3E%3C/svg%3E");
+//     border:0px;
+//     height:2rem;
+//     width:2rem;
+//     fill:red;
+//      }
+
+.recipe-card .dropdown-toggle, div.card-dropdown.container, div.dropdown
+{
+  max-width: fit-content;
+}
+
+ 
+.recipe-list{
+  max-width: 95rem;
+}
+
+.recipe-card-image-link{
+  width:16rem;
+  height:13rem;
+ overflow:hidden; 
+}
+
+[data-bs-theme=light] .recipe-card-image-link{
+  border-bottom:1px dashed lightgray;
+}
+
+[data-bs-theme=dark] .recipe-card-image-link {
+  border-bottom:1px dashed rgb(100, 100, 100);
+}
+
+.recipe-card-dropdown-button path{
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+fill:$primary;
+opacity: 0%;
+}
+
+.recipe-card:hover path{
+opacity: 100%;
+box-shadow: 20px 20px black;
+-webkit-transition: all 0.3s ease-in-out;
+transition: all 0.3s ease-in-out;
   }
