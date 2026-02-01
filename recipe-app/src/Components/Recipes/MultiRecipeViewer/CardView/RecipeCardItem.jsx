@@ -1,4 +1,5 @@
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Card, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { RecipeRating } from "../../Rating/RecipeRating";
@@ -24,7 +25,14 @@ export function RecipeCardItem({
         key={recipeId}
         {...props}
       >
-        <Container className="card-dropdown">
+        <Container
+          className={`card-private-icon m-0 d-flex align-items-center justify-content-center ${
+            recipe.public && "d-none"
+          }`}
+        >
+          <VisibilityOffIcon />
+        </Container>
+        <Container className="card-dropdown p-0">
           <RecipeOptionsDropdown
             recipe={recipe}
             refetch={() => refetch()}

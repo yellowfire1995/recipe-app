@@ -31,10 +31,8 @@ export function AddToMealPlannerButton() {
 
   function handleSave() {
     if (date) {
-      console.log("saving...");
       mutate();
     } else {
-      console.log("save rejected");
       return;
     }
   }

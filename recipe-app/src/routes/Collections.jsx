@@ -9,6 +9,8 @@ import { MultiRecipeViewer } from "../Components/Recipes/MultiRecipeViewer/Multi
 export default function CollectionRecipesPage() {
   const { collectionId } = useParams();
 
+  
+
   return (
     <>
       <Helmet>

@@ -480,15 +480,56 @@ img.recipe-list-thumbnail{
 }
 
 .recipe-card-dropdown-button path{
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
+  // -webkit-transition: all 0.3s ease-in-out;
+  // transition: all 0.3s ease-in-out;
 fill:$primary;
-opacity: 0%;
 }
 
-.recipe-card:hover path{
-opacity: 100%;
-box-shadow: 20px 20px black;
--webkit-transition: all 0.3s ease-in-out;
-transition: all 0.3s ease-in-out;
-  }
+[data-bs-theme=light] .recipe-card-dropdown-button {
+  background-color: $light-background;
+  border-radius: 10px;
+display: flex;
+justify-content: center;
+margin: 0px;
+padding: 1px;
+height:2.2rem;
+width:2.2rem;
+}
+
+[data-bs-theme=dark] .recipe-card-dropdown-button {
+  background-color: $dark-background;
+  border-radius: 10px;
+display: flex;
+justify-content: center;
+margin: 0px;
+padding: 1px;
+}
+// .recipe-card:hover path{
+// opacity: 100%;
+// box-shadow: 20px 20px black;
+// -webkit-transition: all 0.3s ease-in-out;
+// transition: all 0.3s ease-in-out;
+//   }
+
+
+.card-private-icon {
+  position:absolute;
+  z-index:3;
+  top:.5rem;
+  left:1.05rem;
+  border-radius: 10px;
+    background-color: rgba($light-background, 1);
+    padding: 1px;
+    height:2.2rem;
+    width:2.2rem;
+
+}
+
+.card-private-icon path{
+fill:$primary;
+}
+
+.recipe-list-name path{
+  fill:$primary;
+}
+

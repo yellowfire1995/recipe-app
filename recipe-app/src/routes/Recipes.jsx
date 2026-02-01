@@ -17,7 +17,6 @@ export default function Recipe() {
   const [recipe, setRecipe] = useState();
   const { isAuthenticated } = useAuth0();
   const navigate = useNavigate();
-  console.log(recipe);
 
   const {
     data: loadedRecipe,
@@ -85,6 +84,7 @@ export default function Recipe() {
                 header={<RecipeForm.IngredientListHeader />}
                 item={<RecipeForm.IngredientListItem />}
                 price={<RecipeForm.RecipePrice />}
+                showScale
               />
               <RecipeForm.DirectionList />
             </Col>

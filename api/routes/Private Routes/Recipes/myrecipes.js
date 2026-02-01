@@ -1,8 +1,8 @@
 import express from "express";
-const router = express.Router();
+import format from "pg-format";
 import db from "../../../database/db.js";
 import { tryCatch } from "../../../tools/error/tryCatch.js";
-import format from "pg-format";
+const router = express.Router();
 
 router.get(
   "/",
@@ -32,7 +32,7 @@ router.get(
     const query = {
       text: format(
         `
-      SELECT recipe_id as "recipeId", name, thumbnail, servings, url, author, nickname, create_date,
+      SELECT recipe_id as "recipeId", name, thumbnail, servings, url, author, nickname, create_date, public,
       (select AVG(rating) 
 from ratings r
 where r.recipe_id = recipes.recipe_id  ) as rating,

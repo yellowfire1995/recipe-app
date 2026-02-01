@@ -1,3 +1,4 @@
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Col, ListGroup, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { RecipeRating } from "../../Rating/RecipeRating";
@@ -29,7 +30,9 @@ export function RecipeListItem({
               </Col>
             )}
 
-            <Col className="d-flex text-break">{name}</Col>
+            <Col className="d-flex text-break recipe-list-name">
+              {name} {!recipe.public && <VisibilityOffIcon />}
+            </Col>
           </Link>
         </Col>
 

@@ -1,11 +1,12 @@
+import imageCompression from "browser-image-compression";
 import { useState } from "react";
+import Button from "react-bootstrap/esm/Button";
+import Col from "react-bootstrap/esm/Col";
+import Container from "react-bootstrap/esm/Container";
+import Row from "react-bootstrap/esm/Row";
+import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { useRecipeContext } from "../RecipeContextProvider";
-import Button from "react-bootstrap/esm/Button";
-import Row from "react-bootstrap/esm/Row";
-import Col from "react-bootstrap/esm/Col";
-import Form from "react-bootstrap/Form";
-import Container from "react-bootstrap/esm/Container";
 
 export function AddPhotoPopup({ setShowPopup, showPopup }) {
   const { recipe, setRecipe } = useRecipeContext();
@@ -94,12 +95,16 @@ export function AddPhotoPopup({ setShowPopup, showPopup }) {
 
               handleClose();
             } else if (photoFile) {
+              const originalImageFile =
+                document.getElementById("photoFile").files[0];
+              const compressedImage = await imageCompression(
+                originalImageFile,
+                { maxSizeMB: 5, useWebWorker: true }
+              );
               setRecipe({
                 ...recipe,
-                imgUrl: URL.createObjectURL(
-                  document.getElementById("photoFile").files[0]
-                ),
-                imgFile: document.getElementById("photoFile").files[0],
+                imgUrl: URL.createObjectURL(compressedImage),
+                imgFile: compressedImage,
               });
 
               handleClose();

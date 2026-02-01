@@ -58,7 +58,6 @@ export function MultiRecipeViewer({
   }
 
   if (data && isFetched && !isError) {
-    console.log(data);
     const { recipes, lastPage } = data;
 
     return (

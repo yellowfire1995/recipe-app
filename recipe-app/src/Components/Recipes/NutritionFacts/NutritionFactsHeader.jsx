@@ -1,24 +1,27 @@
 import { useRecipeContext } from "../RecipeContextProvider";
 
-function handleServingsUpdate({ recipe, event }) {
-  if (!event.target.valueAsNumber) {
+export function handleServingsUpdate({ recipe, event, servingsModifier }) {
+  if (!event?.target.valueAsNumber && !servingsModifier) {
     return recipe;
   }
+  const newServings =
+    event?.target.valueAsNumber || servingsModifier * recipe.servings;
   const yieldRatio = recipe.yieldNumber / recipe.servings;
   const updatedIngredients = recipe.ingredients.map((ingredient) => {
     return {
       ...ingredient,
       quantity:
-        (ingredient.quantity / recipe.servings) * event.target.valueAsNumber ||
+        (ingredient.quantity / recipe.servings) * newServings ||
         recipe.servings,
     };
   });
 
   return {
     ...recipe,
-    servings: event.target.valueAsNumber || recipe.servings,
+    originalServings: recipe.originalServings || recipe.servings,
+    servings: newServings || recipe.servings,
     yieldNumber: recipe.yieldNumber
-      ? yieldRatio * event.target.valueAsNumber || recipe.servings
+      ? yieldRatio * newServings || recipe.servings
       : null,
     ingredients: updatedIngredients,
   };
@@ -36,8 +39,9 @@ export function NutritionFactsHeader() {
         ""
       )}
       <p>
-        Servings per Recipe
+        Servings
         <input
+          key={recipe.scaleFactor}
           type="number"
           id="servings"
           min="1"
@@ -45,8 +49,8 @@ export function NutritionFactsHeader() {
           onChange={(event) =>
             setRecipe(handleServingsUpdate({ event, recipe }))
           }
-          style={{ width: "3rem" }}
-          className="me-2"
+          style={{ width: "2rem" }}
+          className="ms-1"
         />
       </p>
     </header>

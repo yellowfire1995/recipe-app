@@ -8,12 +8,13 @@ const router = express.Router();
 router.get(
   "/",
   tryCatch((req, res, next) => {
-    req.headers.authorization ? authenticate(req, res, next) : next();
+    req.headers.authorization || req.auth
+      ? authenticate(req, res, next)
+      : next();
   }),
   tryCatch(async (req, res) => {
     const isLoggedIn = !!req.auth?.payload;
     const isCollectionView = req.query.collectionId != "undefined";
-
     const sqlSearch =
       req.query.search == "null" || req.query.search == "undefined"
         ? "%"
@@ -56,7 +57,7 @@ where r.recipe_id = recipes.recipe_id and r.author = '${req.auth.payload.sub}') 
     const query = {
       text: format(
         `
-      SELECT recipes.recipe_id as "recipeId", name, thumbnail, servings, url, author, nickname, create_date, %s
+      SELECT recipes.recipe_id as "recipeId", name, thumbnail, servings, url, author, nickname, create_date, public, %s
       (select AVG(rating) 
 from ratings r
 where r.recipe_id = recipes.recipe_id  ) as rating,
