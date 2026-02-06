@@ -34,16 +34,24 @@ export const authenticate = auth({
 var whitelist = [ENV.HOST];
 var corsOptions = {
   origin: function (origin, callback) {
+    // Allow requests with no origin (same-origin requests from reverse proxy)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    // Allow whitelisted origins
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
   },
+  credentials: true,
 };
+
 app.use(express.static("public"));
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(bodyParser.json());
 
