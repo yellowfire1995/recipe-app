@@ -20,15 +20,15 @@ import AddRecipe from "./routes/AddRecipe.jsx";
 import AllRecipes from "./routes/AllRecipes.jsx";
 import CollectionRecipesPage from "./routes/Collections.jsx";
 import { ContactPage } from "./routes/Contact.jsx";
+import Edit from "./routes/edit.jsx";
 import Index from "./routes/Index.jsx";
+import Ingredients from "./routes/ingredients.jsx";
+import Login from "./routes/Login.jsx";
 import MyCollections from "./routes/MyCollections.jsx";
 import MyRecipes from "./routes/MyRecipes.jsx";
 import Planner from "./routes/Planner.jsx";
+import Profile from "./routes/Profile.jsx";
 import Recipe from "./routes/Recipes.jsx";
-import Edit from "./routes/edit.jsx";
-import Ingredients from "./routes/ingredients.jsx";
-import Login from "./routes/login.jsx";
-import Profile from "./routes/profile.jsx";
 import PrivateRoutes from "./utils/PrivateRoutes.jsx";
 
 export const queryClient = new QueryClient();
@@ -118,5 +118,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </HelmetProvider>
       </Auth0Provider>
     </React.StrictMode>
-  </div>
+  </div>,
 );
