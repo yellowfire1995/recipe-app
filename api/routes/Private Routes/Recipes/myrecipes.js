@@ -3,6 +3,7 @@ import format from "pg-format";
 import db from "../../../database/db.js";
 import { tryCatch } from "../../../tools/error/tryCatch.js";
 const router = express.Router();
+const IMAGES_HOST = process.env.IMAGES_HOST;
 
 router.get(
   "/",
@@ -55,7 +56,7 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
               Offset $1
               ;`,
         userRating,
-        sort
+        sort,
       ),
       values: [
         req.query.page == "null"
@@ -78,14 +79,14 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
         ...recipe,
         thumbnail: recipe.thumbnail,
         thumbnailLink: recipe.thumbnail
-          ? "https://d30b48eq3arkah.cloudfront.net/" + recipe.thumbnail
+          ? IMAGES_HOST + "/" + recipe.thumbnail
           : null,
       };
     });
 
     const cardData = await Promise.all(getThumbnailUrls);
     res.json({ recipes: cardData, lastPage: lastPage });
-  })
+  }),
 );
 
 export default router;

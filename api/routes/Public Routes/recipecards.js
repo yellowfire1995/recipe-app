@@ -5,6 +5,8 @@ import { authenticate } from "../../index.js";
 import { tryCatch } from "../../tools/error/tryCatch.js";
 const router = express.Router();
 
+const IMAGES_HOST = process.env.IMAGES_HOST;
+
 router.get(
   "/",
   tryCatch((req, res, next) => {
@@ -40,7 +42,7 @@ where r.recipe_id = recipes.recipe_id and r.author = '${req.auth.payload.sub}') 
           "right join recipe_collections rc on rc.recipe_id = recipes.recipe_id";
         collectionWhere = format(
           `and rc.collection_id = %s`,
-          req.query.collectionId
+          req.query.collectionId,
         );
         collectionSelect = `rc.id as "collectionRecipeId", rc.collection_id as "collectionId",`;
       }
@@ -87,7 +89,7 @@ where r.recipe_id = recipes.recipe_id  ) as "ratingCount",
         collectionJoin,
         filter,
         collectionWhere,
-        sort
+        sort,
       ),
       values: [
         req.query.page == "null"
@@ -109,7 +111,7 @@ where r.recipe_id = recipes.recipe_id  ) as "ratingCount",
         ...recipe,
         thumbnail: recipe.thumbnail,
         thumbnailLink: recipe.thumbnail
-          ? "https://d30b48eq3arkah.cloudfront.net/" + recipe.thumbnail
+          ? IMAGES_HOST + "/" + recipe.thumbnail
           : null,
       };
     });
@@ -117,7 +119,7 @@ where r.recipe_id = recipes.recipe_id  ) as "ratingCount",
     const cardData = await Promise.all(getThumbnailUrls);
 
     res.json({ recipes: cardData, lastPage: lastPage });
-  })
+  }),
 );
 
 export default router;

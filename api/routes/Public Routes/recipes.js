@@ -13,6 +13,7 @@ const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.ACCESS_KEY;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY;
 const roles = process.env.AUTH0_ROLES;
+const IMAGES_HOST = process.env.IMAGES_HOST;
 
 const S3 = new S3Client({
   credentials: {
@@ -258,7 +259,7 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
 	  recipes.recipe_id = $1
   group by
 	  recipes.recipe_id ;`,
-        userRating
+        userRating,
       ),
 
       values: [req.params.recipeId, req.auth?.payload.sub],
@@ -280,14 +281,12 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
       data.rows[0].imgUrl !== null &&
       !data.rows[0].imgUrl.match(/.*(http).*/g)
     ) {
-      data.rows[0].imgUrl =
-        "https://d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
-      data.rows[0].originalUrl =
-        "https://d30b48eq3arkah.cloudfront.net/" + data.rows[0].imgName;
+      data.rows[0].imgUrl = IMAGES_HOST + "/" + data.rows[0].imgName;
+      data.rows[0].originalUrl = IMAGES_HOST + "/" + data.rows[0].imgName;
     }
 
     res.send(data.rows);
-  })
+  }),
 );
 
 router.delete(
@@ -308,15 +307,15 @@ router.delete(
     if (
       req.body.imgUrl !== null &&
       req.body.thumbnail !== null &&
-      req.body.imgUrl.match(/.*(cloudfront).*/g) &&
-      req.body.thumbnail.match(/.*(cloudfront).*/g)
+      req.body.imgUrl.startsWith(IMAGES_HOST) &&
+      req.body.thumbnail.startsWith(IMAGES_HOST)
     ) {
       await deleteFromS3(req.body.imgName);
       await deleteFromS3(req.body.thumbnailName);
     }
 
     res.send(`Recipe has been deleted`);
-  })
+  }),
 );
 
 export default router;

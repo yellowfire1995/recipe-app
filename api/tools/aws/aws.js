@@ -1,15 +1,14 @@
-import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
 import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
   DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
 } from "@aws-sdk/client-s3";
+import axios from "axios";
 import sharp from "sharp";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { v4 as uuidv4 } from "uuid";
 
 const bucketName = process.env.BUCKET_NAME;
+const bucketEndpoint = process.env.BUCKET_ENDPOINT;
 const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.ACCESS_KEY;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY;
@@ -20,6 +19,7 @@ const S3 = new S3Client({
     accessKeyId: accessKey,
   },
   region: bucketRegion,
+  endpoint: bucketEndpoint,
 });
 
 export async function resizeAndUploadFileToS3(file) {

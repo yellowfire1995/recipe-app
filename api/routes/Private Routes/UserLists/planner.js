@@ -3,6 +3,8 @@ import db from "../../../database/db.js";
 import { tryCatch } from "../../../tools/error/tryCatch.js";
 const router = express.Router();
 
+const IMAGES_HOST = process.env.IMAGES_HOST;
+
 router.get(
   "/recipes",
   tryCatch(async (req, res) => {
@@ -48,7 +50,7 @@ group by
           return {
             ...recipe,
             thumbnail: recipe.thumbnail
-              ? "https://d30b48eq3arkah.cloudfront.net/" + recipe.thumbnail
+              ? IMAGES_HOST + "/" + recipe.thumbnail
               : null,
           };
         }),
@@ -56,7 +58,7 @@ group by
     });
 
     res.send(cardData);
-  })
+  }),
 );
 
 router.post(
@@ -71,7 +73,7 @@ router.post(
     };
     const data = await db.query(query);
     res.send(data);
-  })
+  }),
 );
 
 router.delete(
@@ -85,7 +87,7 @@ router.delete(
     const deleter = await db.query(query);
 
     res.send(deleter);
-  })
+  }),
 );
 
 router.post(
@@ -101,7 +103,7 @@ router.post(
     const editor = await db.query(query);
 
     res.send(editor);
-  })
+  }),
 );
 
 export default router;
