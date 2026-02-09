@@ -1,14 +1,19 @@
-import axios from "axios";
 import * as cheerio from "cheerio";
 import { chromium } from "playwright";
 
 async function extractSchemaRecipe(url) {
   try {
-    const html = await axios.get(url);
-    const $ = cheerio.load(html.data);
+    // const html = await axios.get(url);
+    const browser = await chromium.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(url);
+    const html = await page.content();
+    await browser.close();
+
+    const $ = cheerio.load(html);
 
     const scriptText = JSON.parse(
-      $('script[type="application/ld+json"]:first').text()
+      $('script[type="application/ld+json"]:first').text(),
     );
 
     if (
