@@ -1,16 +1,77 @@
 import * as cheerio from "cheerio";
 import { chromium } from "playwright";
 
-async function extractSchemaRecipe(url) {
+async function extractSchemaRecipe({ url, html }) {
   try {
     // const html = await axios.get(url);
-    const browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.goto(url);
-    const html = await page.content();
-    await browser.close();
+    // const browser = await chromium.launch({ headless: true });
+    // const page = await browser.newPage();
+    // await page.goto(url);
+    // const html = await page.content();
 
-    const $ = cheerio.load(html);
+    // await browser.close();
+
+    if (!html) {
+      const browser = await chromium.launch({
+        headless: true,
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-blink-features=AutomationControlled",
+          "--disable-dev-shm-usage",
+        ],
+      });
+
+      const context = await browser.newContext({
+        userAgent:
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        viewport: { width: 1920, height: 1080 },
+        locale: "en-US",
+        timezoneId: "America/New_York",
+        extraHTTPHeaders: {
+          "Accept-Language": "en-US,en;q=0.9",
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        },
+      });
+
+      // Inject scripts to hide automation
+      await context.addInitScript(() => {
+        // Remove webdriver property
+        Object.defineProperty(navigator, "webdriver", {
+          get: () => false,
+        });
+
+        // Mock chrome object
+        window.chrome = {
+          runtime: {},
+        };
+
+        // Mock permissions
+        const originalQuery = window.navigator.permissions.query;
+        window.navigator.permissions.query = (parameters) =>
+          parameters.name === "notifications"
+            ? Promise.resolve({ state: Notification.permission })
+            : originalQuery(parameters);
+
+        // Mock plugins
+        Object.defineProperty(navigator, "plugins", {
+          get: () => [1, 2, 3, 4, 5],
+        });
+
+        // Mock languages
+        Object.defineProperty(navigator, "languages", {
+          get: () => ["en-US", "en"],
+        });
+      });
+
+      const page = await context.newPage();
+
+      const response = await page.goto(url);
+
+      var scrapedHtml = await page.content();
+    }
+    const $ = cheerio.load(html || scrapedHtml);
 
     const scriptText = JSON.parse(
       $('script[type="application/ld+json"]:first').text(),
@@ -62,11 +123,11 @@ async function extractSamsungRecipe($) {
   return recipe;
 }
 
-export default async function getRecipe(url) {
-  if (url.match(/(samsungfood)/)) {
+export default async function getRecipe({ url, html }) {
+  if (url && url.match(/(samsungfood)/)) {
     try {
       console.log("scraping samsung food");
-      const browser = await chromium.launch({ headless: false });
+      const browser = await chromium.launch({ headless: true });
       const page = await browser.newPage();
       await page.goto(url);
       await page.waitForSelector("div.s39966");
@@ -93,6 +154,6 @@ export default async function getRecipe(url) {
       throw new Error("Failed to scrape samsung food.");
     }
   } else {
-    return extractSchemaRecipe(url);
+    return extractSchemaRecipe({ url, html });
   }
 }

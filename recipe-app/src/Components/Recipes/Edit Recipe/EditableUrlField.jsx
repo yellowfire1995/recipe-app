@@ -8,16 +8,10 @@ import {
   parseIngredients,
   scrapeRecipe,
 } from "../../../../db/queries";
-import { isValidUrl } from "../../../utils/isValidUrl";
+import { isValidHTML, isValidUrl } from "../../../utils/isValidUrl";
 import { useRecipeContext } from "../RecipeContextProvider";
 
-async function handleImport({
-  scrapedData,
-  recipe,
-  setRecipe,
-  setIngredientList,
-  url,
-}) {
+async function handleImport({ scrapedData, recipe, setRecipe, url }) {
   const ingredientString = scrapedData.recipeIngredient.join("\r\n");
 
   const directionString =
@@ -53,16 +47,17 @@ async function handleImport({
     ingredientText: ingredientString,
     directionText: directionString,
   });
-
-  setIngredientList(choices);
 }
 
-export function EditableUrlField({ setIngredientList }) {
+export function EditableUrlField() {
   const { recipe, setRecipe } = useRecipeContext();
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: async () => {
-      return await scrapeRecipe(document.getElementById("importURL").value);
+    mutationFn: async ({ url, html }) => {
+      return await scrapeRecipe({
+        url,
+        html,
+      });
     },
     onError: () =>
       toast.error("Error importing recipe, please try again later."),
@@ -72,7 +67,6 @@ export function EditableUrlField({ setIngredientList }) {
         scrapedData: data,
         recipe,
         setRecipe,
-        setIngredientList,
       });
     },
   });
@@ -89,11 +83,11 @@ export function EditableUrlField({ setIngredientList }) {
               id="importURL"
               size="lg"
               type="text"
-              value={recipe.url || ""}
+              value={recipe.importBox || ""}
               onChange={(e) =>
                 setRecipe({
                   ...recipe,
-                  url: e.target.value,
+                  importBox: e.target.value,
                 })
               }
             />
@@ -103,13 +97,35 @@ export function EditableUrlField({ setIngredientList }) {
           <Button
             className="w-100"
             variant="primary"
-            disabled={!isValidUrl(recipe.url)}
+            disabled={!isValidUrl(recipe.importBox)}
             type="button"
-            onClick={mutateAsync}
+            onClick={() => {
+              setRecipe({
+                ...recipe,
+                url: document.getElementById("importURL").value,
+              });
+              mutateAsync({ url: document.getElementById("importURL").value });
+            }}
           >
             {isPending ? "Importing..." : "Import"}
           </Button>
         </Col>
+        {isValidHTML(recipe.importBox) ? (
+          <Col md={2} className="d-flex ps-md-0">
+            <Button
+              className="w-100"
+              variant="primary"
+              type="button"
+              onClick={() =>
+                mutateAsync({
+                  html: document.getElementById("importURL").value,
+                })
+              }
+            >
+              Load HTML
+            </Button>
+          </Col>
+        ) : null}
       </Row>
     </>
   );

@@ -6,7 +6,12 @@ export const isValidUrl = (urlString) => {
       "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // validate port and path
       "(\\?[;&a-z\\d%_.~+=-]*)?" + // validate query string
       "(\\#[-a-z\\d_]*)?$",
-    "i"
+    "i",
   ); // validate fragment locator
   return !!urlPattern.test(urlString);
+};
+
+export const isValidHTML = (textString) => {
+  var htmlPattern = new RegExp(/^<!DOCTYPE HTML>/i); // validate fragment locator
+  return !!htmlPattern.test(textString);
 };

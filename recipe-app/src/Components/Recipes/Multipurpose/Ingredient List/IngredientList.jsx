@@ -9,7 +9,7 @@ function deleteIngredient(updatedRecipe, e) {
   const buttonId = e.target.id ? e.target.id : e.target.viewportElement.id;
   _.remove(
     updatedRecipe.ingredients,
-    (ingredient) => ingredient.id == buttonId
+    (ingredient) => ingredient.id == buttonId,
   );
 
   return { ...updatedRecipe };
@@ -62,7 +62,7 @@ export function IngredientList({
     !checkedArray.includes(ingredientId)
       ? setCheckedArray([...checkedArray, ingredientId])
       : setCheckedArray(
-          checkedArray.filter((idInclude) => idInclude !== ingredientId)
+          checkedArray.filter((idInclude) => idInclude !== ingredientId),
         );
   }
 
@@ -72,7 +72,7 @@ export function IngredientList({
   function handleDragOver(index) {
     if (index != initialDragIndex) {
       const ingredientsListCopy = recipe.ingredients.filter(
-        (ingredient, index) => index != initialDragIndex
+        (ingredient, index) => index != initialDragIndex,
       );
 
       setInitialDragIndex(index);
@@ -124,7 +124,7 @@ export function IngredientList({
                             ...recipe,
                             scaleFactor: scaleFactor + 1,
                           },
-                        })
+                        }),
                       )
                     }
                   >
@@ -147,7 +147,7 @@ export function IngredientList({
                             ...recipe,
                             scaleFactor: scaleFactor + 1,
                           },
-                        })
+                        }),
                       )
                     }
                   >
@@ -170,7 +170,7 @@ export function IngredientList({
                             ...recipe,
                             scaleFactor: recipe.scaleFactor + 1 || 1,
                           },
-                        })
+                        }),
                       );
                     }}
                   >

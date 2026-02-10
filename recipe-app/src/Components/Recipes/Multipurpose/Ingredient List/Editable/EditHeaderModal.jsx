@@ -60,7 +60,7 @@ export default function EditHeaderModal({
           <input
             name="ingredientDescription"
             type="textbox"
-            value={ingredient.description}
+            value={ingredient.description || ""}
             onChange={(e) =>
               setIngredient({ ...ingredient, description: e.target.value })
             }

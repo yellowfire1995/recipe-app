@@ -1,3 +1,4 @@
+import pako from "pako";
 import { server } from "../env/env.js";
 import httpClient from "./axiosConfig";
 
@@ -102,7 +103,7 @@ export async function ingredientSearch(e, search) {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     return listIngredients.data;
@@ -121,7 +122,7 @@ export async function parseDirections(directions) {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     return directionsArray.data;
@@ -140,7 +141,7 @@ export async function parseIngredients(ingredients) {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
     return ingredientsArray.data;
   } catch (error) {
@@ -168,7 +169,7 @@ export async function getRecipeCards({
 }) {
   try {
     const recipeCards = await httpClient.get(
-      `${server}/recipecards?page=${page}&search=${search}&pageSize=${pageSize}}&sort=${sort}&collectionId=${collectionId}`
+      `${server}/recipecards?page=${page}&search=${search}&pageSize=${pageSize}}&sort=${sort}&collectionId=${collectionId}`,
     );
     return recipeCards.data;
   } catch (error) {
@@ -180,7 +181,7 @@ export async function getRecipeCards({
 export async function getMyRecipeCards({ page, search, pageSize, sort }) {
   try {
     const recipeCards = await httpClient.get(
-      `${server}/myrecipes?page=${page}&search=${search}&pageSize=${pageSize}}&sort=${sort}`
+      `${server}/myrecipes?page=${page}&search=${search}&pageSize=${pageSize}}&sort=${sort}`,
     );
 
     return recipeCards.data;
@@ -204,7 +205,7 @@ export async function addToMeallPlan(recipeId, date) {
   try {
     const mealPlanRecipes = await httpClient.post(
       `${server}/planner/add/recipe/${recipeId}`,
-      { date: date }
+      { date: date },
     );
 
     return mealPlanRecipes.data;
@@ -216,7 +217,7 @@ export async function addToMeallPlan(recipeId, date) {
 export async function deleteFromMealPlan(planId) {
   try {
     const deletedMealPlanRecipe = await httpClient.delete(
-      `${server}/planner/delete/${planId}`
+      `${server}/planner/delete/${planId}`,
     );
 
     return deletedMealPlanRecipe.data;
@@ -243,7 +244,7 @@ export async function getCollectionRecipes({ collectionId }) {
   console.log(collectionId);
   try {
     const collectionRecipes = await httpClient.get(
-      `${server}/collections/${collectionId}`
+      `${server}/collections/${collectionId}`,
     );
 
     return collectionRecipes.data;
@@ -268,7 +269,7 @@ export async function addRecipeToCollection(recipeId, collection) {
   try {
     const { data } = await httpClient.post(
       `${server}/collections/add/recipe/${recipeId}`,
-      { collection: collection }
+      { collection: collection },
     );
     return data;
   } catch (error) {
@@ -279,7 +280,7 @@ export async function addRecipeToCollection(recipeId, collection) {
 export async function deleteCollection(collection) {
   try {
     const deleteCollection = await httpClient.delete(
-      `${server}/collections/delete/collection/${collection.id}`
+      `${server}/collections/delete/collection/${collection.id}`,
     );
     return deleteCollection;
   } catch (error) {
@@ -294,7 +295,7 @@ export async function deleteCollectionRecipe(arrayOfRecipes) {
 
     const deleteCollectionRecipe = await httpClient.delete(
       `${server}/collections/delete/recipe`,
-      { data: { ids: arrayOfIds } }
+      { data: { ids: arrayOfIds } },
     );
     return deleteCollectionRecipe;
   } catch (error) {
@@ -303,19 +304,48 @@ export async function deleteCollectionRecipe(arrayOfRecipes) {
 }
 
 //Get recipe data from url
-export async function scrapeRecipe(url) {
+export async function scrapeRecipe({ url, html }) {
   try {
-    const recipe = await httpClient.post(
-      `${server}/import/scrape`,
-      { url: url },
-      {
-        headers: {
-          "Content-Type": "application/json",
+    if (url) {
+      // Send URL as JSON
+      const recipe = await httpClient.post(
+        `${server}/import/scrape`,
+        { url },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      }
-    );
+      );
+      console.log(recipe);
+      return recipe.data;
+    }
 
-    return recipe.data;
+    if (html) {
+      // Compress HTML
+      const encoder = new TextEncoder();
+      const uint8Array = encoder.encode(html); // Don't JSON.stringify!
+      const compressed = pako.deflate(uint8Array);
+
+      // Send as FormData (bypasses JSON body-parser limit)
+      const formData = new FormData();
+      const blob = new Blob([compressed], { type: "application/octet-stream" });
+      formData.append("compressedHtml", blob, "html.gz");
+
+      const recipe = await httpClient.post(
+        `${server}/import/scrape`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+      console.log(recipe);
+      return recipe.data;
+    }
+
+    throw new Error("Either url or html must be provided");
   } catch (error) {
     return Promise.reject(error.response);
   }
