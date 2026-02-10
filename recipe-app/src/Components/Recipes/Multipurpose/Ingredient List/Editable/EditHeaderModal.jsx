@@ -52,7 +52,7 @@ export default function EditHeaderModal({
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Change {ingredient.description}
+            Edit Header
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -60,9 +60,12 @@ export default function EditHeaderModal({
           <input
             name="ingredientDescription"
             type="textbox"
-            value={ingredient.description || ""}
+            value={ingredient.userIngredientName || ""}
             onChange={(e) =>
-              setIngredient({ ...ingredient, description: e.target.value })
+              setIngredient({
+                ...ingredient,
+                userIngredientName: e.target.value,
+              })
             }
             id="ingredientDescription"
           />

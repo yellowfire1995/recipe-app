@@ -49,6 +49,7 @@ router.post(
       ({ key, thumbnailKey } = await uploadDualSizesUrlToS3(recipe.imgUrl));
     }
 
+    console.log(recipe.ingredients);
     if (recipe.ingredients) {
       recipe = {
         ...recipe,
@@ -137,7 +138,7 @@ router.post(
 
     await db.query(query);
     res.json(req.body);
-  })
+  }),
 );
 
 export default router;

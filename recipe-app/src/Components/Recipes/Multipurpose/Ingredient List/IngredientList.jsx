@@ -185,6 +185,7 @@ export function IngredientList({
 
         {recipe.ingredients.map((ingredient, index) => {
           if (ingredient.isGroupHeader) {
+            console.log(ingredient);
             header = {
               ...header,
               key: ingredient.id,
