@@ -7,7 +7,7 @@ const proxyAgent = process.env.PROXY_AGENT;
 export default async function getRecipe({ url, html }) {
   try {
     if (url && url.match(/(samsungfood)/)) {
-      extractSamsungHtml({ url });
+      return await extractSamsungHtml({ url });
     } else if (url) {
       const scrapedHtml = await extractHtml({ url });
       return await extractSchemaRecipe({ html: scrapedHtml });
