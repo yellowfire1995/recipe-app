@@ -2,7 +2,7 @@ import express from "express";
 import multer from "multer";
 import pako from "pako";
 import { tryCatch } from "../../../../tools/error/tryCatch.js";
-import getRecipe from "../../../../tools/webscraping/scraperecipe.js";
+import getRecipe from "../../../../tools/webscraping/recipes/scraperecipe.js";
 const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -22,7 +22,6 @@ router.post(
 
     // Pass to getRecipe
     const recipe = await getRecipe({ url, html });
-    console.log(recipe);
     res.json(recipe);
   }),
 );
