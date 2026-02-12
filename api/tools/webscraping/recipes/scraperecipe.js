@@ -15,6 +15,7 @@ export default async function getRecipe({ url, html }) {
       return await extractSchemaRecipe({ html });
     }
   } catch (error) {
+    console.log(`Error getting recipe:` + error);
     throw new Error("Error! Unable to load website to get recipe.");
   }
 }
@@ -23,7 +24,7 @@ export async function extractHtml({ url }) {
   try {
     return await extractHtmlNoProxy({ url });
   } catch (error) {
-    console.log(error);
+    console.log(`Trying to scrape with proxy...`);
     return await extractHtmlWithProxy({ url });
   }
 }
@@ -34,6 +35,7 @@ async function extractHtmlNoProxy({ url }) {
 }
 
 async function extractHtmlWithProxy({ url }) {
+  console.log(proxyAgent);
   const agent = new HttpsProxyAgent(proxyAgent);
   const scrapedHtml = await axios.get(url, {
     httpAgent: agent,
