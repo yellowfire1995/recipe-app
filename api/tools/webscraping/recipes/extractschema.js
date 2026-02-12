@@ -2,7 +2,6 @@ import * as cheerio from "cheerio";
 
 export async function extractSchemaRecipe({ html }) {
   try {
-    console.log(html);
     const $ = cheerio.load(html);
 
     const scriptText = JSON.parse(

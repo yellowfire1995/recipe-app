@@ -35,7 +35,6 @@ async function extractHtmlNoProxy({ url }) {
 }
 
 async function extractHtmlWithProxy({ url }) {
-  console.log(proxyAgent);
   const agent = new HttpsProxyAgent(proxyAgent);
   const scrapedHtml = await axios.get(url, {
     httpAgent: agent,

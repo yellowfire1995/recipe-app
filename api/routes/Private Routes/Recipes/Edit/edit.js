@@ -49,7 +49,6 @@ router.post(
       ({ key, thumbnailKey } = await uploadDualSizesUrlToS3(recipe.imgUrl));
     }
 
-    console.log(recipe.ingredients);
     if (recipe.ingredients) {
       recipe = {
         ...recipe,

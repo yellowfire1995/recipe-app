@@ -18,7 +18,6 @@ export async function extractSamsungHtml({ url }) {
     // await page.evaluate(() => (document.body.style.zoom = 0.5));
     // await page.waitForSelector("div.s1085.s1286");
     html = await page.content();
-    console.log(html);
     await browser.close();
 
     const $ = cheerio.load(html);
