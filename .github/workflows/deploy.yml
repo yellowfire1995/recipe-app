@@ -46,7 +46,7 @@ jobs:
           VITE_AUDIENCE: "https://walkerfamilyfarm.us.auth0.com/api/v2/"
           VITE_ROLES: "https://cookbookcalc.com/roles"
       - name: Upload dist artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: frontend-dist
           path: ./recipe-app/dist/
@@ -55,7 +55,7 @@ jobs:
     needs: [build-backend, build-frontend]
     steps:
       - name: Download dist artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: frontend-dist
           path: ./dist
