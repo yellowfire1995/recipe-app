@@ -67,8 +67,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
       - name: Rsync dist to server
         run: |
-          rsync -avz --delete ./dist/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/deployuser/test
-            cd /home/ubuntu/docker/cookbookcalc
+          rsync -avz --delete ./dist/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/ubuntu/docker/cookbookcalc/site
 
       - name: Restart backend
         uses: appleboy/ssh-action@v1
