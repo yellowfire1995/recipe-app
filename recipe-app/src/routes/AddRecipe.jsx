@@ -2,7 +2,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getRecipeById, newRecipe } from "../../db/queries";
@@ -70,9 +69,8 @@ export default function AddRecipe() {
 
   return (
     <>
-      <Helmet>
-        <title>New Recipe</title>
-      </Helmet>
+      <title>New Recipe</title>
+
       <RecipeForm recipe={recipe} setRecipe={setRecipe}>
         <Form
           onSubmit={(e) => {

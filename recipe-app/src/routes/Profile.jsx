@@ -1,13 +1,12 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { Container } from "@mui/material";
+import { useState } from "react";
+import Button from "react-bootstrap/esm/Button";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
-import { useAuth0 } from "@auth0/auth0-react";
-import { useState } from "react";
 import httpClient from "../../db/axiosConfig";
-import Button from "react-bootstrap/esm/Button";
-import LogoutButton from "../utils/LogoutButton";
 import { server } from "../../env/env";
-import { Helmet } from "react-helmet-async";
+import LogoutButton from "../utils/LogoutButton";
 
 export default function Profile() {
   async function handleClick() {
@@ -26,9 +25,7 @@ export default function Profile() {
   return (
     <>
       {" "}
-      <Helmet>
-        <title>CookbookCalc | Settings</title>
-      </Helmet>
+      <title>CookbookCalc | Settings</title>
       <Container
         style={{ width: "100%" }}
         className="border shadow text-center"

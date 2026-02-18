@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { Helmet } from "react-helmet-async";
-import { contact } from "../../db/queries";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { contact } from "../../db/queries";
 
 export function ContactPage() {
   const [name, setName] = useState("");
@@ -11,7 +10,7 @@ export function ContactPage() {
   const [message, setMessage] = useState("");
   const MessageError = () =>
     toast.error(
-      "Error submitting message, please try again or email support@cookbookcalc.com."
+      "Error submitting message, please try again or email support@cookbookcalc.com.",
     );
   const MessageSuccess = () =>
     toast.success("Message submitted, please wait 24hrs for a response.");
@@ -34,9 +33,8 @@ export function ContactPage() {
 
   return (
     <Container>
-      <Helmet>
-        <title>CookbookCalc | Contact Us</title>
-      </Helmet>
+      <title>CookbookCalc | Contact Us</title>
+
       <Row className="text-center">
         <h2>Contact Us</h2>
       </Row>

@@ -3,7 +3,6 @@ import { Accordion, ListGroup, ListGroupItem } from "react-bootstrap";
 import Col from "react-bootstrap/esm/Col.js";
 import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { getCollectionNames } from "../../db/queries";
 import DeleteCollectionModal from "../Components/Collections/DeleteCollectionModal";
@@ -27,9 +26,8 @@ export default function MyCollections() {
     console.log(data);
     return (
       <>
-        <Helmet>
-          <title>CookbookCalc | Collections</title>
-        </Helmet>
+        <title>CookbookCalc | Collections</title>
+
         <Container className="mt-3 px-0" fluid="lg">
           <Row className="px-0">
             <Col className="justify-content-center px-0">

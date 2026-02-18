@@ -7,7 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import Root from "./routes/Root.jsx";
 
 import { Auth0Provider } from "@auth0/auth0-react";
-import { HelmetProvider } from "react-helmet-async";
 import {
   auth0Audience,
   auth0ClientId,
@@ -111,11 +110,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           scope: "read:current_user update:current_user_metadata profile email",
         }}
       >
-        <HelmetProvider>
-          <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} />
-          </QueryClientProvider>
-        </HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
       </Auth0Provider>
     </React.StrictMode>
   </div>,

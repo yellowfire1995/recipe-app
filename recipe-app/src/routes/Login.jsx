@@ -1,11 +1,10 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/esm/Col";
-import LoginButton from "../utils/LoginButton";
-import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
 import useLocalStorage from "use-local-storage";
+import LoginButton from "../utils/LoginButton";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -19,7 +18,7 @@ export default function Login() {
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [theme, setTheme] = useLocalStorage(
     "theme",
-    defaultDark ? "dark" : "light"
+    defaultDark ? "dark" : "light",
   );
   useEffect(() => {
     document.documentElement.setAttribute("data-bs-theme", theme);
@@ -27,9 +26,8 @@ export default function Login() {
 
   return (
     <>
-      <Helmet>
-        <title>CookbookCalc | Login</title>
-      </Helmet>
+      <title>CookbookCalc | Login</title>
+
       <Row className="align-items-center vh-100 justify-content-center mx-2">
         <Col
           className="d-flex text-center login p-4 align-items-center"

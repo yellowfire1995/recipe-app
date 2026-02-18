@@ -5,7 +5,6 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
 import Form from "react-bootstrap/Form";
-import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { editRecipe, getRecipeById } from "../../db/queries.js";
@@ -96,9 +95,8 @@ export default function Edit() {
   ) {
     return (
       <>
-        <Helmet>
-          <title>Edit {recipe.name}</title>
-        </Helmet>
+        <title>Edit {recipe.name}</title>
+
         <RecipeForm recipe={recipe} setRecipe={setRecipe}>
           <Form
             onSubmit={(e) => {

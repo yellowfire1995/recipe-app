@@ -1,13 +1,12 @@
-import Col from "react-bootstrap/esm/Col.js";
-import Row from "react-bootstrap/esm/Row";
-import Container from "react-bootstrap/esm/Container";
-import { Helmet } from "react-helmet-async";
-import Button from "react-bootstrap/esm/Button";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import Button from "react-bootstrap/esm/Button";
+import Col from "react-bootstrap/esm/Col.js";
+import Container from "react-bootstrap/esm/Container";
+import Row from "react-bootstrap/esm/Row";
 import { getMealPlan } from "../../db/queries";
-import PlannerDayList from "../Components/Planner/PlannerList.jsx";
 import Loading from "../Components/Loading.jsx";
+import PlannerDayList from "../Components/Planner/PlannerList.jsx";
 
 export default function Planner() {
   const oneDay = 1000 * 60 * 60 * 24;
@@ -33,9 +32,8 @@ export default function Planner() {
 
   return (
     <>
-      <Helmet>
-        <title>CookbookCalc | Planner</title>
-      </Helmet>
+      <title>CookbookCalc | Planner</title>
+
       <Container className="mt-3">
         <Row>
           <Col className="justify-content-center d-flex">

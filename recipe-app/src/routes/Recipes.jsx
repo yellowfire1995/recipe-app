@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Stack from "react-bootstrap/Stack";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
-import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
 import { getRecipeById } from "../../db/queries";
 import AppErrorPage from "../Components/Errors/AppErrorPage.jsx";
@@ -55,9 +54,8 @@ export default function Recipe() {
   if (recipe && isFetched) {
     return (
       <>
-        <Helmet>
-          <title>{recipe.name}</title>
-        </Helmet>
+        <title>{recipe.name}</title>
+
         <RecipeForm recipe={recipe} setRecipe={setRecipe}>
           <RecipeForm.RecipeHeaderImage />
           <Row className="pt-3">
