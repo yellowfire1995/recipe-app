@@ -67,6 +67,7 @@ jobs:
       - name: Rsync dist to server
         run: |
           rsync -avz --delete ./dist/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/deployuser/test
+
       # - name: Pull and restart backend
       #   uses: appleboy/ssh-action@v1
       #   with:
