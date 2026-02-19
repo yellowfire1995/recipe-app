@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
@@ -15,8 +15,6 @@ import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFa
 import { ShowOriginalingredientSwitch } from "../Components/Recipes/Recipe Header/ShowOriginalIngredientSwitch.jsx";
 import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
 import logger from "../utils/logger.js";
-
-export const RecipeContext = createContext();
 
 export default function Edit() {
   const { recipeId } = useParams();
@@ -51,6 +49,7 @@ export default function Edit() {
 
   useEffect(() => {
     if (isFetched && !isError && loadedRecipe) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRecipe(loadedRecipe[0]);
     }
   }, [loadedRecipe, isFetched, isError, isAuthenticated]);

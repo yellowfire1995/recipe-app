@@ -4,7 +4,7 @@ import Container from "react-bootstrap/esm/Container";
 import { ImportSelector } from "./importSelector.jsx";
 
 export default function ImportIngredientsList(props) {
-  const [ingredientList, setIngredientList] = props.ingredientList;
+  const [ingredientList] = props.ingredientList;
   const [updatedRecipe, setUpdatedRecipe] = props.updatedRecipe;
 
   return (
@@ -17,6 +17,7 @@ export default function ImportIngredientsList(props) {
                 updatedRecipe={[updatedRecipe, setUpdatedRecipe]}
                 ingredients={ingredientChoices}
                 origIdx={idx}
+                key={idx}
               />
             );
           })}

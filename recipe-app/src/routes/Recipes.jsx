@@ -39,6 +39,7 @@ export default function Recipe() {
 
   useEffect(() => {
     if (isFetched && !isError && loadedRecipe) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRecipe(loadedRecipe[0]);
     }
   }, [loadedRecipe, isFetched, isError, isAuthenticated]);

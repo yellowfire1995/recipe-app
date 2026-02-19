@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button, ButtonGroup, Col, Container, Row } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
 import logger from "../../../../utils/logger";
-import { handleServingsUpdate } from "../../NutritionFacts/NutritionFactsHeader";
+import { handleServingsUpdate } from "../../../../utils/NutritionFacts/handleServingsUpdate";
 import { useRecipeContext } from "../../RecipeContextProvider";
 
 function deleteIngredient(updatedRecipe, e) {

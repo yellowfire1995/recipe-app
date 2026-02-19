@@ -5,7 +5,7 @@ import { queryClient } from "../../../main";
 import { RecipeRating } from "../Rating/RecipeRating";
 import { useRecipeContext } from "../RecipeContextProvider";
 
-export function RecipeHeader({ price, buttons, credit }) {
+export function RecipeHeader({ buttons, credit }) {
   const { recipe, setRecipe } = useRecipeContext();
   const { isAuthenticated } = useAuth0();
   const title = isAuthenticated ? buttons : recipe.name;

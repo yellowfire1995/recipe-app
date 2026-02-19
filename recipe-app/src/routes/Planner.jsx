@@ -14,6 +14,7 @@ export default function Planner() {
   const daysIntoWeek = new Date().getDay();
   const [weeksAhead, setWeeksAhead] = useState(0);
 
+  // eslint-disable-next-line react-hooks/purity
   const now = Date.now() + oneWeek * weeksAhead - daysIntoWeek * oneDay;
   const startDate = new Date(now);
   const endDate = new Date(now + oneWeek - oneDay);

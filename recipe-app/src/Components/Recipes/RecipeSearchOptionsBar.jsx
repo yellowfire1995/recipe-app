@@ -3,7 +3,7 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import { Col, Form, Row } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 
-export function RecipeSearchOptionsBar({ isListView = false, setIsListView }) {
+export function RecipeSearchOptionsBar({ setIsListView }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageSize = searchParams.get("pageSize");
   const sort = searchParams.get("sort");

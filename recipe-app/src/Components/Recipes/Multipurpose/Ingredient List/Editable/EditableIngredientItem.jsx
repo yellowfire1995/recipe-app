@@ -60,80 +60,76 @@ export function EditableIngredientItem({
   const erroredIngredient =
     (!userG && !gramConversion && !warnedIngredient) || !nutrients;
 
-  try {
-    return (
-      <div
-        key={id + ingredientVersion}
-        className={
-          `form-check d-flex ps-1 ingredientItem align-items-center ` +
-          `${index === initialDragIndex ? "draggedItem" : ""} ${
-            erroredIngredient ? "errored-ingredient" : ""
-          } ${warnedIngredient ? "warned-ingredient" : ""}`
-        }
-        draggable={draggable}
-        style={{ borderRadius: "20px" }}
-        onDragStart={() => {
-          handleDragStart(index, ingredient);
-        }}
-        onDragEnter={() => {
-          handleDragOver(index);
-        }}
-        onDragOver={(e) => {
-          e.preventDefault();
-        }}
-        onDrop={() => {
-          handleDragStop();
-        }}
-        onDragEnd={() => {
-          handleDragEnd();
-        }}
-      >
-        <div className="align-items-center d-flex ">
-          <DragHandle />
-        </div>
-        <input
-          id={id}
-          type="text"
-          className="form-check-label ingredientAmountInput"
-          htmlFor={description}
-          style={{ width: "3rem" }}
-          name={description}
-          defaultValue={ingredientQuantity}
-          onChange={(e) => {
-            setRecipe(handleIngredientUpdate(recipe, e));
-          }}
-          onMouseDown={() => setDraggable(false)}
-          onMouseUp={() => setDraggable(true)}
-          onFocus={() => setIsActive(true)}
-          onBlur={() => setIsActive(false)}
-        />
-        <p className="m-0 align-self-center d-flex align-items-center">
-          {ingredientWeightLabel} {ingredientDescription}{" "}
-          {ingredientQuantityGrams}
-          {!erroredIngredient && <AddPriceModal ingredient={ingredient} />}
-          <EditIngredientModal
-            ingredient={ingredient}
-            ingredientList={ingredientList}
-            setIngredientList={setIngredientList}
-            origIdx={index}
-          />
-          <DeleteIcon
-            id={id}
-            aria-label="delete"
-            type="button"
-            onClick={(e) => {
-              setRecipe(deleteIngredient(recipe, e));
-              setIngredientList(
-                ingredientList.filter((ingredient, i) => i !== index)
-              );
-            }}
-            className="pt-0 mb-0 svg-icon"
-          />
-          <IngredientError ingredient={ingredient} />
-        </p>
+  return (
+    <div
+      key={id + ingredientVersion}
+      className={
+        `form-check d-flex ps-1 ingredientItem align-items-center ` +
+        `${index === initialDragIndex ? "draggedItem" : ""} ${
+          erroredIngredient ? "errored-ingredient" : ""
+        } ${warnedIngredient ? "warned-ingredient" : ""}`
+      }
+      draggable={draggable}
+      style={{ borderRadius: "20px" }}
+      onDragStart={() => {
+        handleDragStart(index, ingredient);
+      }}
+      onDragEnter={() => {
+        handleDragOver(index);
+      }}
+      onDragOver={(e) => {
+        e.preventDefault();
+      }}
+      onDrop={() => {
+        handleDragStop();
+      }}
+      onDragEnd={() => {
+        handleDragEnd();
+      }}
+    >
+      <div className="align-items-center d-flex ">
+        <DragHandle />
       </div>
-    );
-  } catch (error) {
-    return <div>Error importing ingredient</div>;
-  }
+      <input
+        id={id}
+        type="text"
+        className="form-check-label ingredientAmountInput"
+        htmlFor={description}
+        style={{ width: "3rem" }}
+        name={description}
+        defaultValue={ingredientQuantity}
+        onChange={(e) => {
+          setRecipe(handleIngredientUpdate(recipe, e));
+        }}
+        onMouseDown={() => setDraggable(false)}
+        onMouseUp={() => setDraggable(true)}
+        onFocus={() => setIsActive(true)}
+        onBlur={() => setIsActive(false)}
+      />
+      <p className="m-0 align-self-center d-flex align-items-center">
+        {ingredientWeightLabel} {ingredientDescription}{" "}
+        {ingredientQuantityGrams}
+        {!erroredIngredient && <AddPriceModal ingredient={ingredient} />}
+        <EditIngredientModal
+          ingredient={ingredient}
+          ingredientList={ingredientList}
+          setIngredientList={setIngredientList}
+          origIdx={index}
+        />
+        <DeleteIcon
+          id={id}
+          aria-label="delete"
+          type="button"
+          onClick={(e) => {
+            setRecipe(deleteIngredient(recipe, e));
+            setIngredientList(
+              ingredientList.filter((ingredient, i) => i !== index),
+            );
+          }}
+          className="pt-0 mb-0 svg-icon"
+        />
+        <IngredientError ingredient={ingredient} />
+      </p>
+    </div>
+  );
 }

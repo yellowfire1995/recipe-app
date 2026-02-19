@@ -50,42 +50,42 @@ export function RecipeOptionsDropdown({
     );
 
   if (!isAuthenticated) {
-    return <></>;
+    return;
   }
 
   return (
     <Dropdown {...props}>
-        <Dropdown.Toggle
-          id="options-dropdown"
-          className="recipe-buttons-dropdown svg-icon mb-0 d-flex align-items-center"
-          as="h2"
-        >
-          {text}
-        </Dropdown.Toggle>
+      <Dropdown.Toggle
+        id="options-dropdown"
+        className="recipe-buttons-dropdown svg-icon mb-0 d-flex align-items-center"
+        as="h2"
+      >
+        {text}
+      </Dropdown.Toggle>
 
-        <Dropdown.Menu className="recipe-dropdown-menu px-1" align="end">
-          <RecipeHeaderButtonsContext.Provider value={{ recipe }}>
-            <RecipeDropdownItem>
-              <RecipeOptionsDropdown.EditRecipeButton />
-            </RecipeDropdownItem>
-            <RecipeDropdownItem>
-              {" "}
-              <RecipeOptionsDropdown.RemixButton />
-            </RecipeDropdownItem>
-            {renderCollectionButton()}
-            {renderPlannerButtons()}
-            <RecipeDropdownItem>
-              {" "}
-              <RecipeOptionsDropdown.DeleteRecipeButton
-                onSuccess={() => {
-                  onDeleteSuccess();
-                  refetch();
-                }}
-              />
-            </RecipeDropdownItem>
-          </RecipeHeaderButtonsContext.Provider>
-        </Dropdown.Menu>
-      </Dropdown>
+      <Dropdown.Menu className="recipe-dropdown-menu px-1" align="end">
+        <RecipeHeaderButtonsContext.Provider value={{ recipe }}>
+          <RecipeDropdownItem>
+            <RecipeOptionsDropdown.EditRecipeButton />
+          </RecipeDropdownItem>
+          <RecipeDropdownItem>
+            {" "}
+            <RecipeOptionsDropdown.RemixButton />
+          </RecipeDropdownItem>
+          {renderCollectionButton()}
+          {renderPlannerButtons()}
+          <RecipeDropdownItem>
+            {" "}
+            <RecipeOptionsDropdown.DeleteRecipeButton
+              onSuccess={() => {
+                onDeleteSuccess();
+                refetch();
+              }}
+            />
+          </RecipeDropdownItem>
+        </RecipeHeaderButtonsContext.Provider>
+      </Dropdown.Menu>
+    </Dropdown>
   );
 }
 

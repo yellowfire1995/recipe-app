@@ -12,7 +12,7 @@ import logger from "../utils/logger";
 export default function Profile() {
   async function handleClick() {
     try {
-      const response = await httpClient.patch(`${server}/profile`, {
+      await httpClient.patch(`${server}/profile`, {
         nickname: nickname,
       });
     } catch (error) {

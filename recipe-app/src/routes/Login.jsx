@@ -13,13 +13,10 @@ export default function Login() {
 
   useEffect(() => {
     isAuthenticated ? navigate("/recipes") : null;
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const [theme, setTheme] = useLocalStorage(
-    "theme",
-    defaultDark ? "dark" : "light",
-  );
+  const [theme] = useLocalStorage("theme", defaultDark ? "dark" : "light");
   useEffect(() => {
     document.documentElement.setAttribute("data-bs-theme", theme);
   }, [theme]);

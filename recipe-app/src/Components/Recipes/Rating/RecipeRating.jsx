@@ -10,9 +10,6 @@ import logger from "../../../utils/logger";
 
 export function RecipeRating({
   recipe = {},
-  setRecipe = () => {
-    return recipe;
-  },
   value = recipe.userRating || recipe.rating || null,
   refetch = () => {
     return recipe;
