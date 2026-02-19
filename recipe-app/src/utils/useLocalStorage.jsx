@@ -1,4 +1,5 @@
 import { useState } from "react";
+import logger from "./logger";
 
 export const useLocalStorage = (keyName, defaultValue) => {
   const [storedValue, setStoredValue] = useState(() => {
@@ -11,6 +12,7 @@ export const useLocalStorage = (keyName, defaultValue) => {
         return defaultValue;
       }
     } catch (err) {
+      logger.log(err);
       return defaultValue;
     }
   });
@@ -18,7 +20,7 @@ export const useLocalStorage = (keyName, defaultValue) => {
     try {
       window.localStorage.setItem(keyName, JSON.stringify(newValue));
     } catch (err) {
-      console.log(err);
+      logger.log(err);
     }
     setStoredValue(newValue);
   };

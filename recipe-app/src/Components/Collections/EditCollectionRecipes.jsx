@@ -57,7 +57,7 @@ export default function EditCollectionRecipes(props) {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={deleter.mutate}>
-            {deleter.status != "idle" ? "Saving..." : "Save"}
+            {deleter.status !== "idle" ? "Saving..." : "Save"}
           </Button>
           <Button onClick={handleClose}>Cancel</Button>
         </Modal.Footer>

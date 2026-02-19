@@ -9,7 +9,7 @@ export function EditRecipeButton() {
   const { user } = useAuth0();
   const navigate = useNavigate();
 
-  if (user.sub == recipe.author || user[roles].includes("Admin")) {
+  if (user.sub === recipe.author || user[roles].includes("Admin")) {
     return (
       <Button onClick={() => navigate(`/recipes/${recipe.recipeId}/edit`)}>
         Edit

@@ -1,6 +1,6 @@
 import express from "express";
-import { tryCatch } from "../../tools/error/tryCatch.js";
 import { AppError } from "../../tools/error/AppError.js";
+import { tryCatch } from "../../tools/error/tryCatch.js";
 import { transporter } from "../../tools/nodemailer/config.js";
 const router = express.Router();
 
@@ -26,7 +26,7 @@ router.post(
         res.send("Email sent successfully");
       }
     });
-  })
+  }),
 );
 
 export default router;

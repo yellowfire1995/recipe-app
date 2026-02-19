@@ -3,8 +3,7 @@ import { RecipeListItem } from "../Recipes/MultiRecipeViewer/ListView/RecipeList
 
 export default function CollectionRecipes({ collection, refetch }) {
   return (
-    <>
-      <ListGroup>
+    <ListGroup>
         {collection.recipes.map((recipe) => {
           return (
             <RecipeListItem
@@ -15,6 +14,5 @@ export default function CollectionRecipes({ collection, refetch }) {
           );
         })}
       </ListGroup>
-    </>
   );
 }

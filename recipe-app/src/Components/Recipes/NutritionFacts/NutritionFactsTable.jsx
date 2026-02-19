@@ -1,7 +1,8 @@
+import logger from "../../../utils/logger";
 import { useRecipeContext } from "../RecipeContextProvider";
 import { useNutritionFactsContext } from "./NutritionFactsContext";
 
-var nutrientsPerServing = {
+const nutrientsPerServing = {
   totalFat: 0,
   vitaminD: 0,
   protein: 0,
@@ -49,10 +50,10 @@ function calculateNutrient({ nutrientName, headersRemovedArray, servings }) {
             );
           }, 0)
         );
-      }, 0) / servings
+      }, 0) / servings,
     );
   } catch (error) {
-    console.log(error);
+    logger.log(error);
     return 0;
   }
 }
@@ -68,7 +69,7 @@ export function NutritionFactsTable() {
           return ingredient;
         }
       })
-      .filter((ingredient) => ingredient != undefined)
+      .filter((ingredient) => ingredient !== undefined)
       .filter((ingredient) => ingredient.nutrients);
 
     Object.keys(nutrientsPerServing).forEach((nutrientName) => {
@@ -95,7 +96,7 @@ export function NutritionFactsTable() {
                 <b>Calories</b>
                 {nutrientsPerServing.calories}
               </th>
-              <td></td>
+              <td />
             </tr>
             <tr className="thick-row">
               <td colSpan={3} className="small-info">
@@ -112,18 +113,18 @@ export function NutritionFactsTable() {
               </td>
             </tr>
             <tr>
-              <td className="blank-cell"></td>
+              <td className="blank-cell" />
               <th>Saturated Fat {` ${nutrientsPerServing.saturatedFat}g`}</th>
               <td>
                 <b>{` ${Math.round(
-                  nutrientsPerServing.saturatedFat / 0.2
+                  nutrientsPerServing.saturatedFat / 0.2,
                 )}%`}</b>
               </td>
             </tr>
             <tr>
-              <td className="blank-cell"></td>
+              <td className="blank-cell" />
               <th>Trans Fat 0g</th>
-              <td></td>
+              <td />
             </tr>
             <tr>
               <th colSpan={2}>
@@ -154,23 +155,23 @@ export function NutritionFactsTable() {
               </td>
             </tr>
             <tr>
-              <td className="blank-cell"></td>
+              <td className="blank-cell" />
               <th>Dietary Fiber {` ${nutrientsPerServing.fiber}g`}</th>
               <td>
                 <b>{` ${nutrientsPerServing.fiber / 0.25}%`}</b>
               </td>
             </tr>
             <tr>
-              <td className="blank-cell"></td>
+              <td className="blank-cell" />
               <th>Sugars {` ${nutrientsPerServing.sugar}g`}</th>
-              <td></td>
+              <td />
             </tr>
             <tr className="thick-end">
               <th colSpan={2}>
                 <b>Protein</b>
                 {` ${nutrientsPerServing.protein}g`}
               </th>
-              <td></td>
+              <td />
             </tr>
           </tbody>
         </table>
@@ -254,7 +255,7 @@ export function NutritionFactsTable() {
       </>
     );
   } catch (error) {
-    console.log(error);
+    logger.log(error);
     return <div>Error loading nutrition.</div>;
   }
 }

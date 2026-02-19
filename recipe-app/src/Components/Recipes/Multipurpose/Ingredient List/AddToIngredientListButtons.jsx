@@ -5,8 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 export function AddToIngredientListButtons() {
   const { recipe, setRecipe } = useRecipeContext();
   return (
-    <>
-      <div className="d-flex">
+    <div className="d-flex">
         <Button
           type="button"
           className="w-100"
@@ -49,6 +48,5 @@ export function AddToIngredientListButtons() {
           Add header
         </Button>
       </div>
-    </>
   );
 }

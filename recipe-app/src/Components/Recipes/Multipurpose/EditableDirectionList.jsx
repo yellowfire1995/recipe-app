@@ -1,7 +1,7 @@
 import _ from "lodash";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import Container from "react-bootstrap/esm/Container";
+import logger from "../../../utils/logger";
 import { useRecipeContext } from "../RecipeContextProvider";
 
 function handleDirectionsUpdate(updatedRecipe, e, index) {
@@ -31,15 +31,16 @@ function addNewDirection(updatedRecipe) {
     step: "",
     recipeId: updatedRecipe.recipeId,
   };
+  updatedRecipe.directions.push(step);
+  logger.log(updatedRecipe);
 
-  const finalRecipe = { ...updatedRecipe.directions.push(step) };
   return { ...updatedRecipe };
 }
 
 function deleteDirection(updatedRecipe, e) {
-  const deleteRecipe = _.remove(
+  _.remove(
     updatedRecipe.directions,
-    (direction) => direction.step_num == e.target.id
+    (direction) => direction.step_num === Number(e.target.id),
   );
 
   return { ...updatedRecipe };

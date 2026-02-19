@@ -14,8 +14,7 @@ export function CardItemsContainer() {
   }
 
   return (
-    <>
-      <Row>
+    <Row>
         <Col className="d-flex flex-wrap justify-content-center">
           {recipes.map((recipe, index) => {
             return (
@@ -28,6 +27,5 @@ export function CardItemsContainer() {
           })}
         </Col>
       </Row>
-    </>
   );
 }

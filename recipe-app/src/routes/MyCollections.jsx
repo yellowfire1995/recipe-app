@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { getCollectionNames } from "../../db/queries";
 import DeleteCollectionModal from "../Components/Collections/DeleteCollectionModal";
 import Loading from "../Components/Loading";
+import logger from "../utils/logger";
 
 export default function MyCollections() {
   const { data, isLoading, isError } = useQuery({
@@ -23,7 +24,7 @@ export default function MyCollections() {
   }
 
   if (!isLoading && !isError && data) {
-    console.log(data);
+    logger.log(data);
     return (
       <>
         <title>CookbookCalc | Collections</title>

@@ -27,7 +27,7 @@ export async function searchSolr(ingredient, measure) {
           stopwords: "false",
         },
       },
-      { "content-type": "application/x-www-form-urlencoded" }
+      { "content-type": "application/x-www-form-urlencoded" },
     );
     return searchResult.data.response.docs;
   } catch (error) {

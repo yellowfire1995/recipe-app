@@ -2,6 +2,7 @@ import { Carousel, Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 export function RecipeCarousel() {
+  // eslint-disable-next-line no-undef
   const IMAGES_HOST = process.env.IMAGES_HOST;
 
   return (

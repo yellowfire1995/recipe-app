@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { toast } from "react-toastify";
 import { deleteRecipe } from "../../../../db/queries";
+import logger from "../../../utils/logger";
 import { useRecipeContext } from "../RecipeContextProvider";
 
 export function DeleteRecipeButton({
@@ -23,7 +24,7 @@ export function DeleteRecipeButton({
       return deleteRecipe(recipe.recipeId, recipe);
     },
     onError: (error) => {
-      console.log(error);
+      logger.log(error);
       toast.error("Error deleting recipe, please try again.");
     },
     onSuccess: () => {

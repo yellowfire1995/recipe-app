@@ -35,7 +35,7 @@ export function ShowOriginalingredientSwitch({ label = "Original Names" }) {
             });
           }}
           label={label}
-        ></Form.Check>{" "}
+         />{" "}
         <OverlayTrigger
           trigger={["hover", "focus", "click"]}
           placement="bottom-end"

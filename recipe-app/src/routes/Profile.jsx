@@ -7,15 +7,16 @@ import Row from "react-bootstrap/esm/Row";
 import httpClient from "../../db/axiosConfig";
 import { server } from "../../env/env";
 import LogoutButton from "../utils/LogoutButton";
+import logger from "../utils/logger";
 
 export default function Profile() {
   async function handleClick() {
     try {
-      let response = await httpClient.patch(`${server}/profile`, {
+      const response = await httpClient.patch(`${server}/profile`, {
         nickname: nickname,
       });
     } catch (error) {
-      console.log(error);
+      logger.log(error);
     }
   }
 

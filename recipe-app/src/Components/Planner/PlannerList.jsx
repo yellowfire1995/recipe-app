@@ -15,8 +15,8 @@ export default function PlannerDayList(props) {
     .map((day) => {
       if (
         new Date(
-          Date.parse(day.recipes[0].planDate) + 1000 * 60 * 60 * 24
-        ).toLocaleDateString(undefined, options) == date
+          Date.parse(day.recipes[0].planDate) + 1000 * 60 * 60 * 24,
+        ).toLocaleDateString(undefined, options) === date
       ) {
         return { ...day };
       }

@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { toast } from "react-toastify";
 import { deleteRecipe } from "../../../../../db/queries";
+import logger from "../../../../utils/logger";
 import { useRecipeHeaderButtonsContext } from "./RecipeHeaderButtonsContext";
 
 export function DeleteRecipeHeaderButton({
@@ -25,7 +26,7 @@ export function DeleteRecipeHeaderButton({
       return deleteRecipe(recipe.recipeId, recipe);
     },
     onError: (error) => {
-      console.log(error);
+      logger.log(error);
       toast.error("Error deleting recipe, please try again.");
     },
     onSuccess: () => {
@@ -37,7 +38,7 @@ export function DeleteRecipeHeaderButton({
     },
   });
 
-  if (user.sub == recipe.author)
+  if (user.sub === recipe.author)
     return (
       <>
         <Button onClick={handleShow} className="btn-danger" {...props}>

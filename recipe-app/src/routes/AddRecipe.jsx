@@ -9,6 +9,7 @@ import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFa
 import { ShowOriginalingredientSwitch } from "../Components/Recipes/Recipe Header/ShowOriginalIngredientSwitch";
 import { RecipeForm } from "../Components/Recipes/RecipeForm";
 import { queryClient } from "../main";
+import logger from "../utils/logger";
 
 export default function AddRecipe() {
   const [params] = useSearchParams();
@@ -36,11 +37,12 @@ export default function AddRecipe() {
       return { ...recipe[0], name: `Copy of ${recipe[0].name}` };
     },
     staleTime: Infinity,
-    enabled: params.get("copy") != undefined,
+    enabled: params.get("copy") !== undefined,
   });
 
   useEffect(() => {
     if (recipeFetch.status === "success") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRecipe(recipeFetch.data);
     }
   }, [recipeFetch.status, recipeFetch.data]);
@@ -50,11 +52,11 @@ export default function AddRecipe() {
       return newRecipe(recipe);
     },
     onError: (error) => {
-      console.log(error);
+      logger.log(error);
       SavingError();
     },
     onSuccess: (data) => {
-      console.log(data);
+      logger.log(data);
       queryClient.invalidateQueries({
         queryKey: ["AllRecipes"],
         refetchType: "all",

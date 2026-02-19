@@ -1,7 +1,7 @@
-import { useState } from "react";
 import axios from "axios";
-import Button from "react-bootstrap/esm/Button";
+import { useState } from "react";
 import { server } from "../../env/env.js";
+import logger from "../utils/logger.js";
 
 export default function Ingredients() {
   const [search, setSearch] = useState("");
@@ -17,11 +17,11 @@ export default function Ingredients() {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       setPrice(listIngredients.data);
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   };
 
@@ -33,7 +33,7 @@ export default function Ingredients() {
           type="textbox"
           placeholder="Search..."
           onChange={(e) => setSearch(e.target.value)}
-        ></input>{" "}
+        />{" "}
         <button id="search" type="submit" onClick={(e) => handleSearch(e)}>
           {" "}
           Search{" "}

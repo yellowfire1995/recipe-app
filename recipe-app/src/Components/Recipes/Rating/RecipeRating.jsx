@@ -6,6 +6,7 @@ import _ from "lodash";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { deleteRating, updateRating } from "../../../../db/queries";
+import logger from "../../../utils/logger";
 
 export function RecipeRating({
   recipe = {},
@@ -34,7 +35,7 @@ export function RecipeRating({
       return updateRating(recipeId, userRating);
     },
     onError: (error) => {
-      console.log(error);
+      logger.log(error);
       toast.error("Error saving rating, please try again.");
     },
   });
@@ -93,7 +94,7 @@ export function RecipeRating({
       />
       {(showCount &&
         ratingCount > 0 &&
-        `${ratingCount} rating${ratingCount != 1 ? "s" : ""} `) ||
+        `${ratingCount} rating${ratingCount !== 1 ? "s" : ""} `) ||
         (showCount && "No ratings")}
     </>
   );

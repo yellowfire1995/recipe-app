@@ -83,7 +83,7 @@ export function MultiRecipeViewer({
             <Col className="justify-content-evenly d-flex">
               <Button
                 className={`${
-                  parseInt(page) < 2 || page == null ? "d-none" : " "
+                  parseInt(page) < 2 || page === null ? "d-none" : " "
                 }`}
                 onClick={() => {
                   setSearchParams(previousPageParams);

@@ -18,8 +18,7 @@ export function RecipeCardItem({
     recipe;
 
   return (
-    <>
-      <Container
+    <Container
         id={id + "" + collectionId}
         className="d-flex recipe-card rounded align-self-stretch text-center justify-content-center flex-wrap align-content-start m-2 p-0"
         key={recipeId}
@@ -47,10 +46,10 @@ export function RecipeCardItem({
 
         <Link
           to={`/recipes/${recipeId}`}
-          className={`d-flex  text-decoration-none rounded-top flex-wrap text-body w-100 recipe-card-image-link`}
+          className="d-flex  text-decoration-none rounded-top flex-wrap text-body w-100 recipe-card-image-link"
         >
           <Card
-            className={`d-flex rounded-top rounded-bottom-0 recipe-card-background`}
+            className="d-flex rounded-top rounded-bottom-0 recipe-card-background"
             style={{
               backgroundImage: `url(${thumbnailLink})`,
             }}
@@ -74,6 +73,5 @@ export function RecipeCardItem({
           )}
         </Container>
       </Container>
-    </>
   );
 }

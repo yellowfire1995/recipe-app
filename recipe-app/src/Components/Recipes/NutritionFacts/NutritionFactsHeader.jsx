@@ -31,7 +31,7 @@ export function NutritionFactsHeader() {
   const { recipe, setRecipe } = useRecipeContext();
 
   return (
-    <header className={`performance-facts__header`}>
+    <header className="performance-facts__header">
       <h1 className="performance-facts__title">Nutrition Facts</h1>
       {recipe.yieldNumber ? (
         <p>{`Yield ${recipe.yieldNumber} ${recipe.yieldDescription}`}</p>

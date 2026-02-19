@@ -72,7 +72,7 @@ export function AddRecipeToCollectionModal() {
             {addCollection.isSuccess ? "Saved!" : ""}
           </div>
           <Button onClick={() => handleSave()}>
-            {addCollection.status != "idle" ? "Saving..." : "Save"}
+            {addCollection.status !== "idle" ? "Saving..." : "Save"}
           </Button>
           <Button onClick={handleClose}>Cancel</Button>{" "}
         </Modal.Footer>

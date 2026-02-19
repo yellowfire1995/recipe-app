@@ -27,7 +27,7 @@ export default function EditHeaderModal({
     setRecipe({
       ...recipe,
       ingredients: recipe.ingredients.map((recipeIngredient, index) => {
-        if (index == origIdx) {
+        if (index === origIdx) {
           return ingredient;
         } else {
           return { ...recipeIngredient };

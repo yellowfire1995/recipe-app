@@ -1,13 +1,14 @@
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { savePrice } from "../../../../db/queries";
-import StoreButtons from "./storesearchbuttons.jsx";
-import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { savePrice } from "../../../../db/queries";
 import { queryClient } from "../../../main.jsx";
+import logger from "../../../utils/logger";
 import { useRecipeContext } from "../RecipeContextProvider.jsx";
+import StoreButtons from "./storesearchbuttons.jsx";
 
 export default function AddPriceModal(props) {
   const ingredient = props.ingredient;
@@ -33,11 +34,11 @@ export default function AddPriceModal(props) {
         Math.round(pkgGrms * weightChoice),
         pkgCost,
         url,
-        ingredient.fdc_id
+        ingredient.fdc_id,
       ),
 
     onError: (error) => {
-      console.log(error);
+      logger.log(error);
       toast.error("Error saving price, please try again!");
     },
     onSuccess: async () => {
@@ -60,7 +61,7 @@ export default function AddPriceModal(props) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4></h4>
+          <h4 />
           <form>
             <label htmlFor="grams">Package measurement:</label>
             <input

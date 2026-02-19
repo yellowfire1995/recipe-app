@@ -31,7 +31,7 @@ export function FrontPageHero() {
             <p className="align-self-end flex-grow-1">
               {isAuthenticated ? (
                 <>
-                  Would you like to <Link to={`/newrecipe`}> add a recipe</Link>
+                  Would you like to <Link to="/newrecipe"> add a recipe</Link>
                   ?
                 </>
               ) : (
@@ -49,7 +49,7 @@ export function FrontPageHero() {
                   </Button>{" "}
                   for additional functionality! <br />
                   You can explore existing recipes{" "}
-                  <Link to={`/recipes`}>here</Link>.
+                  <Link to="/recipes">here</Link>.
                 </>
               )}
             </p>

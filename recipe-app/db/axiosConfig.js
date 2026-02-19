@@ -1,4 +1,5 @@
 import axios from "axios";
+import logger from "../src/utils/logger";
 
 const httpClient = axios.create();
 
@@ -16,7 +17,7 @@ export async function addAccessTokenInterceptor({
         config.headers.Authorization = `Bearer ${token}`;
       }
     } catch (error) {
-      console.log(error);
+      logger.log(error);
     }
     return config;
   });

@@ -15,7 +15,7 @@ async function handleImport({ scrapedData, recipe, setRecipe, url }) {
   const ingredientString = scrapedData.recipeIngredient.join("\r\n");
 
   const directionString =
-    typeof scrapedData.recipeInstructions == "string"
+    typeof scrapedData.recipeInstructions === "string"
       ? scrapedData.recipeInstructions
       : scrapedData.recipeInstructions
           .map((direction) => direction.text)
@@ -29,7 +29,7 @@ async function handleImport({ scrapedData, recipe, setRecipe, url }) {
   if (scrapedData.recipeYield) {
     try {
       servings = parseInt(scrapedData.recipeYield[0]);
-    } catch (error) {
+    } catch {
       servings = 1;
     }
   }
@@ -72,61 +72,56 @@ export function EditableUrlField() {
   });
 
   return (
-    <>
-      <Row className="d-flex flex-wrap">
-        <Col className="d-flex">
-          <FloatingLabel
-            label="Original recipe URL (optional)"
-            className="w-100"
-          >
-            <Form.Control
-              id="importURL"
-              size="lg"
-              type="text"
-              value={recipe.importBox || ""}
-              onChange={(e) =>
-                setRecipe({
-                  ...recipe,
-                  importBox: e.target.value,
-                })
-              }
-            />
-          </FloatingLabel>
-        </Col>
+    <Row className="d-flex flex-wrap">
+      <Col className="d-flex">
+        <FloatingLabel label="Original recipe URL (optional)" className="w-100">
+          <Form.Control
+            id="importURL"
+            size="lg"
+            type="text"
+            value={recipe.importBox || ""}
+            onChange={(e) =>
+              setRecipe({
+                ...recipe,
+                importBox: e.target.value,
+              })
+            }
+          />
+        </FloatingLabel>
+      </Col>
+      <Col md={2} className="d-flex ps-md-0">
+        <Button
+          className="w-100"
+          variant="primary"
+          disabled={!isValidUrl(recipe.importBox)}
+          type="button"
+          onClick={() => {
+            setRecipe({
+              ...recipe,
+              url: document.getElementById("importURL").value,
+            });
+            mutateAsync({ url: document.getElementById("importURL").value });
+          }}
+        >
+          {isPending ? "Importing..." : "Import"}
+        </Button>
+      </Col>
+      {isValidHTML(recipe.importBox) ? (
         <Col md={2} className="d-flex ps-md-0">
           <Button
             className="w-100"
             variant="primary"
-            disabled={!isValidUrl(recipe.importBox)}
             type="button"
-            onClick={() => {
-              setRecipe({
-                ...recipe,
-                url: document.getElementById("importURL").value,
-              });
-              mutateAsync({ url: document.getElementById("importURL").value });
-            }}
+            onClick={() =>
+              mutateAsync({
+                html: document.getElementById("importURL").value,
+              })
+            }
           >
-            {isPending ? "Importing..." : "Import"}
+            Load HTML
           </Button>
         </Col>
-        {isValidHTML(recipe.importBox) ? (
-          <Col md={2} className="d-flex ps-md-0">
-            <Button
-              className="w-100"
-              variant="primary"
-              type="button"
-              onClick={() =>
-                mutateAsync({
-                  html: document.getElementById("importURL").value,
-                })
-              }
-            >
-              Load HTML
-            </Button>
-          </Col>
-        ) : null}
-      </Row>
-    </>
+      ) : null}
+    </Row>
   );
 }

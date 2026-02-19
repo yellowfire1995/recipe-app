@@ -8,6 +8,6 @@ export const isValidUrl = (urlString) => {
 };
 
 export const isValidHTML = (textString) => {
-  var htmlPattern = new RegExp(/^<!DOCTYPE HTML>/i); // validate fragment locator
+  const htmlPattern = new RegExp(/^<!DOCTYPE HTML>/i); // validate fragment locator
   return !!htmlPattern.test(textString);
 };

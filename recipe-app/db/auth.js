@@ -1,7 +1,4 @@
-import { useAuth0 } from "@auth0/auth0-react";
-
-export async function getConfig() {
-  const { getAccessTokenSilently } = useAuth0();
+export async function getConfig({ getAccessTokenSilently }) {
   const token = await getAccessTokenSilently();
   const config = {
     headers: {

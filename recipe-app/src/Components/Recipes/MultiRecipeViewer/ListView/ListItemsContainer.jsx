@@ -14,8 +14,7 @@ export function ListItemsContainer({ ...props }) {
   }
 
   return (
-    <>
-      <ListGroup {...props}>
+    <ListGroup {...props}>
         {recipes.map((recipe, index) => {
           return (
             <RecipeListItem
@@ -26,6 +25,5 @@ export function ListItemsContainer({ ...props }) {
           );
         })}{" "}
       </ListGroup>
-    </>
   );
 }

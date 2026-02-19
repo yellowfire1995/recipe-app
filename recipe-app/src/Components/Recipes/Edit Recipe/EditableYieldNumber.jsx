@@ -6,8 +6,7 @@ export function EditableYieldNumber() {
   const { recipe, setRecipe } = useRecipeContext();
 
   return (
-    <>
-      <FloatingLabel id="Yield number" label="Yield Number (optional)">
+    <FloatingLabel id="Yield number" label="Yield Number (optional)">
         <Form.Control
           type="number"
           id="yieldNumber"
@@ -24,6 +23,5 @@ export function EditableYieldNumber() {
           }
         />
       </FloatingLabel>
-    </>
   );
 }

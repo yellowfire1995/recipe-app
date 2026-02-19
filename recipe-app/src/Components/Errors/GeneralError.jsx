@@ -1,5 +1,3 @@
-import { useRouteError } from "react-router-dom";
-
 export function GeneralError({ error }) {
   return (
     <div id="error-page">

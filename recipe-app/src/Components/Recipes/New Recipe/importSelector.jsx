@@ -1,4 +1,5 @@
 import Form from "react-bootstrap/Form";
+import logger from "../../../utils/logger";
 
 export function ImportSelector({
   searchArray,
@@ -40,7 +41,7 @@ export function ImportSelector({
           key={`selector${origIdx}`}
           onChange={async (e) => {
             const ingredientIndex = searchArray.findIndex(
-              (choice) => choice.id == e.target.value
+              (choice) => choice.id === e.target.value,
             );
 
             setIngredient({
@@ -53,7 +54,7 @@ export function ImportSelector({
           className="py-1"
         >
           {searchArray.map((choice, idx) => {
-            const activeSelection = choice.id == ingredient.id;
+            const activeSelection = choice.id === ingredient.id;
             const choiceMeasurementLabel = activeSelection
               ? ingredient.userLabel || ""
               : choice.matchedMeasure || "";
@@ -67,7 +68,7 @@ export function ImportSelector({
               ? Math.round(ingredient.quantity)
               : Math.round(
                   ingredient.quantity *
-                    (ingredientGramsDenomenator / choiceGramsDenomenator)
+                    (ingredientGramsDenomenator / choiceGramsDenomenator),
                 );
 
             return (
@@ -77,13 +78,13 @@ export function ImportSelector({
                 id={idx}
                 style={{
                   color:
-                    choice.matchedMeasure == choice.unitOfMeasure
+                    choice.matchedMeasure === choice.unitOfMeasure
                       ? "green"
                       : "black",
                 }}
               >
                 {`${choiceMeasurementLabel} ${
-                  choice.id == ingredient.id
+                  choice.id === ingredient.id
                     ? ingredient.description
                     : choice.description
                 } (${choiceGramAmount}g)                
@@ -95,7 +96,7 @@ export function ImportSelector({
       </div>
     );
   } catch (error) {
-    console.log(error);
+    logger.log(error);
     return <div>Error searching for ingredients. Please try again later.</div>;
   }
 }

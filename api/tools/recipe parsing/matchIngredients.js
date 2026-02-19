@@ -24,7 +24,7 @@ export async function matchIngredients(ingredients) {
             //Search on SOLR to find best match
             const searchResult = await searchSolr(
               ingredient.description,
-              ingredient.unitOfMeasureID
+              ingredient.unitOfMeasureID,
             );
 
             //Obtain ingredient information from database using search result
@@ -69,7 +69,7 @@ export async function matchIngredients(ingredients) {
                 const weightConversion = await findMeasureMatch(
                   ingredient.unitOfMeasureID?.trim(),
                   data.rows[0].gram_label?.trim(),
-                  data.rows[0].gram_amt
+                  data.rows[0].gram_amt,
                 );
 
                 const comment = ingredient.comment
@@ -81,7 +81,7 @@ export async function matchIngredients(ingredients) {
                   ...ingredient,
                   category: data.rows[0].category,
                   quantity: roundToTwoDecimals(
-                    ingredient.quantity / getConversionFactor()
+                    ingredient.quantity / getConversionFactor(),
                   ),
                   id: uuidv4(),
                   userIngredientName: `${ingredient.description}${comment}`,
@@ -111,7 +111,7 @@ export async function matchIngredients(ingredients) {
                     : data.rows[0].gram_label || null;
                 }
                 return finalIngredient;
-              })
+              }),
             );
 
             return ingredients;
@@ -120,7 +120,7 @@ export async function matchIngredients(ingredients) {
             return { ...ingredient, amt: 1 };
           }
         }
-      })
+      }),
     );
 
     return ingredientArray;

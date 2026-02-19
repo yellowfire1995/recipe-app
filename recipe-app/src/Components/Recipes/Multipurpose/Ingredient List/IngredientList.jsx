@@ -2,6 +2,7 @@ import _ from "lodash";
 import { useState } from "react";
 import { Button, ButtonGroup, Col, Container, Row } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
+import logger from "../../../../utils/logger";
 import { handleServingsUpdate } from "../../NutritionFacts/NutritionFactsHeader";
 import { useRecipeContext } from "../../RecipeContextProvider";
 
@@ -9,18 +10,18 @@ function deleteIngredient(updatedRecipe, e) {
   const buttonId = e.target.id ? e.target.id : e.target.viewportElement.id;
   _.remove(
     updatedRecipe.ingredients,
-    (ingredient) => ingredient.id == buttonId,
+    (ingredient) => ingredient.id === buttonId,
   );
 
   return { ...updatedRecipe };
 }
 
 function handleIngredientUpdate(recipe, e) {
-  console.log(parseFloat(e.target.value));
+  logger.log(parseFloat(e.target.value));
   return {
     ...recipe,
     ingredients: recipe.ingredients.map((ingredient) => {
-      if (ingredient.id == e.target.id) {
+      if (ingredient.id === e.target.id) {
         const gramConversionDenominator =
           ingredient.userG || ingredient.gramConversion || 1;
         const quantityInput = isNaN(parseFloat(e.target.value))
@@ -70,9 +71,9 @@ export function IngredientList({
   const [draggedIngredient, setDraggedIngredient] = useState();
 
   function handleDragOver(index) {
-    if (index != initialDragIndex) {
+    if (index !== initialDragIndex) {
       const ingredientsListCopy = recipe.ingredients.filter(
-        (ingredient, index) => index != initialDragIndex,
+        (ingredient, index) => index !== initialDragIndex,
       );
 
       setInitialDragIndex(index);
@@ -115,7 +116,7 @@ export function IngredientList({
                   <Button
                     size="sm"
                     style={{ width: "3rem" }}
-                    active={recipe.servings == recipe.originalServings * 1.5}
+                    active={recipe.servings === recipe.originalServings * 1.5}
                     onClick={() =>
                       setRecipe(
                         handleServingsUpdate({
@@ -134,11 +135,11 @@ export function IngredientList({
                     disabled
                     className="mx-0 py-0"
                     style={{ paddingRight: ".02rem", paddingLeft: ".02rem" }}
-                  ></Button>
+                  />
                   <Button
                     size="sm"
                     style={{ width: "3rem" }}
-                    active={recipe.servings == recipe.originalServings * 2}
+                    active={recipe.servings === recipe.originalServings * 2}
                     onClick={() =>
                       setRecipe(
                         handleServingsUpdate({
@@ -157,7 +158,7 @@ export function IngredientList({
                     disabled
                     className="mx-0 py-0"
                     style={{ paddingRight: ".02rem", paddingLeft: ".02rem" }}
-                  ></Button>
+                  />
                   <Button
                     size="sm"
                     onClick={() => {
@@ -185,7 +186,7 @@ export function IngredientList({
 
         {recipe.ingredients.map((ingredient, index) => {
           if (ingredient.isGroupHeader) {
-            console.log(ingredient);
+            logger.log(ingredient);
             header = {
               ...header,
               key: ingredient.id,

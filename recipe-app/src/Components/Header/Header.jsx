@@ -25,11 +25,11 @@ function Header() {
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [theme, setTheme] = useLocalStorage(
     "theme",
-    defaultDark ? "dark" : "light"
+    defaultDark ? "dark" : "light",
   );
 
   const switchTheme = () => {
-    const newTheme = theme == "light" ? "dark" : "light";
+    const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
   };
   useEffect(() => {
@@ -43,7 +43,7 @@ function Header() {
       <Container fluid className="px-0 justify-content-center">
         <Navbar.Offcanvas id="header" placement="start" className="d-xl-none">
           <Offcanvas.Header closeButton>
-            <Offcanvas.Title id={`offcanvasMenu`}>Menu</Offcanvas.Title>
+            <Offcanvas.Title id="offcanvasMenu">Menu</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav>
@@ -83,7 +83,7 @@ function Header() {
                   navigate(
                     `/recipes?search=${
                       document.getElementById("searchBox").value
-                    }${pageSize ? `&results=${pageSize}` : ""}`
+                    }${pageSize ? `&results=${pageSize}` : ""}`,
                   );
                 }}
               >
@@ -139,7 +139,7 @@ function Header() {
                     type="checkbox"
                     id="theme-switcher"
                     onChange={(e) => e.preventDefault()}
-                    checked={theme == "dark" ? true : false}
+                    checked={theme === "dark" ? true : false}
                   />
                 </NavDropdown.Item>
 

@@ -54,8 +54,7 @@ export function RecipeOptionsDropdown({
   }
 
   return (
-    <>
-      <Dropdown {...props}>
+    <Dropdown {...props}>
         <Dropdown.Toggle
           id="options-dropdown"
           className="recipe-buttons-dropdown svg-icon mb-0 d-flex align-items-center"
@@ -87,7 +86,6 @@ export function RecipeOptionsDropdown({
           </RecipeHeaderButtonsContext.Provider>
         </Dropdown.Menu>
       </Dropdown>
-    </>
   );
 }
 

@@ -14,6 +14,7 @@ import Loading from "../Components/Loading.jsx";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
 import { ShowOriginalingredientSwitch } from "../Components/Recipes/Recipe Header/ShowOriginalIngredientSwitch.jsx";
 import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
+import logger from "../utils/logger.js";
 
 export const RecipeContext = createContext();
 
@@ -60,7 +61,7 @@ export default function Edit() {
       return editRecipe({ e, recipe });
     },
     onError: (error) => {
-      console.log(error);
+      logger.log(error);
       SavingError();
     },
     onSuccess: async () => {

@@ -6,8 +6,7 @@ export function EditableNameField() {
   const { recipe, setRecipe } = useRecipeContext();
 
   return (
-    <>
-      <FloatingLabel label="Recipe name" className="p-0">
+    <FloatingLabel label="Recipe name" className="p-0">
         <Form.Control
           size="lg"
           required
@@ -23,6 +22,5 @@ export function EditableNameField() {
           }
         />
       </FloatingLabel>
-    </>
   );
 }

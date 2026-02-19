@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { contact } from "../../db/queries";
+import logger from "../utils/logger";
 
 export function ContactPage() {
   const [name, setName] = useState("");
@@ -20,7 +21,7 @@ export function ContactPage() {
       return contact(name, email, message);
     },
     onError: (error) => {
-      console.log(error);
+      logger.log(error);
       MessageError();
     },
     onSuccess: async () => {

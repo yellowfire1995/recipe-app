@@ -1,12 +1,12 @@
-import express from "express";
 import axios from "axios";
 import "dotenv/config";
+import express from "express";
+import db from "../../../database/db.js";
 import getManagementToken from "../../../tools/auth/managementToken.js";
+import { AppError } from "../../../tools/error/AppError.js";
+import { tryCatch } from "../../../tools/error/tryCatch.js";
 const _ = process.env;
 const router = express.Router();
-import db from "../../../database/db.js";
-import { tryCatch } from "../../../tools/error/tryCatch.js";
-import { AppError } from "../../../tools/error/AppError.js";
 
 let refreshToken;
 
@@ -31,7 +31,7 @@ router.patch(
             refreshToken?.access_token || _.AUTH0_DEV_MGT_TOKEN
           }`,
         },
-      }
+      },
     );
     const query = {
       text: ` UPDATE recipes
@@ -41,7 +41,7 @@ router.patch(
     };
     await db.query(query);
     res.send(updateAuth0.data);
-  })
+  }),
 );
 
 export default router;

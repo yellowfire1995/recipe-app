@@ -1,32 +1,29 @@
-import { useNavigate } from "react-router-dom";
-import Form from "react-bootstrap/Form";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
-import { useState, useEffect } from "react";
 import Col from "react-bootstrap/esm/Col";
-import ImportIngredientsList from "../Components/importIngredientList";
-import DirectionsList from "../Components/directionslist";
-import CuisineSelector from "../Components/cuisineselector";
-import CategorySelector from "../Components/categoryselector";
 import Row from "react-bootstrap/esm/Row";
+import Form from "react-bootstrap/Form";
+import { useNavigate } from "react-router-dom";
+import CategorySelector from "../Components/categoryselector";
+import CuisineSelector from "../Components/cuisineselector";
+import DirectionsList from "../Components/directionslist";
+import ImportIngredientsList from "../Components/importIngredientList";
 
-import { parseDirections, scrapeRecipe } from "../../db/queries";
-import { parseIngredients } from "../../db/queries";
-import Container from "react-bootstrap/esm/Container";
-import { newRecipe } from "../../db/queries";
-import httpClient from "../../db/axiosConfig";
 import { useAuth0 } from "@auth0/auth0-react";
-import { auth0Audience } from "../../env/env";
 import { useMutation } from "@tanstack/react-query";
-import { queryClient } from "../main";
-import InputGroup from "react-bootstrap/InputGroup";
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
-import ImportRecipeModal from "../Components/ImportRecipeModal";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
 import "react-bootstrap-typeahead/css/Typeahead.css";
+import Container from "react-bootstrap/esm/Container";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import httpClient from "../../db/axiosConfig";
+import { newRecipe, parseDirections, parseIngredients } from "../../db/queries";
+import { auth0Audience } from "../../env/env";
 import AddPhotoModal from "../Components/AddPhotoModal";
+import ImportRecipeModal from "../Components/ImportRecipeModal";
+import { queryClient } from "../main";
+import logger from "../utils/logger";
 
 export default function ImportRecipe() {
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user } = useAuth0();
   const { getAccessTokenSilently } = useAuth0();
   const [userData, setUserData] = useState();
   const navigate = useNavigate();
@@ -34,15 +31,15 @@ export default function ImportRecipe() {
   useEffect(() => {
     (async () => {
       try {
-        let response = await httpClient.get(
-          `${auth0Audience}users/${user.sub}`
+        const response = await httpClient.get(
+          `${auth0Audience}users/${user.sub}`,
         );
         setUserData(response.data);
       } catch (e) {
-        console.error(e);
+        logger.error(e);
       }
     })();
-  }, [getAccessTokenSilently]);
+  }, [getAccessTokenSilently, user.sub]);
 
   const [ingredients, setIngredients] = useState("");
   const [directions, setDirections] = useState("");
@@ -80,7 +77,7 @@ export default function ImportRecipe() {
   async function handleImport(scrapedData) {
     const ingredientString = scrapedData.recipeIngredient.join("\r\n");
     const directionString =
-      typeof scrapedData.recipeInstructions == "string"
+      typeof scrapedData.recipeInstructions === "string"
         ? scrapedData.recipeInstructions
         : scrapedData.recipeInstructions
             .map((direction) => direction.text)
@@ -108,7 +105,7 @@ export default function ImportRecipe() {
       ...updatedRecipe,
       ingredients: choices.map((choice) => choice[0]),
     });
-    console.log(choices);
+    logger.log(choices);
 
     return choices;
   }
@@ -247,7 +244,7 @@ export default function ImportRecipe() {
                     className="flex-grow-1 text-body border-0"
                     variant="primary"
                     onClick={async () => {
-                      console.log("importing...");
+                      logger.log("importing...");
                       setIngredientList(await getIngredientChoices());
                     }}
                   >
