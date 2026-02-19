@@ -8,14 +8,13 @@ import { AppError } from "../../tools/error/AppError.js";
 import { tryCatch } from "../../tools/error/tryCatch.js";
 const router = express.Router();
 
-const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.ACCESS_KEY;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY;
 const roles = process.env.AUTH0_ROLES;
 const IMAGES_HOST = process.env.IMAGES_HOST;
 
-const S3 = new S3Client({
+new S3Client({
   credentials: {
     secretAccessKey: secretAccessKey,
     accessKeyId: accessKey,
@@ -30,11 +29,11 @@ async function checkAuth(req, res, next) {
   };
 
   const data = await db.query(query);
+  const isRecipeAuthor =
+    data.rows[0].author && data.rows[0].author === req.auth?.payload.sub;
+  const isAdmin = req.auth?.payload[roles].includes("Admin");
 
-  if (
-    data.rows[0].author == req.auth?.payload.sub ||
-    req.auth.payload[roles].includes("Admin")
-  ) {
+  if (isRecipeAuthor || isAdmin) {
     next();
   } else {
     throw new AppError(401, "Unauthorized", 401);
@@ -265,15 +264,14 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
       values: [req.params.recipeId, req.auth?.payload.sub],
     };
 
-    let data = await db.query(query);
+    const data = await db.query(query);
+    console.log(data.rows[0]);
+    const isRecipeAuthor = data.rows[0]?.author === req.auth?.payload.sub;
+    const isPublicRecipe = data.rows[0]?.public;
+    const isAdmin = req.auth?.payload[roles].includes("Admin");
+    const isNoRecipe = data.rows.length < 1;
 
-    if (
-      data.rows[0].author == req.auth?.payload.sub ||
-      data.rows[0].public ||
-      req.auth?.payload[roles].includes("Admin") ||
-      data.rows.length < 1
-    ) {
-    } else {
+    if ((!isRecipeAuthor && !isPublicRecipe && !isAdmin) || isNoRecipe) {
       throw new AppError(404, "Recipe not found or is private", 404);
     }
 

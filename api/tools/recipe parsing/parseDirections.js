@@ -6,7 +6,7 @@ export default function parseDirections(directions) {
 
   const directionLines = prefilterDirections
     .split("\n")
-    .filter((direction) => direction != "");
+    .filter((direction) => direction !== "");
 
   for (let i = 0; i < directionLines.length; i++) {
     const directionList = {

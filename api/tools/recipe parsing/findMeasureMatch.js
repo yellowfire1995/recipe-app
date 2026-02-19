@@ -45,22 +45,22 @@ const foodMeasurements = [
 export async function findMeasureMatch(
   userMeasure,
   dbMeasure,
-  gramsPerDbMeasure
+  gramsPerDbMeasure,
 ) {
   try {
     const userMeasureMatch = foodMeasurements.find((m) =>
-      m.measurement.test(userMeasure)
+      m.measurement.test(userMeasure),
     );
 
     const dbMeasureMatch = foodMeasurements.find((m) =>
-      m.measurement.test(dbMeasure)
+      m.measurement.test(dbMeasure),
     );
 
-    if (userMeasureMatch.type == "weight") {
+    if (userMeasureMatch.type === "weight") {
       return userMeasureMatch.conversionFactor;
     } else if (
-      userMeasureMatch.type == "volume" &&
-      dbMeasureMatch.type == "volume"
+      userMeasureMatch.type === "volume" &&
+      dbMeasureMatch.type === "volume"
     ) {
       return (
         (dbMeasureMatch.conversionFactor / userMeasureMatch.conversionFactor) *
@@ -69,7 +69,7 @@ export async function findMeasureMatch(
     } else {
       return null;
     }
-  } catch (error) {
+  } catch {
     return null;
   }
 }

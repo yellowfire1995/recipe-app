@@ -4,7 +4,7 @@ import "dotenv/config";
 const _ = process.env;
 
 export default async function getManagementToken() {
-  var options = {
+  const options = {
     method: "POST",
     url: _.AUTH0_URL,
     headers: { "content-type": "application/x-www-form-urlencoded" },

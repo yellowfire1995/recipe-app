@@ -8,7 +8,7 @@ import { findMeasureMatch } from "./findMeasureMatch.js";
 export async function matchIngredients(ingredients) {
   try {
     const ingredientArray = await Promise.all(
-      ingredients.map(async (ingredient, idx) => {
+      ingredients.map(async (ingredient) => {
         if (ingredient.isGroupHeader) {
           return [
             {
@@ -124,7 +124,7 @@ export async function matchIngredients(ingredients) {
     );
 
     return ingredientArray;
-  } catch (error) {
+  } catch {
     new AppError(400, "Error parsing ingredients", 400);
   }
 }

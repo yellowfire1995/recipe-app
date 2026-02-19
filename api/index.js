@@ -31,8 +31,8 @@ export const authenticate = auth({
   issuerBaseURL: process.env.AUTH0_BASEURL,
 });
 
-var whitelist = [ENV.HOST];
-var corsOptions = {
+const whitelist = [ENV.HOST];
+const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (same-origin requests from reverse proxy)
     if (!origin) {

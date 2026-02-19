@@ -16,14 +16,16 @@ export default async function getRecipe({ url, html }) {
     }
   } catch (error) {
     console.log(`Error getting recipe:` + error);
-    throw new Error("Error! Unable to load website to get recipe.");
+    throw new Error("Error! Unable to load website to get recipe.", {
+      cause: error,
+    });
   }
 }
 
 export async function extractHtml({ url }) {
   try {
     return await extractHtmlNoProxy({ url });
-  } catch (error) {
+  } catch {
     console.log(`Trying to scrape with proxy...`);
     return await extractHtmlWithProxy({ url });
   }

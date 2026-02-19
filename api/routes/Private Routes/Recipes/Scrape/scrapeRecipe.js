@@ -12,7 +12,7 @@ router.post(
   upload.single("compressedHtml"),
   tryCatch(async (req, res) => {
     let html;
-    let url = req.body.url;
+    const url = req.body.url;
 
     // Decompress HTML if file was uploaded
     if (req.file) {

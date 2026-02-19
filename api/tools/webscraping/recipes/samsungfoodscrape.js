@@ -24,7 +24,7 @@ export async function extractSamsungHtml({ url }) {
     const samsungExternalLink = $(`a.s46604`).attr(`href`);
     const scrapedHtml = await extractHtml({ url: samsungExternalLink });
     return await extractSchemaRecipe({ html: scrapedHtml });
-  } catch (error) {
+  } catch {
     return await extractSamsungSchemaRecipe({ html });
   }
 }

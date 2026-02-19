@@ -19,8 +19,8 @@ router.post(
   tryCatch(upload.single("photo")),
   tryCatch(async (req, res) => {
     let recipe = JSON.parse(req.body.updatedRecipe);
-    var key = null;
-    var thumbnailKey = null;
+    let key = null;
+    let thumbnailKey = null;
 
     if (req.file) {
       key = await uploadFileToS3(req.file);

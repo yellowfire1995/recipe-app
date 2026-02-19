@@ -4,10 +4,10 @@ import "dotenv/config";
 export async function searchSolr(ingredient, measure) {
   try {
     const ingredientString = ingredient.toString();
-    const addFuzzySearch = ingredientString
-      .split(" ")
-      .map((word) => word + "~")
-      .join(" ");
+    // const addFuzzySearch = ingredientString
+    //   .split(" ")
+    //   .map((word) => word + "~")
+    //   .join(" ");
 
     console.log(ingredientString);
     const searchResult = await axios.post(

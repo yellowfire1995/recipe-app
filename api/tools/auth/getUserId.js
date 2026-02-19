@@ -2,7 +2,7 @@ import axios from "axios";
 import { AppError } from "../error/AppError.js";
 
 export async function getUserId(req, res, next) {
-  let config = {
+  const config = {
     method: "get",
     maxBodyLength: Infinity,
     url: process.env.AUTH0_VERIFY,

@@ -74,7 +74,7 @@ export async function uploadDualSizesUrlToS3(link) {
     ContentType: contentType,
   };
 
-  var command = new PutObjectCommand(params);
+  let command = new PutObjectCommand(params);
   await S3.send(command);
 
   const thumbnailBuffer = await sharp(buffer).webp().resize(500).toBuffer();
@@ -97,7 +97,7 @@ export async function uploadUrlToS3(link) {
     const response = await axios.get(link, {
       responseType: "arraybuffer",
     });
-    let buffer = Buffer.from(response.data, "utf-8");
+    const buffer = Buffer.from(response.data, "utf-8");
 
     const imageVerification = await sharp(buffer).metadata();
     if (!imageVerification.format) {

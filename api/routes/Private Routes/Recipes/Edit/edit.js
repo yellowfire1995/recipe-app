@@ -21,10 +21,10 @@ export async function checkAuth(req, res, next) {
     values: [recipe.recipeId],
   };
 
-  let data = await db.query(query);
+  const data = await db.query(query);
 
   if (
-    data.rows[0].author == req.auth.payload.sub ||
+    data.rows[0].author === req.auth.payload.sub ||
     req.auth.payload[process.env.AUTH0_ROLES].includes("Admin")
   ) {
     next();
@@ -45,7 +45,7 @@ router.post(
     if (req.file) {
       key = await uploadFileToS3(req.file);
       thumbnailKey = await resizeAndUploadFileToS3(req.file);
-    } else if (recipe.imgUrl != recipe.originalUrl) {
+    } else if (recipe.imgUrl !== recipe.originalUrl) {
       ({ key, thumbnailKey } = await uploadDualSizesUrlToS3(recipe.imgUrl));
     }
 
@@ -129,7 +129,7 @@ router.post(
         JSON.stringify(recipe.cuisine),
         JSON.stringify(recipe.category),
         isNaN(recipe.yieldNumber) ? null : recipe.yieldNumber,
-        recipe.yieldDescription == "" ? null : recipe.yieldDescription,
+        recipe.yieldDescription === "" ? null : recipe.yieldDescription,
         thumbnailKey || recipe.thumbnail,
         recipe.public, //13
       ],

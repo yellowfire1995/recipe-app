@@ -10,7 +10,7 @@ router.get(
   tryCatch(async (req, res) => {
     const auth = req.auth;
     const sqlSearch =
-      req.query.search == "null" || req.query.search == "undefined"
+      req.query.search === "null" || req.query.search === "undefined"
         ? "%"
         : "%" + req.query.search.toLowerCase() + "%";
 
@@ -59,7 +59,7 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
         sort,
       ),
       values: [
-        req.query.page == "null"
+        req.query.page === "null"
           ? 0
           : (parseInt(req.query.page) - 1) * pageSize,
         sqlSearch,

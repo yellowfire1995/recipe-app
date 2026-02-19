@@ -26,7 +26,7 @@ export async function extractSchemaRecipe({ html }) {
     }
   } catch (error) {
     console.log(error);
-    throw new Error("Error! Unable to extract recipe.");
+    throw new Error("Error! Unable to extract recipe.", { cause: error });
   }
 }
 
@@ -56,6 +56,6 @@ export async function extractSamsungSchemaRecipe({ html }) {
     return recipe;
   } catch (error) {
     console.log(error);
-    throw new Error("Error! Unable to extract recipe.");
+    throw new Error("Error! Unable to extract recipe.", { cause: error });
   }
 }

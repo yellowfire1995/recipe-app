@@ -11,7 +11,7 @@ const router = express.Router();
 let refreshToken;
 
 if (_.ENV === "production") {
-  refreshToken = await getManagementToken();
+  refreshToken = getManagementToken();
   console.log("production token loaded");
 }
 
