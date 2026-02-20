@@ -8,7 +8,9 @@ export default function parseDirections(directions) {
     .split("\n")
     .filter((direction) => direction !== "");
 
-  for (let i = 0; i < directionLines.length; i++) {
+  const limit = Math.min(directionLines.length, 50);
+
+  for (let i = 0; i < limit; i++) {
     const directionList = {
       id: i,
       step_num: i,

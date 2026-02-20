@@ -6,7 +6,7 @@ import { extractSamsungHtml } from "./samsungfoodscrape.js";
 
 const proxyAgent = process.env.PROXY_AGENT;
 
-function validateRecipeUrl(rawUrl) {
+export function validateRecipeUrl(rawUrl) {
   let parsed;
   try {
     parsed = new URL(rawUrl);
@@ -27,13 +27,16 @@ function validateRecipeUrl(rawUrl) {
   return parsed.href;
 }
 
-export default async function getRecipe({ url, html }) {
+export async function getRecipe({ url, html }) {
   try {
-    if (url && url.match(/(samsungfood)/)) {
-      return await extractSamsungHtml({ url });
-    } else if (url) {
-      const scrapedHtml = await extractHtml({ url });
-      return await extractSchemaRecipe({ html: scrapedHtml });
+    if (url) {
+      const safeUrl = validateRecipeUrl(url); //
+      if (safeUrl.match(/(samsungfood)/)) {
+        return await extractSamsungHtml({ url: safeUrl });
+      } else {
+        const scrapedHtml = await extractHtml({ url: safeUrl });
+        return await extractSchemaRecipe({ html: scrapedHtml });
+      }
     } else if (html) {
       return await extractSchemaRecipe({ html });
     }
@@ -55,9 +58,10 @@ export async function extractHtml({ url }) {
 }
 
 async function extractHtmlNoProxy({ url }) {
-  const scrapedHtml = await axios.get(url, {
-    httpAgent: useAgent(url),
-    httpsAgent: useAgent(url),
+  const safeUrl = validateRecipeUrl(url);
+  const scrapedHtml = await axios.get(safeUrl, {
+    httpAgent: useAgent(safeUrl),
+    httpsAgent: useAgent(safeUrl),
   });
   return scrapedHtml.data;
 }

@@ -7,6 +7,7 @@ import axios from "axios";
 import { useAgent } from "request-filtering-agent";
 import sharp from "sharp";
 import { v4 as uuidv4 } from "uuid";
+import { validateRecipeUrl } from "../webscraping/recipes/scraperecipe.js";
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketEndpoint = process.env.BUCKET_ENDPOINT;
@@ -52,10 +53,12 @@ export async function uploadFileToS3(file) {
 }
 
 export async function uploadDualSizesUrlToS3(url) {
+  const safeUrl = validateRecipeUrl(url);
   const key = uuidv4();
   const thumbnailKey = uuidv4();
-  const response = await axios.get(url, {
-    agent: useAgent(url),
+  const response = await axios.get(safeUrl, {
+    httpAgent: useAgent(safeUrl),
+    httpsAgent: useAgent(safeUrl),
     responseType: "arraybuffer",
   });
   const contentType = response.headers["content-type"];
