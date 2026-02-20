@@ -9,7 +9,6 @@ export async function searchSolr(ingredient, measure) {
     //   .map((word) => word + "~")
     //   .join(" ");
 
-    console.log(ingredientString);
     const searchResult = await axios.post(
       `${process.env.SOLR_HOST}/solr/allIngredients/select`,
       {

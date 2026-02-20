@@ -34,8 +34,8 @@
     "pg-format": "^1.0.4",
     "pg-pool": "^3.11.0",
     "playwright-core": "^1.58.2",
+    "request-filtering-agent": "^3.2.0",
     "sharp": "^0.34.5",
-    "ssrf-req-filter": "^1.1.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

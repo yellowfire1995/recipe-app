@@ -1,30 +1,30 @@
 import axios from "axios";
-import { createSsrfAgent } from "ssrf-req-filter";
+import { useAgent } from "request-filtering-agent";
 import { extractSchemaRecipe } from "./extractschema.js";
 import { extractSamsungHtml } from "./samsungfoodscrape.js";
 
 const proxyAgent = process.env.PROXY_AGENT;
 
-// function validateRecipeUrl(rawUrl) {
-//   let parsed;
-//   try {
-//     parsed = new URL(rawUrl);
-//   } catch {
-//     throw new Error("Invalid URL.");
-//   }
+function validateRecipeUrl(rawUrl) {
+  let parsed;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    throw new Error("Invalid URL.");
+  }
 
-//   if (!["http:", "https:"].includes(parsed.protocol)) {
-//     throw new Error("Only HTTP/HTTPS URLs are permitted.");
-//   }
+  if (!["http:", "https:"].includes(parsed.protocol)) {
+    throw new Error("Only HTTP/HTTPS URLs are permitted.");
+  }
 
-//   const blocked =
-//     /^(localhost|127\.|0\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.)/;
-//   if (blocked.test(parsed.hostname)) {
-//     throw new Error("Internal URLs are not permitted.");
-//   }
+  const blocked =
+    /^(localhost|127\.|0\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.)/;
+  if (blocked.test(parsed.hostname)) {
+    throw new Error("Internal URLs are not permitted.");
+  }
 
-//   return parsed.href;
-// }
+  return parsed.href;
+}
 
 export default async function getRecipe({ url, html }) {
   try {
@@ -54,19 +54,15 @@ export async function extractHtml({ url }) {
 }
 
 async function extractHtmlNoProxy({ url }) {
-  const agent = await createSsrfAgent(url);
-  const scrapedHtml = await axios.get(url, {
-    httpAgent: agent,
-    httpsAgent: agent,
+  const safeUrl = validateRecipeUrl(url);
+  const scrapedHtml = await axios.get(safeUrl, {
+    httpAgent: proxyAgent,
+    httpsAgent: proxyAgent,
   });
   return scrapedHtml.data;
 }
 
 async function extractHtmlWithProxy({ url }) {
-  const agent = await createSsrfAgent(url, { proxy: proxyAgent });
-  const scrapedHtml = await axios.get(url, {
-    httpAgent: agent,
-    httpsAgent: agent,
-  });
+  const scrapedHtml = await axios.get(url, { agent: useAgent(url) });
   return scrapedHtml.data;
 }

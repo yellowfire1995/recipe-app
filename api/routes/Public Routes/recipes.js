@@ -265,7 +265,7 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
     };
 
     const data = await db.query(query);
-    console.log(data.rows[0]);
+
     const isRecipeAuthor = data.rows[0]?.author === req.auth?.payload.sub;
     const isPublicRecipe = data.rows[0]?.public;
     const isAdmin = req.auth?.payload[roles].includes("Admin");
