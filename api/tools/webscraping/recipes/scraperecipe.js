@@ -1,4 +1,5 @@
 import axios from "axios";
+import { HttpsProxyAgent } from "https-proxy-agent";
 import { useAgent } from "request-filtering-agent";
 import { extractSchemaRecipe } from "./extractschema.js";
 import { extractSamsungHtml } from "./samsungfoodscrape.js";
@@ -54,15 +55,19 @@ export async function extractHtml({ url }) {
 }
 
 async function extractHtmlNoProxy({ url }) {
-  const safeUrl = validateRecipeUrl(url);
-  const scrapedHtml = await axios.get(safeUrl, {
-    httpAgent: proxyAgent,
-    httpsAgent: proxyAgent,
+  const scrapedHtml = await axios.get(url, {
+    httpAgent: useAgent(url),
+    httpsAgent: useAgent(url),
   });
   return scrapedHtml.data;
 }
 
 async function extractHtmlWithProxy({ url }) {
-  const scrapedHtml = await axios.get(url, { agent: useAgent(url) });
+  const agent = new HttpsProxyAgent(proxyAgent);
+  const safeUrl = validateRecipeUrl(url);
+  const scrapedHtml = await axios.get(safeUrl, {
+    httpAgent: agent,
+    httpsAgent: agent,
+  });
   return scrapedHtml.data;
 }
