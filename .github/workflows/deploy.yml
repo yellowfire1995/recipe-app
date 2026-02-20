@@ -63,7 +63,7 @@ jobs:
           path: ./recipe-app/dist/
   deploy:
     runs-on: ubuntu-latest
-    permissions:
+    permissions: {}
     needs: [build-backend, build-frontend]
     steps:
       - name: Download dist artifact
