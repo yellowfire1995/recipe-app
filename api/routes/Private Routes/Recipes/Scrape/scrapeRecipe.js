@@ -14,13 +14,15 @@ router.post(
     let html;
     const url = req.body.url;
 
-    // Decompress HTML if file was uploaded
+    if (url !== undefined && typeof url !== "string") {
+      return res.status(400).json({ error: "Invalid URL." });
+    }
+
     if (req.file) {
       const decompressed = pako.inflate(req.file.buffer);
       html = Buffer.from(decompressed).toString("utf-8");
     }
 
-    // Pass to getRecipe
     const recipe = await getRecipe({ url, html });
     res.json(recipe);
   }),
