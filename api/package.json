@@ -23,6 +23,7 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "express-oauth2-jwt-bearer": "^1.7.4",
+    "express-rate-limit": "^8.2.1",
     "helmet": "^8.1.0",
     "https-proxy-agent": "^7.0.6",
     "multer": "^2.0.2",
@@ -34,10 +35,11 @@
     "pg-pool": "^3.11.0",
     "playwright-core": "^1.58.2",
     "sharp": "^0.34.5",
+    "ssrf-req-filter": "^1.1.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.39.2",
     "eslint": "^9.39.2",
     "eslint-plugin-n": "^17.24.0"
   }

@@ -35,6 +35,8 @@ jobs:
           tags: ghcr.io/${{ github.repository_owner }}/cookbookcalc-api:latest
   build-frontend:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -61,6 +63,7 @@ jobs:
           path: ./recipe-app/dist/
   deploy:
     runs-on: ubuntu-latest
+    permissions:
     needs: [build-backend, build-frontend]
     steps:
       - name: Download dist artifact

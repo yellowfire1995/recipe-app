@@ -5,6 +5,7 @@ import {
 } from "@aws-sdk/client-s3";
 import axios from "axios";
 import sharp from "sharp";
+import { createSsrfAgent } from "ssrf-req-filter";
 import { v4 as uuidv4 } from "uuid";
 
 const bucketName = process.env.BUCKET_NAME;
@@ -50,10 +51,13 @@ export async function uploadFileToS3(file) {
   return key;
 }
 
-export async function uploadDualSizesUrlToS3(link) {
+export async function uploadDualSizesUrlToS3(url) {
+  const agent = await createSsrfAgent(url);
   const key = uuidv4();
   const thumbnailKey = uuidv4();
-  const response = await axios.get(link, {
+  const response = await axios.get(url, {
+    httpAgent: agent,
+    httpsAgent: agent,
     responseType: "arraybuffer",
   });
   const contentType = response.headers["content-type"];
