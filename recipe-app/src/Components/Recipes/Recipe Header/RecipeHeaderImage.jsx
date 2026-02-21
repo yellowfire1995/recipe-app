@@ -1,5 +1,5 @@
-import Row from "react-bootstrap/esm/Row";
 import CardImg from "react-bootstrap/esm/CardImg";
+import Row from "react-bootstrap/esm/Row";
 import { useRecipeContext } from "../RecipeContextProvider";
 
 export function RecipeHeaderImage() {

@@ -20,7 +20,7 @@ export default function AddRecipe() {
   const [ingredientList, setIngredientList] = useState([]);
   const [recipe, setRecipe] = useState({
     name: "",
-    imgUrl: "",
+    imgUrl: null,
     servings: 1,
     cuisine: [],
     ingredients: [],
@@ -37,7 +37,7 @@ export default function AddRecipe() {
       return { ...recipe[0], name: `Copy of ${recipe[0].name}` };
     },
     staleTime: Infinity,
-    enabled: params.get("copy") !== undefined,
+    enabled: params.get("copy") !== null,
   });
 
   useEffect(() => {
