@@ -1,0 +1,51 @@
+name: Deploy
+on:
+  workflow_dispatch:
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Install and build
+        working-directory: ./recipe-app
+        run: |
+          npm ci
+          npm run build
+        env:
+          VITE_SERVER_HOST: "/api"
+          VITE_DOMAIN: "walkerfamilyfarm.us.auth0.com"
+          VITE_REDIRECT_URI: "https://cookbookcalc.com/"
+          VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+          VITE_AUDIENCE: "https://walkerfamilyfarm.us.auth0.com/api/v2/"
+          VITE_ROLES: "https://cookbookcalc.com/roles"
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: frontend-dist
+          path: ./recipe-app/dist/
+  deploy:
+    runs-on: ubuntu-latest
+    permissions: {}
+    needs: [build-frontend]
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: frontend-dist
+          path: ./dist
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+      - name: Rsync dist to server
+        run: |
+          rsync -avz --delete ./dist/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/ubuntu/docker/cookbookcalc/site
