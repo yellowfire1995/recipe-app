@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy-Frontend-Only
 on:
   workflow_dispatch:
 jobs:
