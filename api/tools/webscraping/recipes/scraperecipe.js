@@ -24,6 +24,12 @@ export function validateRecipeUrl(rawUrl) {
     throw new Error("Internal URLs are not permitted.");
   }
 
+  const ipv4Literal = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+  const ipv6Literal = /^(?:[A-Fa-f0-9]{0,4}:){2,7}[A-Fa-f0-9]{0,4}$/;
+  if (ipv4Literal.test(parsed.hostname) || ipv6Literal.test(parsed.hostname)) {
+    throw new Error("IP address URLs are not permitted.");
+  }
+
   return parsed.href;
 }
 
