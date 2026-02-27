@@ -174,6 +174,7 @@ export default function EditIngredientModal({
             <Form.Control
               id="searchModal"
               type="textbox"
+              data-testid="searchBoxOnModal"
               placeholder="Enter new ingredient (e.g. 1 cup flour)"
             />
             <Button
@@ -182,7 +183,7 @@ export default function EditIngredientModal({
               htmlFor="search"
               onClick={async () => {
                 const newArray = await parseIngredients(
-                  element("searchModal").value
+                  element("searchModal").value,
                 );
 
                 if (newArray.length > 0) {
