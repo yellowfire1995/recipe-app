@@ -16,16 +16,16 @@ jobs:
         run: |
           rsync -av --exclude='.git' \
             ${{ github.workspace }}/api/ \
-            ~/docker/cookbookcalc/recipe-app/api/
+            /home/ubuntu/docker/cookbookcalc/recipe-app/api/
 
       - name: Sync frontend code to stack
         run: |
           rsync -av --exclude='.git' --exclude='node_modules' \
             ${{ github.workspace }}/recipe-app/ \
-            ~/docker/cookbookcalc/recipe-app/recipe-app/
+            /home/ubuntu/docker/cookbookcalc/recipe-app/recipe-app/
 
       - name: Rebuild and restart stack
-        working-directory: ~/cookbookcalc
+        working-directory: /home/ubuntu/docker/cookbookcalc
         run: docker compose -f docker-compose-dev.yml up -d --build --wait
 
       - name: Install Playwright dependencies
@@ -58,5 +58,6 @@ jobs:
       - name: Restore stack to main on failure
         if: failure()
         run: |
-          cd ~/cookbookcalc && git checkout main
+          cd /home/ubuntu/docker/cookbookcalc/recipe-app && git checkout main
+          cd /home/ubuntu/docker/cookbookcalc/
           docker compose -f docker-compose-dev.yml up -d --build --wait
