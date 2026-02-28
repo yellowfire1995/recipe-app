@@ -1,0 +1,49 @@
+name: Playwright Tests
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  test:
+    runs-on: [self-hosted, vps]
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+          cache-dependency-path: recipe-app/recipe-app/package-lock.json
+
+      - name: Install Playwright dependencies
+        working-directory: ./recipe-app/recipe-app
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Wait for stack to be healthy
+        run: |
+          echo "Waiting for frontend..."
+          timeout 60 bash -c 'until curl -sf http://localhost:5173 > /dev/null; do sleep 2; done'
+          echo "Waiting for API..."
+          timeout 60 bash -c 'until curl -sf http://localhost:3000 > /dev/null; do sleep 2; done'
+
+      - name: Run Playwright tests
+        working-directory: ./recipe-app/recipe-app
+        env:
+          TEST_USER: ${{ secrets.TEST_USER }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          BASE_URL: http://localhost:5173
+        run: npx playwright test --project=dev
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: playwright-report
+          path: recipe-app/recipe-app/playwright-report/
+          retention-days: 7
