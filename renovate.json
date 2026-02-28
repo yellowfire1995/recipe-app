@@ -1,10 +1,23 @@
 {
-  "extends": ["config:base"],
+  "extends": [
+    "config:recommended",
+    ":maintainLockFilesWeekly"
+  ],
   "platformAutomerge": true,
+  "automergeType": "pr",
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "automerge": true
+    },
+    {
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false
     }
   ]
 }

@@ -24,7 +24,7 @@ export function RecipeHeader({ buttons, credit }) {
       </Row>
       <Row className="justify-content-between text-break">
         <Col xs="auto">
-          <h2>{title}</h2>
+          <h2 data-testid="recipe-title">{title}</h2>
         </Col>
         <Col xs="auto" className="d-flex align-items-center text-nowrap">
           <RecipeRating

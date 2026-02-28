@@ -41,7 +41,7 @@ const limiter = rateLimit({
   // store: ... , // Redis, Memcached, etc. See below.
 });
 
-const whitelist = [ENV.HOST];
+const whitelist = ENV.HOST?.split(",").map(s => s.trim()) || [];
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (same-origin requests from reverse proxy)
