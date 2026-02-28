@@ -26,7 +26,7 @@ jobs:
 
       - name: Rebuild and restart stack
         working-directory: ~/cookbookcalc
-        run: docker compose up -d --build --wait
+        run: docker compose -f docker-compose-dev.yml up -d --build --wait
 
       - name: Install Playwright dependencies
         run: |
@@ -59,4 +59,4 @@ jobs:
         if: failure()
         run: |
           cd ~/cookbookcalc && git checkout main
-          docker compose up -d --build --wait
+          docker compose -f docker-compose-dev.yml up -d --build --wait
