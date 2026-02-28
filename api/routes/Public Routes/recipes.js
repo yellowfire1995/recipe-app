@@ -31,7 +31,7 @@ async function checkAuth(req, res, next) {
   const data = await db.query(query);
   const isRecipeAuthor =
     data.rows[0].author && data.rows[0].author === req.auth?.payload.sub;
-  const isAdmin = req.auth?.payload[roles].includes("Admin");
+  const isAdmin = req.auth?.payload[roles]?.includes("Admin");
 
   if (isRecipeAuthor || isAdmin) {
     next();
@@ -268,7 +268,7 @@ where r.recipe_id = recipes.recipe_id  ) as rating,
 
     const isRecipeAuthor = data.rows[0]?.author === req.auth?.payload.sub;
     const isPublicRecipe = data.rows[0]?.public;
-    const isAdmin = req.auth?.payload[roles].includes("Admin");
+    const isAdmin = req.auth?.payload[roles]?.includes("Admin");
     const isNoRecipe = data.rows.length < 1;
 
     if ((!isRecipeAuthor && !isPublicRecipe && !isAdmin) || isNoRecipe) {
@@ -305,8 +305,8 @@ router.delete(
     if (
       req.body.imgUrl !== null &&
       req.body.thumbnail !== null &&
-      req.body.imgUrl.startsWith(IMAGES_HOST) &&
-      req.body.thumbnail.startsWith(IMAGES_HOST)
+      req.body.imgUrl?.startsWith(IMAGES_HOST) &&
+      req.body.thumbnail?.startsWith(IMAGES_HOST)
     ) {
       await deleteFromS3(req.body.imgName);
       await deleteFromS3(req.body.thumbnailName);

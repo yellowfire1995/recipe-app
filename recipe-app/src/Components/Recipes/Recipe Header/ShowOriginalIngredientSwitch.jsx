@@ -20,7 +20,7 @@ export function ShowOriginalingredientSwitch({ label = "Original Names" }) {
           type="switch"
           checked={
             recipe.ingredients.every(
-              (ingredient) => ingredient.displayOriginalName
+              (ingredient) => ingredient.displayOriginalName,
             ) && recipe.ingredients.length > 0
           }
           onChange={(e) => {
@@ -35,7 +35,8 @@ export function ShowOriginalingredientSwitch({ label = "Original Names" }) {
             });
           }}
           label={label}
-         />{" "}
+          data-testid="originalIngredientNamesCheckbox"
+        />{" "}
         <OverlayTrigger
           trigger={["hover", "focus", "click"]}
           placement="bottom-end"

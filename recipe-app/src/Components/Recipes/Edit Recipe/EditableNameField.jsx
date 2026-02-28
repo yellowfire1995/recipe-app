@@ -7,20 +7,21 @@ export function EditableNameField() {
 
   return (
     <FloatingLabel label="Recipe name" className="p-0">
-        <Form.Control
-          size="lg"
-          required
-          minLength="2"
-          maxLength="40"
-          type="text"
-          value={recipe.name}
-          onChange={(e) =>
-            setRecipe({
-              ...recipe,
-              name: e.target.value,
-            })
-          }
-        />
-      </FloatingLabel>
+      <Form.Control
+        id="recipeName"
+        size="lg"
+        required
+        minLength="2"
+        maxLength="40"
+        type="text"
+        value={recipe.name}
+        onChange={(e) =>
+          setRecipe({
+            ...recipe,
+            name: e.target.value,
+          })
+        }
+      />
+    </FloatingLabel>
   );
 }
