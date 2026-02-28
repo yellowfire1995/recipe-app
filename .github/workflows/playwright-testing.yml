@@ -1,7 +1,10 @@
 name: Playwright Tests
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:
+  
 
 jobs:
   test:
@@ -26,7 +29,16 @@ jobs:
 
       - name: Rebuild and restart stack
         working-directory: /home/ubuntu/docker/cookbookcalc
-        run: docker compose -f docker-compose-dev.yml up -d --build --wait
+        run: |
+          docker compose -f docker-compose-dev.yml up -d --wait
+          docker compose -f docker-compose-dev.yml up -d --force-recreate --no-deps api frontend
+
+      - name: Warm up frontend
+        run: |
+          echo "Warming up frontend..."
+          timeout 120 bash -c 'until curl -sf http://localhost:5173 > /dev/null; do sleep 3; done'
+          # Give Vite time to compile after first hit
+          sleep 10
 
       - name: Install Node
         uses: actions/setup-node@v4
@@ -37,13 +49,6 @@ jobs:
         run: |
           npm ci
           npx playwright install --with-deps chromium
-
-      # - name: Wait for stack to be healthy
-      #   run: |
-      #     echo "Waiting for frontend..."
-      #     timeout 120 bash -c 'until curl -sf http://localhost:5173 > /dev/null; do sleep 3; done'
-      #     echo "Waiting for API..."
-      #     timeout 120 bash -c 'until curl -s http://localhost:3000 > /dev/null; do sleep 3; done'
 
       - name: Run Playwright tests
         env:
