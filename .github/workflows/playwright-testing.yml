@@ -5,7 +5,7 @@ on:
 
 jobs:
   test:
-    runs-on: [self-hosted, vps]
+    runs-on: [self-hosted]
     timeout-minutes: 60
 
     steps:
