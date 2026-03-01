@@ -8,7 +8,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  
+
 jobs:
   test:
     runs-on: [self-hosted]
@@ -71,6 +71,15 @@ jobs:
       - name: Restore stack to main on failure
         if: failure()
         run: |
-          cd /home/ubuntu/docker/cookbookcalc/recipe-app && git checkout main
-          cd /home/ubuntu/docker/cookbookcalc/
-          docker compose -f docker-compose-dev.yml up -d --build --wait
+          # Checkout main in the runner workspace
+          git checkout main
+          git pull origin main
+          # Rsync main back to the stack
+          rsync -av --exclude='.git' \
+            ${{ github.workspace }}/api/ \
+            /home/ubuntu/docker/cookbookcalc/recipe-app/api/
+          rsync -av --exclude='.git' --exclude='node_modules' \
+            ${{ github.workspace }}/recipe-app/ \
+            /home/ubuntu/docker/cookbookcalc/recipe-app/recipe-app/
+          cd /home/ubuntu/docker/cookbookcalc
+          docker compose -f docker-compose-dev.yml up -d --force-recreate --no-deps api frontend --wait

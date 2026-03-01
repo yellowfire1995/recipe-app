@@ -56,7 +56,6 @@ export default defineConfig({
         baseURL: "https://cookbookcalc.com",
         storageState: SESSION_PATH,
       },
-      dependencies: ["setup"],
     },
   ],
 });
