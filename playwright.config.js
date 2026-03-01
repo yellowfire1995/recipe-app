@@ -54,7 +54,6 @@ export default defineConfig({
       use: {
         ...devices["Desktop Chrome"],
         baseURL: "https://cookbookcalc.com",
-        storageState: SESSION_PATH,
       },
     },
   ],
