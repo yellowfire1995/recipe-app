@@ -9,6 +9,7 @@ import {
   scrapeRecipe,
 } from "../../../../db/queries";
 import { isValidHTML, isValidUrl } from "../../../utils/isValidUrl";
+import { AddRecipeScan } from "../New Recipe/AddRecipeScan";
 import { useRecipeContext } from "../RecipeContextProvider";
 
 async function handleImport({ scrapedData, recipe, setRecipe, url }) {
@@ -105,6 +106,10 @@ export function EditableUrlField() {
         >
           {isPending ? "Importing..." : "Import"}
         </Button>
+      </Col>
+      <Col md={2} className="d-flex ps-md-0">
+        <AddRecipeScan />
+        {/* <input type="file" className="d-none" id="file" name="file" multiple /> */}
       </Col>
       {isValidHTML(recipe.importBox) ? (
         <Col md={2} className="d-flex ps-md-0">

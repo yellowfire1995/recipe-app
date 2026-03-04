@@ -69,6 +69,23 @@ export async function newRecipe(updatedRecipe) {
   }
 }
 
+//Send photo scan of recipe
+export async function photoImport({ scanArray }) {
+  try {
+    const formData = new FormData();
+
+    scanArray.forEach((scan) => {
+      formData.append("scanArray", scan);
+    });
+
+    const response = await httpClient.post(`${server}/photoimport`, formData);
+
+    return response;
+  } catch (error) {
+    return Promise.reject(error.response);
+  }
+}
+
 //Save price info from popup modal on recipe page
 export async function savePrice(pkgGrms, pkgCost, url, fdc_id) {
   try {
