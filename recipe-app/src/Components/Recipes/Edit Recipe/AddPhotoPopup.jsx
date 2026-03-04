@@ -99,7 +99,7 @@ export function AddPhotoPopup({ setShowPopup, showPopup }) {
                 document.getElementById("photoFile").files[0];
               const compressedImage = await imageCompression(
                 originalImageFile,
-                { maxSizeMB: 5, useWebWorker: true }
+                { maxSizeMB: 5, useWebWorker: true },
               );
               setRecipe({
                 ...recipe,
