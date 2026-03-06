@@ -61,11 +61,12 @@ const corsOptions = {
 };
 
 // Apply the rate limiting middleware to all requests.
+app.set("trust proxy", 1);
 app.use(limiter);
 
 app.use(express.static("public"));
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(bodyParser.json());
 
