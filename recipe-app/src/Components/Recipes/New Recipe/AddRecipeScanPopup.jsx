@@ -95,7 +95,7 @@ export function AddRecipeScanPopup({ setShowPopup, showPopup }) {
 
       <Modal.Body>
         <Container>
-          <Row>
+          <Row className="justify-content-center">
             {fileArray.map((scan, idx) => {
               const preview = URL.createObjectURL(scan);
               return (
