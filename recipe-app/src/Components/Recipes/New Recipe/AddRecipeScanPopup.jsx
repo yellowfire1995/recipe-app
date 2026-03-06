@@ -1,49 +1,127 @@
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
 import Button from "react-bootstrap/esm/Button";
-import Col from "react-bootstrap/esm/Col";
 import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/esm/Row";
-import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
-import { photoImport } from "../../../../db/queries";
+import { toast } from "react-toastify";
+import {
+  parseDirections,
+  parseIngredients,
+  photoImport,
+} from "../../../../db/queries";
 import { useRecipeContext } from "../RecipeContextProvider";
+
+async function handleScan({
+  ingredientString,
+  directionString,
+  name,
+  servings,
+  recipe,
+  setRecipe,
+}) {
+  const choices = ingredientString
+    ? await parseIngredients(ingredientString)
+    : null;
+  const directions = directionString
+    ? await parseDirections(directionString)
+    : null;
+
+  setRecipe({
+    ...recipe,
+    directions: directions,
+    name: name ? name : "",
+    ingredients: choices.map((choice) => {
+      return { ...choice[0], searchArray: choice };
+    }),
+    servings: servings ? servings : 1,
+    ingredientText: ingredientString,
+    directionText: directionString,
+  });
+}
+
+function handleDeleteImage({ fileArray, setFileArray, imageIndex }) {
+  const filteredArray = fileArray.filter((file, index) => index !== imageIndex);
+  setFileArray(filteredArray);
+}
 
 export function AddRecipeScanPopup({ setShowPopup, showPopup }) {
   const { recipe, setRecipe } = useRecipeContext();
-  const [scanPictures, setScanPictures] = useState();
-  const [fileArray, setFileArray] = useState(null);
-  const [fileList, setFileList] = useState();
+  const [fileArray, setFileArray] = useState([]);
+
   const handleClose = () => {
-    setScanPictures();
     setShowPopup(!showPopup);
+    setFileArray([]);
   };
 
+  const handleShow = () => {
+    document.getElementById("recipeFile").click();
+  };
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async () => {
+      const { data } = await photoImport({
+        scanArray: fileArray,
+      });
+      handleScan({
+        name: data?.name || null,
+        servings: data.servings || 1,
+        ingredientString: data.ingredientString,
+        directionString: data.directionString,
+        setRecipe,
+        recipe,
+      });
+    },
+    onError: () => {
+      toast.error("Error scanning recipe, please try again later.");
+    },
+    onSuccess: async () => {
+      setShowPopup(false);
+      setFileArray([]);
+    },
+  });
+
   return (
-    <Modal show={showPopup} onHide={handleClose} animation={true} size="lg">
+    <Modal
+      show={showPopup}
+      onHide={handleClose}
+      onShow={handleShow}
+      animation={true}
+      size="lg"
+    >
       <Modal.Header closeButton>
-        <Modal.Title>Scan Recipe</Modal.Title>
+        <Modal.Title>Import Via Photo</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <Container>
           <Row>
-            {fileArray &&
-              fileArray.map((scan, idx) => {
-                const preview = URL.createObjectURL(scan);
-                return (
-                  <img key={idx} src={preview} style={{ width: "100px" }} />
-                );
-              })}
+            {fileArray.map((scan, idx) => {
+              const preview = URL.createObjectURL(scan);
+              return (
+                <div
+                  className="recipe-scan-image"
+                  key={idx}
+                  onClick={() =>
+                    handleDeleteImage({
+                      fileArray,
+                      setFileArray,
+                      imageIndex: idx,
+                    })
+                  }
+                >
+                  <img src={preview} style={{ width: "100px" }} />
+                </div>
+              );
+            })}
           </Row>
           <Row className="align-items-center">
-            <Col>Upload:</Col>
             <Col xs={10} className="d-flex">
               <Form.Control
                 id="recipeFile"
                 onChange={(e) => {
                   if (e.target.files) {
-                    setFileList(e.target.files);
-                    setFileArray(Array.from(e.target.files));
+                    setFileArray(fileArray.concat(Array.from(e.target.files)));
                   }
                 }}
                 className=""
@@ -51,42 +129,38 @@ export function AddRecipeScanPopup({ setShowPopup, showPopup }) {
                 name="uploadFile"
                 accept="image/*"
                 multiple
+                hidden
               />
-              <Button
-                onClick={() => {
-                  setFileArray();
-                  document.getElementById("recipeFile").value = "";
-                }}
-              >
-                Clear
-              </Button>
             </Col>
           </Row>
         </Container>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
+        <Button
+          variant="secondary"
+          onClick={() => {
+            document.getElementById("recipeFile").value = "";
+            setFileArray([]);
+          }}
+        >
+          Clear
+        </Button>
+        <Button
+          variant="primary"
+          onClick={() => {
+            document.getElementById("recipeFile").click();
+          }}
+        >
+          Add Photo(s)
         </Button>
         <Button
           variant="primary"
           htmlFor="photoUrl"
           type="button"
-          disabled={!fileArray}
-          onClick={async () => {
-            const response = await photoImport({
-              scanArray: fileArray,
-            });
-            setRecipe({
-              ...recipe,
-              ingredientText: response.data.ingredientText,
-              directionText: response.data.directionText,
-            });
-            setShowPopup(false);
-            setFileArray();
-          }}
+          disabled={fileArray.length < 1}
+          onClick={mutateAsync}
         >
-          Add
+          {isPending ? "Loading..." : "Continue"}
         </Button>
       </Modal.Footer>
     </Modal>

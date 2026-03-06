@@ -90,7 +90,7 @@ export function EditableUrlField() {
           />
         </FloatingLabel>
       </Col>
-      <Col md={2} className="d-flex ps-md-0">
+      <Col md={2} className="d-flex ps-md-0 pe-md-0">
         <Button
           className="w-100"
           variant="primary"
@@ -106,9 +106,10 @@ export function EditableUrlField() {
         >
           {isPending ? "Importing..." : "Import"}
         </Button>
+
+        <AddRecipeScan className="w-30 ms-2" />
       </Col>
-      <Col md={2} className="d-flex ps-md-0">
-        <AddRecipeScan />
+      <Col xs="auto" className="d-flex ps-md-0 ms-1">
         {/* <input type="file" className="d-none" id="file" name="file" multiple /> */}
       </Col>
       {isValidHTML(recipe.importBox) ? (
