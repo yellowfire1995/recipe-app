@@ -4,12 +4,12 @@ export default function preprocessIngredients(ingredients) {
   //trim list item notations
   const filteredIngredients = ingredients.replace(
     /^[• ?]|^[▢ ?]|(?<=^\d*\.\d{2})\d*|(and)/gm,
-    ""
+    "",
   );
 
   const addPrecedingZero = filteredIngredients.replace(
     /(?<!\d)\.(?=\d+)/gm,
-    "0."
+    "0.",
   );
 
   const matchedIngredientList = parseIngredient(addPrecedingZero);
@@ -18,8 +18,8 @@ export default function preprocessIngredients(ingredients) {
     return {
       ...ingredient,
       description: ingredient.description.replace(
-        / ?\(.*?\)|,(?=[^,]*$)(.*)|\d+/gim,
-        ""
+        / ?\(.*?\)|,(?=[^,]*$)(.*)/gim,
+        "",
       ), //replaces anything within parenthesis or the last comma group of the ingredient
       comment: ingredient.description.match(/ ?\(.*\)|,(?=[^,]*$)(.*)/gi),
     };
