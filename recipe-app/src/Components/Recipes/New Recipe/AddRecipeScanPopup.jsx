@@ -45,6 +45,24 @@ function handleDeleteImage({ fileArray, setFileArray, imageIndex }) {
   setFileArray(filteredArray);
 }
 
+function handleImagePicker({ fileArray, setFileArray, e }) {
+  if (e.target.files) {
+    const currentLength = fileArray.length;
+    const newArray = Array.from(e.target.files);
+    const newArrayLength = newArray.length;
+
+    const photoLimit = 5;
+    const tooManyImages = newArrayLength + currentLength > photoLimit;
+
+    if (tooManyImages) {
+      setFileArray(fileArray.concat(newArray).slice(0, photoLimit));
+      toast.error(`Photo Limit is ${photoLimit.toString()}`);
+    } else {
+      setFileArray(fileArray.concat(newArray));
+    }
+  }
+}
+
 export function AddRecipeScanPopup({ setShowPopup, showPopup }) {
   const { recipe, setRecipe } = useRecipeContext();
   const [fileArray, setFileArray] = useState([]);
@@ -111,6 +129,7 @@ export function AddRecipeScanPopup({ setShowPopup, showPopup }) {
                   }
                 >
                   <img src={preview} style={{ width: "100px" }} />
+                  {Math.round((scan.size / 1024 / 1024) * 100) / 100} MB
                 </div>
               );
             })}
@@ -120,9 +139,7 @@ export function AddRecipeScanPopup({ setShowPopup, showPopup }) {
               <Form.Control
                 id="recipeFile"
                 onChange={(e) => {
-                  if (e.target.files) {
-                    setFileArray(fileArray.concat(Array.from(e.target.files)));
-                  }
+                  handleImagePicker({ fileArray, setFileArray, e });
                 }}
                 className=""
                 type="file"
@@ -136,6 +153,8 @@ export function AddRecipeScanPopup({ setShowPopup, showPopup }) {
         </Container>
       </Modal.Body>
       <Modal.Footer>
+        <p className="me-auto">5 Photo Limit</p>
+
         <Button
           variant="secondary"
           onClick={() => {
@@ -160,7 +179,7 @@ export function AddRecipeScanPopup({ setShowPopup, showPopup }) {
           disabled={fileArray.length < 1}
           onClick={mutateAsync}
         >
-          {isPending ? "Loading..." : "Continue"}
+          {isPending ? "Processing..." : "Continue"}
         </Button>
       </Modal.Footer>
     </Modal>
