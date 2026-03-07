@@ -22,10 +22,10 @@ async function handleScan({
 }) {
   const choices = ingredientString
     ? await parseIngredients(ingredientString)
-    : null;
+    : [];
   const directions = directionString
     ? await parseDirections(directionString)
-    : null;
+    : [];
 
   setRecipe({
     ...recipe,
@@ -34,7 +34,7 @@ async function handleScan({
     ingredients: choices.map((choice) => {
       return { ...choice[0], searchArray: choice };
     }),
-    servings: servings ? servings : 1,
+    servings: parseInt(servings) ? parseInt(servings) : 1,
     ingredientText: ingredientString,
     directionText: directionString,
   });
