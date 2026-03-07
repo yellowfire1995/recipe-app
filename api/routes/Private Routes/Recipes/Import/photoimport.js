@@ -9,7 +9,7 @@ const upload = multer({ storage: storage });
 
 router.post(
   "/",
-  tryCatch(upload.array("scanArray", 3)),
+  tryCatch(upload.array("scanArray", 5)),
   tryCatch(async (req, res) => {
     const extraction = await getPhotoFromAi({ photoArray: req.files });
     res.json(extraction);
