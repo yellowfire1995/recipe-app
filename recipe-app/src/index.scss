@@ -533,3 +533,37 @@ fill:$primary;
   fill:$primary;
 }
 
+.recipe-scan-image {
+  position: relative;
+  display: inline-block;
+  width: fit-content; // shrink-wrap to image size
+  cursor: pointer;
+
+  img {
+    display: block;
+    width: 100px;
+    height: auto;
+    transition: opacity 0.25s ease;
+  }
+
+  &::after {
+    content: '✕';
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.45);
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+
+  &:hover {
+    img { opacity: 0.4; }
+    &::after { opacity: 1; }
+  }
+}

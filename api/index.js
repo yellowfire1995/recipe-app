@@ -12,6 +12,7 @@ import editRoute from "./routes/Private Routes/Recipes/Edit/edit.js";
 import importDirectionsRoute from "./routes/Private Routes/Recipes/Import/directions.js";
 import importIngredientsRoute from "./routes/Private Routes/Recipes/Import/ingredients.js";
 import newRecipeRoute from "./routes/Private Routes/Recipes/Import/newrecipe.js";
+import importPhotoRoute from "./routes/Private Routes/Recipes/Import/photoimport.js";
 import ingredientsRoute from "./routes/Private Routes/Recipes/ingredients.js";
 import myRecipesRoute from "./routes/Private Routes/Recipes/myrecipes.js";
 import RatingRoute from "./routes/Private Routes/Recipes/Rating/rating.js";
@@ -41,7 +42,7 @@ const limiter = rateLimit({
   // store: ... , // Redis, Memcached, etc. See below.
 });
 
-const whitelist = ENV.HOST?.split(",").map(s => s.trim()) || [];
+const whitelist = ENV.HOST?.split(",").map((s) => s.trim()) || [];
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (same-origin requests from reverse proxy)
@@ -60,6 +61,7 @@ const corsOptions = {
 };
 
 // Apply the rate limiting middleware to all requests.
+app.set("trust proxy", 1);
 app.use(limiter);
 
 app.use(express.static("public"));
@@ -77,6 +79,7 @@ app.use(authenticate);
 app.use("/import", importDirectionsRoute);
 app.use("/import", importIngredientsRoute);
 app.use("/import", scrapeRecipeRoute);
+app.use("/photoimport", importPhotoRoute);
 app.use("/categories", categoryRouter);
 app.use("/cuisines", cuisineRouter);
 app.use("/newrecipe", newRecipeRoute);
