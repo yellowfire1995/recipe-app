@@ -16,11 +16,11 @@ export async function searchSolr(ingredient, measure) {
           measure
             ? `sr_secondary:"${measure}"^10 branded_secondary:"${measure}"^5 price:*^10`
             : ""
-        } sr_secondary:*^20 branded_secondary:*^10 description:raw^2 description:generic^2 description:producer^1`,
+        } sr_secondary:*^30 branded_secondary:*^10 description:raw^2 sr_secondary:large^5 description:generic^2 description:producer^1 sr_secondary:pepper`,
         params: {
           defType: "edismax",
           indent: "true",
-          qf: "description^10 upc brand_name brand_owner",
+          qf: "description^10 upc brand_name brand_owner desc1^5",
           rows: "25",
           "q.op": "OR",
           stopwords: "false",

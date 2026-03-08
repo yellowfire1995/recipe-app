@@ -35,24 +35,30 @@ export async function matchIngredients(ingredients) {
                 from food_nutrient fn 
                     join nutrient n on fn.nutrient_id = n.id 
                     where nutrient_id in (1110, 1004, 2000, 1093, 1003, 1089, 1079, 1008, 1253, 1005, 1087, 1258, 1162) and fn.fdc_id =  food.fdc_id) as nutrients,              
-                food.description, food.fdc_id, case 
-                when food.data_type = 'branded_food' 
+                food.description, food.fdc_id, case
+		when food.data_type = 'branded_food' 
                   then coalesce(bf.gram_modifier, um.grams)
-                when food.data_type = 'sr_legacy_food' 
-                  then fp.gram_modifier end as gram_amt,
-                  case 
-                  when food.data_type = 'branded_food' 
+		when food.data_type = 'sr_legacy_food' 
+                  then fp.gram_modifier
+  		when food.data_type = 'survey_fndds_food' 
+                  then fp.gram_modifier
+	end as gram_amt,
+	case
+		when food.data_type = 'branded_food' 
                     then coalesce(bf.alt_label, um.description)
-                  when food.data_type = 'sr_legacy_food' 
-                    then fp.modifier  end as gram_label,
-                  case 
-                    when food.data_type = 'sr_legacy_food'
+		when food.data_type = 'sr_legacy_food' 
+                    then fp.modifier
+		when food.data_type = 'survey_fndds_food' 
+                    then fp.portion_description 
+	end as gram_label,
+	case
+		when food.data_type = 'sr_legacy_food'
                     then fp.id
-                  end as sr_id,
-                  case 
-                  when food.data_type = 'branded_food' 
-                    then coalesce(bf.branded_food_category, null) 
-                  end as category
+	end as sr_id,
+	case
+		when food.data_type = 'branded_food' 
+                    then coalesce(bf.branded_food_category, null)
+	end as category
                     from food
                     left join branded_food bf on bf.fdc_id = food.fdc_id
                     left join food_portion fp on fp.fdc_id = food.fdc_id
@@ -64,6 +70,7 @@ export async function matchIngredients(ingredients) {
                   values: [doc.fdc_id, doc.sr_id],
                 };
                 const data = await db.query(query);
+                console.log(data.rows[0]);
 
                 //Test to see if there is a match between original measurement and database measurement to convert into grams
                 const weightConversion = await findMeasureMatch(
@@ -110,6 +117,7 @@ export async function matchIngredients(ingredients) {
                     ? ingredient.unitOfMeasure
                     : data.rows[0].gram_label || null;
                 }
+                console.log(finalIngredient);
                 return finalIngredient;
               }),
             );
