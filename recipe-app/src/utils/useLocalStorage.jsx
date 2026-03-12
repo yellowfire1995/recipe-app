@@ -1,28 +1,85 @@
-import { useState } from "react";
-import logger from "./logger";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-export const useLocalStorage = (keyName, defaultValue) => {
-  const [storedValue, setStoredValue] = useState(() => {
+function useLocalStorage(key, defaultValue, options) {
+  const opts = useMemo(() => {
+    return {
+      serializer: JSON.stringify,
+      parser: JSON.parse,
+      logger: () => {},
+      syncData: true,
+      ...options,
+    };
+  }, [options]);
+
+  const { serializer, parser, logger, syncData } = opts;
+  const rawValueRef = useRef(null);
+
+  const [value, setValue] = useState(() => {
+    if (typeof window === "undefined") return defaultValue;
     try {
-      const value = window.localStorage.getItem(keyName);
-      if (value) {
-        return JSON.parse(value);
-      } else {
-        window.localStorage.setItem(keyName, JSON.stringify(defaultValue));
-        return defaultValue;
-      }
-    } catch (err) {
-      logger.log(err);
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch {
       return defaultValue;
     }
   });
-  const setValue = (newValue) => {
+
+  // Sync ref after mount, not during render
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    rawValueRef.current = window.localStorage.getItem(key);
+  }, [key]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
     try {
-      window.localStorage.setItem(keyName, JSON.stringify(newValue));
-    } catch (err) {
-      logger.log(err);
+      if (value !== undefined) {
+        const newValue = serializer(value);
+        const oldValue = rawValueRef.current;
+        rawValueRef.current = newValue;
+        window.localStorage.setItem(key, newValue);
+        window.dispatchEvent(
+          new StorageEvent("storage", {
+            storageArea: window.localStorage,
+            url: window.location.href,
+            key,
+            newValue,
+            oldValue,
+          }),
+        );
+      } else {
+        window.localStorage.removeItem(key);
+        window.dispatchEvent(
+          new StorageEvent("storage", {
+            storageArea: window.localStorage,
+            url: window.location.href,
+            key,
+          }),
+        );
+      }
+    } catch (e) {
+      logger(e);
     }
-    setStoredValue(newValue);
-  };
-  return [storedValue, setValue];
-};
+  }, [value, key, serializer, logger]);
+
+  useEffect(() => {
+    if (!syncData || typeof window === "undefined") return;
+    const handleStorageChange = (e) => {
+      if (e.key !== key || e.storageArea !== window.localStorage) return;
+      try {
+        if (e.newValue !== rawValueRef.current) {
+          rawValueRef.current = e.newValue;
+          setValue(e.newValue ? parser(e.newValue) : undefined);
+        }
+      } catch (e) {
+        logger(e);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [key, syncData, parser, logger]);
+
+  return [value, setValue];
+}
+
+export default useLocalStorage;
