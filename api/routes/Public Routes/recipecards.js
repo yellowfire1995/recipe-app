@@ -1,11 +1,17 @@
 import express from "express";
-import format from "pg-format";
 import db from "../../database/db.js";
 import { authenticate } from "../../index.js";
 import { tryCatch } from "../../tools/error/tryCatch.js";
-const router = express.Router();
 
+const router = express.Router();
 const IMAGES_HOST = process.env.IMAGES_HOST;
+
+const SORT_MAP = {
+  oldest: "recipes.create_date ASC",
+  nameDesc: "recipes.name DESC",
+  nameAsc: "recipes.name ASC",
+  default: "recipes.create_date DESC",
+};
 
 router.get(
   "/",
@@ -15,110 +21,94 @@ router.get(
       : next();
   }),
   tryCatch(async (req, res) => {
-    const isLoggedIn = !!req.auth?.payload;
-    const isCollectionView = req.query.collectionId !== "undefined";
-    const sqlSearch =
-      req.query.search === "null" || req.query.search === "undefined"
-        ? "%"
-        : "%" + req.query.search.toLowerCase() + "%";
+    const userId = req.auth?.payload?.sub ?? null;
+
+    const search = ["null", "undefined", undefined, ""].includes(
+      req.query.search,
+    )
+      ? null
+      : req.query.search;
 
     const pageSize = parseInt(req.query.pageSize) || 15;
+    const offset =
+      req.query.page === "null" ? 0 : (parseInt(req.query.page) - 1) * pageSize;
+    const orderBy = SORT_MAP[req.query.sort] ?? SORT_MAP.default;
+    const collectionId =
+      req.query.collectionId !== "undefined" && userId
+        ? parseInt(req.query.collectionId)
+        : null;
 
-    let sort = "ORDER BY recipes.create_date DESC";
-    let userRating;
-    let filter;
-    let collectionJoin;
-    let collectionWhere;
-    let collectionSelect;
+    const { rows } = await db.query(
+      `
+      SELECT
+        recipes.recipe_id              AS "recipeId",
+        recipes.name,
+        recipes.thumbnail,
+        recipes.servings,
+        recipes.url,
+        recipes.author,
+        recipes.nickname,
+        recipes.create_date,
+        recipes.public,
 
-    if (isLoggedIn) {
-      userRating = `(select rating
-from ratings r
-where r.recipe_id = recipes.recipe_id and r.author = '${req.auth.payload.sub}') as "userRating",`;
-      filter = `or recipes.author = '${req.auth.payload.sub}'`;
+        -- collection columns (null when not in collection view)
+        rc.id                          AS "collectionRecipeId",
+        rc.collection_id               AS "collectionId",
 
-      if (isCollectionView) {
-        collectionJoin =
-          "right join recipe_collections rc on rc.recipe_id = recipes.recipe_id";
-        collectionWhere = format(
-          `and rc.collection_id = %s`,
-          req.query.collectionId,
-        );
-        collectionSelect = `rc.id as "collectionRecipeId", rc.collection_id as "collectionId",`;
-      }
-    }
+        -- ratings
+        AVG(r.rating) OVER (PARTITION BY recipes.recipe_id) AS rating,
+        COUNT(r.rating) OVER (PARTITION BY recipes.recipe_id) AS "ratingCount",
 
-    if (req.query.sort === "oldest") {
-      sort = "ORDER BY recipes.create_date ASC";
-    } else if (req.query.sort === "nameDesc") {
-      sort = "ORDER BY recipes.name DESC";
-    } else if (req.query.sort === "nameAsc") {
-      sort = "ORDER BY recipes.name ASC";
-    }
+        -- user's own rating
+        (
+          SELECT rating FROM ratings
+          WHERE recipe_id = recipes.recipe_id AND author = $1
+        ) AS "userRating",
 
-    const query = {
-      text: format(
-        `
-      SELECT recipes.recipe_id as "recipeId", name, thumbnail, servings, url, author, nickname, create_date, public, %s
-      (select AVG(rating) 
-from ratings r
-where r.recipe_id = recipes.recipe_id  ) as rating,
-(select COUNT(rating) 
-from ratings r
-where r.recipe_id = recipes.recipe_id  ) as "ratingCount",
-%s
-  (
-         Select COALESCE(JSON_AGG(json_build_object(
-              'id',  recipe_cuisines.id, 
-              'cuisine', cuisines.cuisine, 
-              'recipe_id', recipe_cuisines.recipe_id              
-            )), '[]') 
-        from recipe_cuisines
-          JOIN cuisines ON cuisines.id = recipe_cuisines.cuisine_id
-  WHERE recipes.recipe_id = recipe_cuisines.recipe_id
-        ) as cuisine
-                       FROM recipes
-              %s
-              WHERE lower(recipes.name) LIKE $2 and (recipes.public %s) %s
-              %s
-              LIMIT $3
-              Offset $1
-              ;`,
-        collectionSelect,
-        userRating,
-        collectionJoin,
-        filter,
-        collectionWhere,
-        sort,
-      ),
-      values: [
-        req.query.page === "null"
-          ? 0
-          : (parseInt(req.query.page) - 1) * pageSize,
-        sqlSearch,
-        pageSize + 1,
-      ],
-    };
+        -- cuisines
+        COALESCE((
+          SELECT JSON_AGG(json_build_object(
+            'id',        rc2.id,
+            'cuisine',   c.cuisine,
+            'recipe_id', rc2.recipe_id
+          ))
+          FROM recipe_cuisines rc2
+          JOIN cuisines c ON c.id = rc2.cuisine_id
+          WHERE rc2.recipe_id = recipes.recipe_id
+        ), '[]') AS cuisine
 
-    const data = await db.query(query);
+      FROM recipes
+      LEFT JOIN ratings r ON r.recipe_id = recipes.recipe_id
+      LEFT JOIN recipe_collections rc
+        ON rc.recipe_id = recipes.recipe_id
+        AND ($5::int IS NOT NULL AND rc.collection_id = $5)
 
-    let lastPage = false;
+      WHERE
+        (recipes.public OR recipes.author = $1)
+        AND ($5::int IS NULL OR rc.collection_id = $5)
+        AND ($2::varchar IS NULL OR $2::varchar <% recipes.name)
 
-    data.rows.length < pageSize + 1 ? (lastPage = true) : data.rows.pop();
+      ORDER BY
+        CASE WHEN $2::varchar IS NOT NULL THEN word_similarity($2::varchar, recipes.name) END DESC NULLS LAST,
+        ${orderBy}
 
-    const getThumbnailUrls = data.rows.map(async (recipe) => {
-      return {
-        ...recipe,
-        thumbnail: recipe.thumbnail,
-        thumbnailLink: recipe.thumbnail
-          ? IMAGES_HOST + "/" + recipe.thumbnail
-          : null,
-      };
-    });
+      LIMIT $3
+      OFFSET $4
+      `,
+      [userId, search, pageSize + 1, offset, collectionId],
+    );
 
-    const cardData = await Promise.all(getThumbnailUrls);
+    const lastPage = rows.length < pageSize + 1;
+    if (!lastPage) rows.pop();
 
-    res.json({ recipes: cardData, lastPage: lastPage });
+    const recipes = rows.map((recipe) => ({
+      ...recipe,
+      thumbnailLink: recipe.thumbnail
+        ? `${IMAGES_HOST}/${recipe.thumbnail}`
+        : null,
+    }));
+
+    res.json({ recipes, lastPage });
   }),
 );
 
