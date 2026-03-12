@@ -51,7 +51,7 @@ jobs:
       - name: Install Playwright dependencies
         run: |
           npm ci
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
 
       - name: Run Playwright tests
         env:
