@@ -30,7 +30,6 @@
     "react-router-dom": "^7.13.0",
     "react-screen-wake-lock": "^3.1.1",
     "react-toastify": "^11.0.5",
-    "use-local-storage": "^3.0.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
