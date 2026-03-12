@@ -3,24 +3,38 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
 import Col from "react-bootstrap/esm/Col";
 
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import _ from "lodash";
 import Row from "react-bootstrap/esm/Row";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import useLocalStorage from "use-local-storage";
 import { HeaderLinklist } from "./HeaderLinkList";
 import { PopoutMenuLogout } from "./PopoutMenuLogout";
 
+const debouncedSearch = _.debounce(
+  (value, setSearchParams, navigate, location, pageSize) => {
+    const validLocation = ["/myrecipes", "/recipes"].includes(
+      location.pathname,
+    );
+    const params = pageSize ? { search: value, pageSize } : { search: value };
+    !validLocation && navigate("/recipes");
+    value.length > 1 && setSearchParams(params);
+  },
+  200,
+);
+
 function Header() {
   const { logout, isAuthenticated, loginWithPopup } = useAuth0();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("search");
   const pageSize = searchParams.get("pageSize");
+  const location = useLocation();
 
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [theme, setTheme] = useLocalStorage(
@@ -80,11 +94,11 @@ function Header() {
                 className="d-inline-flex ms-auto ms-md-0 flex-grow-1 my-3"
                 onSubmit={(e) => {
                   e.preventDefault();
-                  navigate(
-                    `/recipes?search=${
-                      document.getElementById("searchBox").value
-                    }${pageSize ? `&results=${pageSize}` : ""}`,
-                  );
+                  // navigate(
+                  //   `/recipes?search=${
+                  //     document.getElementById("searchBox").value
+                  //   }${pageSize ? `&results=${pageSize}` : ""}`,
+                  // );
                 }}
               >
                 <Form.Control
@@ -93,12 +107,17 @@ function Header() {
                   placeholder="Search"
                   className="mainSearchBox me-2"
                   aria-label="Search"
+                  onChange={(e) =>
+                    debouncedSearch(
+                      e.target.value,
+                      setSearchParams,
+                      navigate,
+                      location,
+                      pageSize,
+                    )
+                  }
                   defaultValue={searchQuery ? searchQuery : ""}
                 />
-                {/* <SearchIcon
-                  className="align-self-md-center my-auto text-secondary"
-                  fontSize="large"
-                /> */}
               </Form>
             </Col>
             <Col
