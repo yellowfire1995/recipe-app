@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/esm/Col";
 import { useNavigate } from "react-router-dom";
-import useLocalStorage from "use-local-storage";
 import LoginButton from "../utils/LoginButton";
+import useLocalStorage from "../utils/useLocalStorage";
 
 export default function Login() {
   const navigate = useNavigate();
