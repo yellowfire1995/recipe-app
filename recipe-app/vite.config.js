@@ -3,9 +3,6 @@ import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  build: {
-    cssMinify: "esbuild", // use esbuild instead of lightningcss
-  },
   plugins: [react()],
   server: {
     allowedHosts: ["cbcdev.wfhomelocal.com"],
