@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
-   sodipodi:docname="favicon.svg"
+   sodipodi:docname="phone-favicon.svg"
    xml:space="preserve"
    inkscape:export-filename="favicon.png"
    inkscape:export-xdpi="96"
@@ -35,7 +35,7 @@
      inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg1"
+     inkscape:current-layer="layer6"
      inkscape:export-bgcolor="#ffffff00" /><defs
      id="defs1"><linearGradient
        id="swatch27"
@@ -231,6 +231,18 @@
        y2="328.80487"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(86.577827,3.6582181)" /></defs><g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="White Background"
+     style="fill:#ffffff"><rect
+       style="fill:#ffffff"
+       id="rect3"
+       width="528.00281"
+       height="540.19684"
+       x="-10.974654"
+       y="-24.388121"
+       rx="31.98831"
+       ry="31.98831" /></g><g
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="arms"
