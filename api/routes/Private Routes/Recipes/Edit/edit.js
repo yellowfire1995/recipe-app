@@ -2,8 +2,8 @@ import express from "express";
 import multer from "multer";
 import db from "../../../../database/db.js";
 import {
+  deleteFromS3,
   resizeAndUploadFileToS3,
-  uploadDualSizesUrlToS3,
   uploadFileToS3,
 } from "../../../../tools/aws/aws.js";
 import { AppError } from "../../../../tools/error/AppError.js";
@@ -39,16 +39,19 @@ router.post(
   tryCatch(checkAuth),
   tryCatch(async (req, res) => {
     let recipe = JSON.parse(req.body.recipe);
-    let key = recipe.imgName;
+    let key;
     let thumbnailKey;
+
+    if (recipe.imgToDelete) {
+      recipe = { ...recipe, imgName: null, thumbnail: null };
+      recipe.imgToDelete.map(async (key) => {
+        await deleteFromS3(key);
+      });
+    }
 
     if (req.file) {
       key = await uploadFileToS3(req.file);
       thumbnailKey = await resizeAndUploadFileToS3(req.file);
-    } else if (recipe.imgUrl && recipe.imgUrl !== recipe.originalUrl) {
-      console.log(recipe)(
-        ({ key, thumbnailKey } = await uploadDualSizesUrlToS3(recipe.imgUrl)),
-      );
     }
 
     if (recipe.ingredients) {
@@ -122,7 +125,7 @@ router.post(
       from json_array_elements($9::json) t;`,
       values: [
         recipe.name,
-        key,
+        key || recipe.imgName,
         recipe.servings,
         recipe.recipeId,
         recipe.url,

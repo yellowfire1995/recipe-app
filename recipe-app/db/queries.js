@@ -1,6 +1,5 @@
 import pako from "pako";
 import { server } from "../env/env.js";
-import logger from "../src/utils/logger.js";
 import httpClient from "./axiosConfig";
 
 //Get category list for new recipe page
@@ -36,7 +35,6 @@ export async function deleteRecipe(recipeId, recipe) {
 
 //Edit Recipe
 export async function editRecipe({ recipe }) {
-  logger.log(recipe);
   try {
     const formData = new FormData();
     if (recipe.imgFile) {
@@ -259,7 +257,6 @@ export async function changeMealDay(planId, date) {
 
 //Get recipes by collection
 export async function getCollectionRecipes({ collectionId }) {
-  logger.log(collectionId);
   try {
     const collectionRecipes = await httpClient.get(
       `${server}/collections/${collectionId}`,
@@ -307,7 +304,6 @@ export async function deleteCollection(collection) {
 }
 
 export async function deleteCollectionRecipe(arrayOfRecipes) {
-  logger.log(arrayOfRecipes);
   try {
     const arrayOfIds = arrayOfRecipes.map((recipe) => recipe.key || recipe);
 
@@ -335,7 +331,6 @@ export async function scrapeRecipe({ url, html }) {
           },
         },
       );
-      logger.log(recipe);
       return recipe.data;
     }
 
@@ -359,7 +354,7 @@ export async function scrapeRecipe({ url, html }) {
           },
         },
       );
-      logger.log(recipe);
+
       return recipe.data;
     }
 

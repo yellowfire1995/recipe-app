@@ -1,7 +1,6 @@
 import _ from "lodash";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import logger from "../../../utils/logger";
 import { useRecipeContext } from "../RecipeContextProvider";
 
 function handleDirectionsUpdate(updatedRecipe, e, index) {
@@ -32,7 +31,6 @@ function addNewDirection(updatedRecipe) {
     recipeId: updatedRecipe.recipeId,
   };
   updatedRecipe.directions.push(step);
-  logger.log(updatedRecipe);
 
   return { ...updatedRecipe };
 }
