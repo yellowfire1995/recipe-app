@@ -2,7 +2,6 @@ import _ from "lodash";
 import { useState } from "react";
 import { Button, ButtonGroup, Col, Container, Row } from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
-import logger from "../../../../utils/logger";
 import { handleServingsUpdate } from "../../../../utils/NutritionFacts/handleServingsUpdate";
 import { useRecipeContext } from "../../RecipeContextProvider";
 
@@ -17,7 +16,6 @@ function deleteIngredient(updatedRecipe, e) {
 }
 
 function handleIngredientUpdate(recipe, e) {
-  logger.log(parseFloat(e.target.value));
   return {
     ...recipe,
     ingredients: recipe.ingredients.map((ingredient) => {
@@ -186,7 +184,6 @@ export function IngredientList({
 
         {recipe.ingredients.map((ingredient, index) => {
           if (ingredient.isGroupHeader) {
-            logger.log(ingredient);
             header = {
               ...header,
               key: ingredient.id,
