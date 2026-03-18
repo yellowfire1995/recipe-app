@@ -1,14 +1,13 @@
 import express from "express";
-const router = express.Router();
+import multer from "multer";
 import db from "../../../../database/db.js";
+import { getUserId } from "../../../../tools/auth/getUserId.js";
 import {
   resizeAndUploadFileToS3,
-  uploadDualSizesUrlToS3,
   uploadFileToS3,
 } from "../../../../tools/aws/aws.js";
-import multer from "multer";
-import { getUserId } from "../../../../tools/auth/getUserId.js";
 import { tryCatch } from "../../../../tools/error/tryCatch.js";
+const router = express.Router();
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -25,8 +24,6 @@ router.post(
     if (req.file) {
       key = await uploadFileToS3(req.file);
       thumbnailKey = await resizeAndUploadFileToS3(req.file);
-    } else if (recipe.imgUrl) {
-      ({ key, thumbnailKey } = await uploadDualSizesUrlToS3(recipe.imgUrl));
     }
 
     if (recipe.ingredients) {
@@ -100,7 +97,7 @@ router.post(
     const data = await db.query(query);
 
     res.json(data.rows[0]);
-  })
+  }),
 );
 
 export default router;
