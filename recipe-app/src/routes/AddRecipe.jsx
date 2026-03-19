@@ -5,6 +5,7 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getRecipeById, newRecipe } from "../../db/queries";
+import { UnsavedChangesPopup } from "../Components/Recipes/Modals/UnsavedChangesPopup";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts";
 import { ShowOriginalingredientSwitch } from "../Components/Recipes/Recipe Header/ShowOriginalIngredientSwitch";
 import { RecipeForm } from "../Components/Recipes/RecipeForm";
@@ -74,6 +75,7 @@ export default function AddRecipe() {
       <title>New Recipe</title>
 
       <RecipeForm recipe={recipe} setRecipe={setRecipe}>
+        <UnsavedChangesPopup />
         <Form
           onSubmit={(e) => {
             mutation.mutate(e);
