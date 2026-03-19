@@ -11,6 +11,7 @@ import { editRecipe, getRecipeById } from "../../db/queries.js";
 import { roles } from "../../env/env.js";
 import ErrorHandler from "../Components/Errors/NotFound.jsx";
 import Loading from "../Components/Loading.jsx";
+import { UnsavedChangesPopup } from "../Components/Recipes/Modals/UnsavedChangesPopup.jsx";
 import { NutritionFacts } from "../Components/Recipes/NutritionFacts/NutritionFacts.jsx";
 import { ShowOriginalingredientSwitch } from "../Components/Recipes/Recipe Header/ShowOriginalIngredientSwitch.jsx";
 import { RecipeForm } from "../Components/Recipes/RecipeForm.jsx";
@@ -24,6 +25,7 @@ export default function Edit() {
   const { user } = useAuth0();
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth0();
+
   const SavingError = () =>
     toast.error("Error saving recipe, please try again!");
 
@@ -95,9 +97,10 @@ export default function Edit() {
   ) {
     return (
       <>
-        <title>Edit {recipe.name}</title>
+        <title>{`Edit ${recipe.name}`}</title>
 
         <RecipeForm recipe={recipe} setRecipe={setRecipe}>
+          <UnsavedChangesPopup loadedRecipe={loadedRecipe} />
           <Form
             onSubmit={(e) => {
               e.preventDefault();
