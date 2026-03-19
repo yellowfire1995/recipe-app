@@ -16,6 +16,8 @@ export function RecipeRating({
   },
   showCount = false,
   showRatingNumber = false,
+  // eslint-disable-next-line no-unused-vars
+  setRecipe,
   ...props
 }) {
   const { userRating, rating, ratingCount, recipeId } = recipe;
@@ -41,7 +43,6 @@ export function RecipeRating({
     const newRating = parseInt(e.target.value);
 
     if (newRating === recipe.userRating) {
-      // setRecipe({ ...recipe, userRating: null });
       await mutateAsync({
         recipeId: recipeId,
         deleter: true,
@@ -49,7 +50,6 @@ export function RecipeRating({
 
       refetch();
     } else {
-      // setRecipe({ ...recipe, userRating: newRating });
       await mutateAsync({
         recipeId: recipeId,
         userRating: newRating,
