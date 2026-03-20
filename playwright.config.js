@@ -11,8 +11,8 @@ export default defineConfig({
   testDir: "./tests",
 
   // Shared DB state — don't run tests at the same time
-  fullyParallel: false,
-  workers: 1,
+  fullyParallel: true,
+  workers: 2,
 
   // Retry once on flakiness (Auth0 redirects, network timing)
   retries: 1,
