@@ -39,18 +39,17 @@ export default defineConfig({
     // 2. Full dev tests — reuses the saved Auth0 session
     {
       name: "dev",
-      testMatch: "recipes.spec.js",
+      testDir: "./tests/dev",
       use: {
         ...devices["Desktop Chrome"],
         storageState: SESSION_PATH,
       },
       dependencies: ["setup"],
     },
-
     // 3. Smoke tests against prod — run manually or after deploy
     {
       name: "smoke",
-      testMatch: "**/smoke/*.spec.js",
+      testDir: "./tests/smoke",
       use: {
         ...devices["Desktop Chrome"],
         baseURL: "https://cookbookcalc.com",
