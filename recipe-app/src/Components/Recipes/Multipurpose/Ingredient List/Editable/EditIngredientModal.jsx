@@ -87,7 +87,11 @@ export default function EditIngredientModal({
 
   return (
     <>
-      <EditIcon onClick={handleShow} className="svg-icon" />
+      <EditIcon
+        onClick={handleShow}
+        className="svg-icon"
+        data-testid="edit-ingredient-btn"
+      />
       <Modal
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"

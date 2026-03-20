@@ -11,7 +11,7 @@
  */
 
 import { expect, test } from "@playwright/test";
-import { getToken } from "./helpers/getToken.js";
+import { getToken } from "../helpers/getToken.js";
 
 const API = "http://localhost:3000";
 
@@ -37,7 +37,7 @@ test.describe("Recipe CRUD", () => {
   test.beforeEach(async ({ page, request }) => {
     await page.goto("/");
     authToken = await getToken(page);
-  
+
     const recipe = {
       name: `TEST_${Date.now()}`,
       servings: 2,
@@ -127,7 +127,7 @@ test.describe("Recipe CRUD", () => {
 
     // Click the danger "Delete Recipe" button at the bottom of the edit form
     await page.getByRole("button", { name: "Delete Recipe" }).click();
-    
+
     // Confirm modal appears
     await expect(
       page.getByText("Are you sure you want to delete this recipe?"),
