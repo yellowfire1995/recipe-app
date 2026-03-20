@@ -9,7 +9,7 @@ function deleteIngredient(updatedRecipe, e) {
   const buttonId = e.target.id ? e.target.id : e.target.viewportElement.id;
   _.remove(
     updatedRecipe.ingredients,
-    (ingredient) => ingredient.id === buttonId,
+    (ingredient) => ingredient.id === parseInt(buttonId),
   );
 
   return { ...updatedRecipe };
@@ -19,7 +19,7 @@ function handleIngredientUpdate(recipe, e) {
   return {
     ...recipe,
     ingredients: recipe.ingredients.map((ingredient) => {
-      if (ingredient.id === e.target.id) {
+      if (ingredient.id === parseInt(e.target.id)) {
         const gramConversionDenominator =
           ingredient.userG || ingredient.gramConversion || 1;
         const quantityInput = isNaN(parseFloat(e.target.value))
