@@ -40,8 +40,6 @@ jobs:
         run: |
           echo "Warming up frontend..."
           timeout 120 bash -c 'until curl -sf http://localhost:5173 > /dev/null; do sleep 3; done'
-          # Give Vite time to compile after first hit
-          sleep 5
 
       - name: Install Node
         uses: actions/setup-node@v6
