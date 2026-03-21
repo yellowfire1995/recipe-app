@@ -40,7 +40,11 @@ export default function EditHeaderModal({
 
   return (
     <>
-      <EditIcon onClick={handleShow} className="svg-icon" />
+      <EditIcon
+        onClick={handleShow}
+        className="svg-icon"
+        data-testid="edit-header-btn"
+      />
       <Modal
         {...props}
         size="lg"

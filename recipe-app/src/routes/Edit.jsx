@@ -95,7 +95,6 @@ export default function Edit() {
     isFetched &&
     (user.sub === recipe.author || user[roles]?.includes("Admin"))
   ) {
-    console.log(recipe);
     return (
       <>
         <title>{`Edit ${recipe.name}`}</title>

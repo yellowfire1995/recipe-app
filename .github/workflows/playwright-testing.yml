@@ -40,8 +40,6 @@ jobs:
         run: |
           echo "Warming up frontend..."
           timeout 120 bash -c 'until curl -sf http://localhost:5173 > /dev/null; do sleep 3; done'
-          # Give Vite time to compile after first hit
-          sleep 10
 
       - name: Install Node
         uses: actions/setup-node@v6
@@ -58,7 +56,7 @@ jobs:
           TEST_USER: ${{ secrets.TEST_USER }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
           BASE_URL: http://localhost:5173
-        run: npx playwright test --project=dev
+        run: npx playwright test --project=dev --workers 2
 
       - name: Upload test report
         uses: actions/upload-artifact@v7
