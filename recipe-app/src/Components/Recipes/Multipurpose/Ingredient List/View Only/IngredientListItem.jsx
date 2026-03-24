@@ -24,7 +24,7 @@ export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
       ? _.round(
           ingredient.quantity *
             (ingredient.userG || ingredient.gramConversion || 1),
-          2
+          2,
         )
       : "";
 
@@ -38,7 +38,7 @@ export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
   const ingredientQuantityGrams =
     ingredient.quantity > 0
       ? ingredient.userG || ingredient.gramConversion
-        ? `(${_.round(ingredient.quantity)}g) `
+        ? `(${_.round(ingredient.quantity, ingredient.quantity < 10 ? 2 : 0)}g) `
         : ""
       : "";
 
