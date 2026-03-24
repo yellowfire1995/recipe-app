@@ -11,7 +11,7 @@ const router = express.Router();
 const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.ACCESS_KEY;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY;
-const roles = process.env.AUTH0_ROLES;
+const roles = `${process.env.AUTH0_NAMESPACE}/roles`;
 const IMAGES_HOST = process.env.IMAGES_HOST;
 
 new S3Client({
