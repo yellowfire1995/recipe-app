@@ -25,7 +25,7 @@ export async function checkAuth(req, res, next) {
 
   if (
     data.rows[0].author === req.auth.payload.sub ||
-    req.auth.payload[process.env.AUTH0_ROLES].includes("Admin")
+    req.auth.payload[`${process.env.AUTH0_NAMESPACE}/roles`].includes("Admin")
   ) {
     next();
   } else {
