@@ -1,7 +1,15 @@
 import _ from "lodash";
 import { useState } from "react";
-import { Button, ButtonGroup, Col, Container, Row } from "react-bootstrap";
+import {
+  Button,
+  ButtonGroup,
+  Col,
+  Container,
+  Form,
+  Row,
+} from "react-bootstrap";
 import ListGroup from "react-bootstrap/ListGroup";
+import { useWakeLock } from "react-screen-wake-lock";
 import { handleServingsUpdate } from "../../../../utils/NutritionFacts/handleServingsUpdate";
 import { useRecipeContext } from "../../RecipeContextProvider";
 
@@ -65,6 +73,7 @@ export function IngredientList({
         );
   }
 
+  const { isSupported, released, request, release } = useWakeLock();
   const [initialDragIndex, setInitialDragIndex] = useState();
   const [draggedIngredient, setDraggedIngredient] = useState();
 
@@ -103,9 +112,22 @@ export function IngredientList({
       <ListGroup>
         <Row className="d-flex align-items-center">
           <Col xs="auto">
-            <h3>
+            <h4>
               {headerText} {price}
-            </h3>
+            </h4>
+
+            <Form.Check
+              type="switch"
+              id="custom-switch"
+              label={
+                isSupported
+                  ? "Keep Screen On"
+                  : "Keep Screen On (browser not supported)"
+              }
+              defaultValue={!released}
+              onClick={() => (released === false ? release() : request())}
+              disabled={!isSupported}
+            />
 
             {showScale && (
               <Container className="m-0 p-0 d-flex align-items-center">

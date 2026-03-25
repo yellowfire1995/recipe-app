@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Container } from "react-bootstrap";
 import Stack from "react-bootstrap/Stack";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
@@ -44,6 +45,19 @@ export default function Recipe() {
     }
   }, [loadedRecipe, isFetched, isError, isAuthenticated]);
 
+  const [atBottom, setAtBottom] = useState(true);
+  const initialized = useRef(false);
+
+  const ingredientContainerCallback = (node) => {
+    if (!node || initialized.current) return;
+    initialized.current = true;
+    setAtBottom(node.scrollHeight <= node.clientHeight);
+  };
+
+  function handleIngredientScroll(e) {
+    const el = e.target;
+    setAtBottom(el.scrollHeight - el.scrollTop <= el.clientHeight + 25);
+  }
   if (isLoading) {
     return <Loading />;
   }
@@ -79,12 +93,21 @@ export default function Recipe() {
           </Row>
           <Row>
             <Col xl="8" className="flex-shrink-1 ">
-              <RecipeForm.IngredientList
-                header={<RecipeForm.IngredientListHeader />}
-                item={<RecipeForm.IngredientListItem />}
-                price={<RecipeForm.RecipePrice />}
-                showScale
-              />
+              <Container
+                fluid
+                className="p-0 m-0 sticky-mobile"
+                onScroll={handleIngredientScroll}
+                ref={ingredientContainerCallback}
+              >
+                <RecipeForm.IngredientList
+                  header={<RecipeForm.IngredientListHeader />}
+                  item={<RecipeForm.IngredientListItem />}
+                  price={<RecipeForm.RecipePrice />}
+                  showScale
+                />
+                {!atBottom && <div className="sticky-mobile-fade" />}
+              </Container>
+
               <RecipeForm.DirectionList />
             </Col>
             <Col xl className="d-flex justify-content-center">
