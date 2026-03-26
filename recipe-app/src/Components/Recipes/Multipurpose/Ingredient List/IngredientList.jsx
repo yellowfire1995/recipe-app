@@ -109,7 +109,7 @@ export function IngredientList({
 
   return (
     <>
-      <ListGroup className="overflow-x-visible">
+      <ListGroup>
         <Row className="d-flex align-items-center ">
           <Col xs="auto">
             <h4>
