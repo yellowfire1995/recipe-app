@@ -43,9 +43,10 @@ export function IngredientListItem({ ingredient, handleCheck, checkedArray }) {
       : "";
 
   return (
-    <div className="form-check d-flex py-2" key={ingredient.id}>
+    <div className="form-check d-flex py-2 m-0" key={ingredient.id}>
       <input
         className="form-check-input me-1"
+        style={{ marginLeft: "-1.25em" }}
         type="checkbox"
         id={ingredient.id}
         onClick={() => handleCheck(ingredient.id)}

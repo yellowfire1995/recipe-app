@@ -109,8 +109,8 @@ export function IngredientList({
 
   return (
     <>
-      <ListGroup>
-        <Row className="d-flex align-items-center">
+      <ListGroup className="overflow-x-visible">
+        <Row className="d-flex align-items-center ">
           <Col xs="auto">
             <h4>
               {headerText} {price}
