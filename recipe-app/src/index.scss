@@ -584,11 +584,6 @@ fill:$primary;
     top: 5rem;
     overflow-y: auto;
     overflow-x: hidden;
-    z-index: 10;
-    padding-left: calc(var(--bs-gutter-x) * 0.5);
-    padding-right: calc(var(--bs-gutter-x) * 0.5);
-    margin-left: calc(var(--bs-gutter-x) * -0.5);
-    margin-right: calc(var(--bs-gutter-x) * -0.5);
     border-bottom: 1px solid var(--bs-border-color);
   }
 
@@ -607,4 +602,10 @@ fill:$primary;
       background: linear-gradient(transparent, $dark-background);
     }
   }
+  @media (max-width: 767px){
+#custom-switch {
+  margin-left: -2.25em;
+}
+  }
+
 }
