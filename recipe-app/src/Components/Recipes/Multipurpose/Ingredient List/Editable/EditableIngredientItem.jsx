@@ -42,7 +42,9 @@ export function EditableIngredientItem({
   const hasQuantity = quantity > 0;
 
   const ingredientQuantityGrams =
-    hasQuantity && (userG || gramConversion) ? `(${_.round(quantity)}g)` : "";
+    hasQuantity && (userG || gramConversion)
+      ? `(${_.round(quantity, quantity < 10 ? 2 : 0)}g)`
+      : "";
 
   const ingredientWeightLabel =
     (hasQuantity && !isActive) || isActive ? userLabel : "";
