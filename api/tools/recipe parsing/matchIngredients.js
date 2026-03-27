@@ -70,7 +70,6 @@ export async function matchIngredients(ingredients) {
                   values: [doc.fdc_id, doc.sr_id],
                 };
                 const data = await db.query(query);
-                console.log(data.rows[0]);
 
                 //Test to see if there is a match between original measurement and database measurement to convert into grams
                 const weightConversion = await findMeasureMatch(
@@ -117,7 +116,7 @@ export async function matchIngredients(ingredients) {
                     ? ingredient.unitOfMeasure
                     : data.rows[0].gram_label || null;
                 }
-                console.log(finalIngredient);
+
                 return finalIngredient;
               }),
             );

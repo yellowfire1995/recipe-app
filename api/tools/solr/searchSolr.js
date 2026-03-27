@@ -9,23 +9,27 @@ export async function searchSolr(ingredient, measure) {
     //   .map((word) => word + "~")
     //   .join(" ");
 
+    const query = {
+      query: `${ingredientString} ${
+        measure
+          ? `sr_secondary:"${measure}"^10 branded_secondary:"${measure}"^3 price:*^10`
+          : ""
+      } sr_secondary:*^30 branded_secondary:*^10 description:raw^2 sr_secondary:large^5 description:generic^2 description:producer^5 sr_secondary:pepper`,
+      params: {
+        defType: "edismax",
+        indent: "true",
+        qf: "description^10 upc brand_name brand_owner desc1^5",
+        rows: "25",
+        "q.op": "OR",
+        stopwords: "false",
+        bf: "if(exists(upc),0,5)",
+      },
+    };
+
+    console.log(query);
     const searchResult = await axios.post(
       `${process.env.SOLR_HOST}/solr/allIngredients/select`,
-      {
-        query: `${ingredientString} ${
-          measure
-            ? `sr_secondary:"${measure}"^10 branded_secondary:"${measure}"^5 price:*^10`
-            : ""
-        } sr_secondary:*^30 branded_secondary:*^10 description:raw^2 sr_secondary:large^5 description:generic^2 description:producer^1 sr_secondary:pepper`,
-        params: {
-          defType: "edismax",
-          indent: "true",
-          qf: "description^10 upc brand_name brand_owner desc1^5",
-          rows: "25",
-          "q.op": "OR",
-          stopwords: "false",
-        },
-      },
+      query,
       { "content-type": "application/x-www-form-urlencoded" },
     );
     return searchResult.data.response.docs;
