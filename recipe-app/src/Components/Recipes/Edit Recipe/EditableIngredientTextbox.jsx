@@ -2,6 +2,7 @@ import Button from "react-bootstrap/esm/Button";
 import Col from "react-bootstrap/esm/Col";
 import Row from "react-bootstrap/esm/Row";
 import Form from "react-bootstrap/Form";
+import { v4 } from "uuid";
 import { parseIngredients } from "../../../../db/queries";
 import { useRecipeContext } from "../RecipeContextProvider";
 
@@ -10,13 +11,19 @@ export function EditableIngredientTextbox() {
 
   async function getIngredientChoices() {
     const choices = await parseIngredients(
-      document.getElementById("ingredientText").value.toString()
+      document.getElementById("ingredientText").value.toString(),
     );
 
     setRecipe({
       ...recipe,
       ingredients: choices.map((choice) => {
-        return { ...choice[0], searchArray: choice };
+        return choice.length > 0
+          ? { ...choice[0], searchArray: choice }
+          : {
+              quantity: 0,
+              userIngredientName: "No ingredient found",
+              id: v4(),
+            };
       }),
     });
 

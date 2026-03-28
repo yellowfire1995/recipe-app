@@ -3,6 +3,7 @@ const ingredientSynonyms = {
   flour: "all purpose flour",
   "white sugar": "sugars, granulated",
   sugar: "sugars, granulated",
+  eggs: "egg",
 };
 
 export function fixIngredient(ingredient) {
