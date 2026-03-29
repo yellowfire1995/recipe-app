@@ -2,7 +2,6 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import Offcanvas from "react-bootstrap/Offcanvas";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import { useAuth0 } from "@auth0/auth0-react";
@@ -15,8 +14,8 @@ import Row from "react-bootstrap/esm/Row";
 import NavDropdown from "react-bootstrap/NavDropdown";
 
 import useLocalStorage from "../../utils/useLocalStorage";
+import { HamburgerMenu } from "./HamburgerMenu";
 import { HeaderLinklist } from "./HeaderLinkList";
-import { PopoutMenuLogout } from "./PopoutMenuLogout";
 
 const debouncedSearch = _.debounce(
   (value, setSearchParams, navigate, location, pageSize) => {
@@ -56,29 +55,7 @@ function Header() {
   return (
     <Navbar expand="xl" sticky="top" className="bg-nav p-0 w-100">
       <Container fluid className="px-0 justify-content-center">
-        <Navbar.Offcanvas id="header" placement="start" className="d-xl-none">
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title id="offcanvasMenu">Menu</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>
-            <Nav>
-              <HeaderLinklist />
-              <hr />
-              <h5>Settings</h5>
-              <Nav.Item className="my-1">
-                <label htmlFor="theme-switcherPopout">Dark Mode</label>
-                <input
-                  className="ms-1"
-                  type="checkbox"
-                  id="theme-switcherPopout"
-                  checked={theme === "dark" ? true : false}
-                  onChange={switchTheme}
-                />
-              </Nav.Item>
-              <PopoutMenuLogout />
-            </Nav>
-          </Offcanvas.Body>
-        </Navbar.Offcanvas>
+        <HamburgerMenu theme={theme} switchTheme={switchTheme} />
         <Row className="w-100 p-0">
           <Nav className="flex-row w-100 p-0">
             <Col className="d-flex align-items-center p-0" xs="auto">
