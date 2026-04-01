@@ -1,5 +1,6 @@
 import { useBeforeUnload } from "react-router-dom";
 import { useRecipeContext } from "../RecipeContextProvider";
+import isEqual from "lodash/isEqual";
 
 export function UnsavedChangesPopup({ loadedRecipe }) {
   // const handleClose = () => {
@@ -19,7 +20,8 @@ export function UnsavedChangesPopup({ loadedRecipe }) {
     public: true,
   };
   const originalRecipe = (loadedRecipe && loadedRecipe[0]) || newRecipe;
-  const isDirty = originalRecipe !== recipe;
+  const isDirty = !isEqual(originalRecipe, recipe);
+
   // const blocker = useBlocker(useCallback(() => dirty, [dirty]));
 
   useBeforeUnload((event) => {

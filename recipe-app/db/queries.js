@@ -12,6 +12,28 @@ export async function getCategories() {
   }
 }
 
+//Get category list of used categories
+export async function getUsedCategories() {
+  try {
+    const categoryList = await httpClient.get(`${server}/categories/used/`);
+    return categoryList.data[0].categories;
+  } catch (error) {
+    return Promise.reject(error.response);
+  }
+}
+
+//Get category list of used categories in collection
+export async function getCollectionCategories({ collectionId }) {
+  try {
+    const categoryList = await httpClient.get(
+      `${server}/categories/${collectionId}`,
+    );
+    return categoryList.data[0].categories;
+  } catch (error) {
+    return Promise.reject(error.response);
+  }
+}
+
 //Get cuisine list for new recipe page
 export async function getCuisines() {
   try {
@@ -181,11 +203,12 @@ export async function getRecipeCards({
   search,
   pageSize,
   sort,
+  category,
   queryParams: { collectionId },
 }) {
   try {
     const recipeCards = await httpClient.get(
-      `${server}/recipecards?page=${page}&search=${search}&pageSize=${pageSize}}&sort=${sort}&collectionId=${collectionId}`,
+      `${server}/recipecards?page=${page}&search=${search}&pageSize=${pageSize}}&sort=${sort}&collectionId=${collectionId}&category=${category}`,
     );
     return recipeCards.data;
   } catch (error) {
