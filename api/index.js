@@ -6,7 +6,6 @@ import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 
 import auth0Route from "./routes/Private Routes/Auth/auth0.js";
-import categoryRouter from "./routes/Private Routes/Recipes/categories.js";
 import cuisineRouter from "./routes/Private Routes/Recipes/cuisines.js";
 import editRoute from "./routes/Private Routes/Recipes/Edit/edit.js";
 import importDirectionsRoute from "./routes/Private Routes/Recipes/Import/directions.js";
@@ -20,6 +19,7 @@ import getPriceRoute from "./routes/Private Routes/Recipes/Scrape/getprice.js";
 import scrapeRecipeRoute from "./routes/Private Routes/Recipes/Scrape/scrapeRecipe.js";
 import collectionsRoute from "./routes/Private Routes/UserLists/collections.js";
 import plannerRoute from "./routes/Private Routes/UserLists/planner.js";
+import categoryRouter from "./routes/Public Routes/categories.js";
 import contactRoute from "./routes/Public Routes/contact.js";
 import recipeCardsRoute from "./routes/Public Routes/recipecards.js";
 import recipesRoute from "./routes/Public Routes/recipes.js";
@@ -74,6 +74,7 @@ app.use(bodyParser.json());
 app.use("/recipecards", recipeCardsRoute);
 app.use("/recipes", recipesRoute);
 app.use("/contact", contactRoute);
+app.use("/categories", categoryRouter);
 
 app.use(authenticate);
 
@@ -81,7 +82,6 @@ app.use("/import", importDirectionsRoute);
 app.use("/import", importIngredientsRoute);
 app.use("/import", scrapeRecipeRoute);
 app.use("/photoimport", importPhotoRoute);
-app.use("/categories", categoryRouter);
 app.use("/cuisines", cuisineRouter);
 app.use("/newrecipe", newRecipeRoute);
 app.use("/ingredients", ingredientsRoute);

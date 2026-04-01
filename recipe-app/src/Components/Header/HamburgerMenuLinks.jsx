@@ -18,6 +18,7 @@ export function HamburgerMenuLinks() {
     return (
       <>
         <Nav.Link href="/recipes">All Recipes</Nav.Link>
+        <Nav.Link href="/collections">Collections</Nav.Link>
         <Nav.Link onClick={loginWithPopup}>Log in/Sign Up</Nav.Link>
       </>
     );

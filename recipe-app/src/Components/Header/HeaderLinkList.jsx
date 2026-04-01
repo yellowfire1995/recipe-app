@@ -11,8 +11,18 @@ export function HeaderLinklist() {
         <Nav.Link href="/recipes">All Recipes</Nav.Link>
         <Nav.Link href="/newrecipe">Add Recipe </Nav.Link>
         <NavDropdown
+          title="Collections"
+          id="collections"
+          align="end"
+          className="nav-drop me-1"
+        >
+          <NavDropdown.Item href="/collections" className="nav-drop">
+            Family Recipes
+          </NavDropdown.Item>
+        </NavDropdown>
+        <NavDropdown
           title="My Items"
-          id="settings"
+          id="myItems"
           align="end"
           className="nav-drop me-1"
         >
