@@ -38,7 +38,7 @@ router.get(
       req.query.page === "null" ? 0 : (parseInt(req.query.page) - 1) * pageSize;
     const orderBy = SORT_MAP[req.query.sort] ?? SORT_MAP.default;
     const collectionId =
-      req.query.collectionId !== "undefined" && userId
+      req.query.collectionId !== "undefined"
         ? parseInt(req.query.collectionId)
         : null;
 
@@ -62,6 +62,8 @@ SELECT
   cuisine_agg.cuisine,
   category_agg.categories
 FROM recipes
+LEFT JOIN collections col
+  ON col.id = $5::int
 LEFT JOIN recipe_collections rc
   ON rc.recipe_id = recipes.recipe_id
   AND $5::int IS NOT NULL
@@ -100,6 +102,7 @@ WHERE
   AND ($5::int IS NULL OR rc.collection_id = $5)
   AND ($2::varchar IS NULL OR $2::varchar <% recipes.name)
   AND ($6::int IS NULL OR rcat.category_id = $6)
+  AND ($5::int IS NULL OR col.public OR col."user" = $1)
 ORDER BY
   CASE WHEN $2::varchar IS NOT NULL THEN word_similarity($2::varchar, recipes.name) END DESC NULLS LAST,
   ${orderBy}

@@ -1,5 +1,5 @@
 import { Nav, Navbar, Offcanvas } from "react-bootstrap";
-import { HamburgerMenuLinks } from "./HamburgerMenuLinks";
+import { HeaderLinklist } from "./HeaderLinkList";
 import { PopoutMenuLogout } from "./PopoutMenuLogout";
 
 export function HamburgerMenu({ theme, switchTheme }) {
@@ -10,7 +10,7 @@ export function HamburgerMenu({ theme, switchTheme }) {
       </Offcanvas.Header>
       <Offcanvas.Body>
         <Nav>
-          <HamburgerMenuLinks />
+          <HeaderLinklist />
           <hr />
           <h5>Settings</h5>
           <Nav.Item className="my-1">

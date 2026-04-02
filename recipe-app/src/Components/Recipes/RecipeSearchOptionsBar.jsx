@@ -15,7 +15,7 @@ export function RecipeSearchOptionsBar({ setIsListView }) {
   const category = searchParams.get("category");
   const { collectionId } = useParams();
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["CategoryList", collectionId],
     queryFn: () => {
       return collectionId
@@ -95,14 +95,7 @@ export function RecipeSearchOptionsBar({ setIsListView }) {
               })
             }
           >
-            <option
-              value=""
-              onSelect={() =>
-                setSearchParams((prev) => prev.delete("category"))
-              }
-            >
-              Select...
-            </option>
+            <option value="">Select...</option>
             {data &&
               data.map((category) => (
                 <option key={category.category_id} value={category.category_id}>
