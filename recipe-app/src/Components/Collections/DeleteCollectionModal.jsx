@@ -35,6 +35,7 @@ export default function DeleteCollectionModal(props) {
         fontSize="large"
         className="my-auto icon-interactive"
         onClick={handleShow}
+        data-testid="DeleteForeverIcon"
       />
 
       <Modal show={show} onHide={handleClose} animation={false}>
