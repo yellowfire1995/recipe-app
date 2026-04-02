@@ -21,6 +21,7 @@ import collectionsRoute from "./routes/Private Routes/UserLists/collections.js";
 import plannerRoute from "./routes/Private Routes/UserLists/planner.js";
 import categoryRouter from "./routes/Public Routes/categories.js";
 import contactRoute from "./routes/Public Routes/contact.js";
+import publicCollections from "./routes/Public Routes/publiccollections.js";
 import recipeCardsRoute from "./routes/Public Routes/recipecards.js";
 import recipesRoute from "./routes/Public Routes/recipes.js";
 import { errorHandler } from "./tools/error/errorHandler.js";
@@ -75,6 +76,7 @@ app.use("/recipecards", recipeCardsRoute);
 app.use("/recipes", recipesRoute);
 app.use("/contact", contactRoute);
 app.use("/categories", categoryRouter);
+app.use("/publiccollections", publicCollections);
 
 app.use(authenticate);
 

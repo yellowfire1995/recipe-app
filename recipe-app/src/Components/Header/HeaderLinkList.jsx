@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { NavDropdown } from "react-bootstrap";
 import Nav from "react-bootstrap/Nav";
+import { CollectionsDropdown } from "./CollectionsDropdown";
 
 export function HeaderLinklist() {
   const { isAuthenticated, loginWithPopup } = useAuth0();
@@ -10,21 +11,12 @@ export function HeaderLinklist() {
       <>
         <Nav.Link href="/recipes">All Recipes</Nav.Link>
         <Nav.Link href="/newrecipe">Add Recipe </Nav.Link>
-        <NavDropdown
-          title="Collections"
-          id="collections"
-          align="end"
-          className="nav-drop me-1"
-        >
-          <NavDropdown.Item href="/collections" className="nav-drop">
-            Family Recipes
-          </NavDropdown.Item>
-        </NavDropdown>
+        <CollectionsDropdown />
         <NavDropdown
           title="My Items"
           id="myItems"
           align="end"
-          className="nav-drop me-1"
+          className="me-1 nav-drop"
         >
           <NavDropdown.Item href="/myrecipes" className="nav-drop">
             Recipes
@@ -42,6 +34,7 @@ export function HeaderLinklist() {
     return (
       <>
         <Nav.Link href="/recipes">All Recipes</Nav.Link>
+        <CollectionsDropdown />
         <Nav.Link onClick={loginWithPopup}>Log in/Sign Up</Nav.Link>
       </>
     );

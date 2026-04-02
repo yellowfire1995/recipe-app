@@ -2,39 +2,22 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
 import Col from "react-bootstrap/esm/Col";
 
 import DarkModeIcon from "@mui/icons-material/DarkMode";
-import _ from "lodash";
 import Row from "react-bootstrap/esm/Row";
 import NavDropdown from "react-bootstrap/NavDropdown";
 
 import useLocalStorage from "../../utils/useLocalStorage";
 import { HamburgerMenu } from "./HamburgerMenu";
 import { HeaderLinklist } from "./HeaderLinkList";
-
-const debouncedSearch = _.debounce(
-  (value, setSearchParams, navigate, location, pageSize) => {
-    const validLocation = ["/myrecipes", "/recipes"].includes(
-      location.pathname,
-    );
-    const params = pageSize ? { search: value, pageSize } : { search: value };
-    !validLocation && navigate("/recipes");
-    value.length > 1 && setSearchParams(params);
-  },
-  200,
-);
+import { SearchBox } from "./SearchBox";
 
 function Header() {
   const { logout, isAuthenticated, loginWithPopup } = useAuth0();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchQuery = searchParams.get("search");
-  const pageSize = searchParams.get("pageSize");
-  const location = useLocation();
 
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [theme, setTheme] = useLocalStorage(
@@ -49,8 +32,6 @@ function Header() {
   useEffect(() => {
     document.documentElement.setAttribute("data-bs-theme", theme);
   }, [theme]);
-
-  const navigate = useNavigate();
 
   return (
     <Navbar expand="xl" sticky="top" className="bg-nav p-0 w-100">
@@ -72,30 +53,9 @@ function Header() {
                 className="d-inline-flex ms-auto ms-md-0 flex-grow-1 my-3"
                 onSubmit={(e) => {
                   e.preventDefault();
-                  // navigate(
-                  //   `/recipes?search=${
-                  //     document.getElementById("searchBox").value
-                  //   }${pageSize ? `&results=${pageSize}` : ""}`,
-                  // );
                 }}
               >
-                <Form.Control
-                  type="search"
-                  id="searchBox"
-                  placeholder="Search"
-                  className="mainSearchBox me-2"
-                  aria-label="Search"
-                  onChange={(e) =>
-                    debouncedSearch(
-                      e.target.value,
-                      setSearchParams,
-                      navigate,
-                      location,
-                      pageSize,
-                    )
-                  }
-                  defaultValue={searchQuery ? searchQuery : ""}
-                />
+                <SearchBox />
               </Form>
             </Col>
             <Col

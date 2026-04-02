@@ -51,6 +51,10 @@ const router = createBrowserRouter([
         path: "recipes",
         element: <AllRecipes />,
       },
+      {
+        path: "collections/:collectionId",
+        element: <CollectionRecipesPage />,
+      },
       { index: true, element: <Index /> },
       {
         element: <PrivateRoutes />,
@@ -60,10 +64,6 @@ const router = createBrowserRouter([
           {
             path: "collections",
             element: <MyCollections />,
-          },
-          {
-            path: "collections/:collectionId",
-            element: <CollectionRecipesPage />,
           },
           {
             element: <MyRecipes />,
