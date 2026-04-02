@@ -636,3 +636,41 @@ fill:$primary;
 .offcanvas .nav-drop.dropdown-item:first-child {
   margin-top: -1.25em;
 }
+
+.mobile-filter-panel {
+  border-radius: var(--bs-border-radius);
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+
+  [data-bs-theme=light] & {
+    background-color: $light-background;
+    border: 1px solid lightgray;
+  }
+
+  [data-bs-theme=dark] & {
+    background-color: $dark-background;
+    border: 1px solid gray;
+  }
+}
+
+.mobile-filter-toggle {
+  padding: var(--bs-navbar-toggler-padding-y) var(--bs-navbar-toggler-padding-x);
+  border: var(--bs-border-width) solid var(--bs-navbar-toggler-border-color);
+  border-radius: var(--bs-navbar-toggler-border-radius);
+  background: transparent;
+  color: inherit;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &:focus {
+    box-shadow: 0 0 0 var(--bs-navbar-toggler-focus-width);
+    outline: none;
+  }
+}
+
+.offcanvas-header {
+    background-color: $primary;
+    color: white;
+}

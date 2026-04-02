@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Form } from "react-bootstrap";
+import { Form, InputGroup } from "react-bootstrap";
 import {
   matchPath,
   useLocation,
@@ -33,22 +33,24 @@ export function SearchBox() {
   const navigate = useNavigate();
 
   return (
-    <Form.Control
-      type="search"
-      id="searchBox"
-      placeholder="Search"
-      className="mainSearchBox me-2"
-      aria-label="Search"
-      onChange={(e) =>
-        debouncedSearch(
-          e.target.value,
-          setSearchParams,
-          navigate,
-          location,
-          pageSize,
-        )
-      }
-      defaultValue={searchQuery ? searchQuery : ""}
-    />
+    <InputGroup>
+      <Form.Control
+        type="search"
+        id="searchBox"
+        placeholder="Search"
+        className="mainSearchBox"
+        aria-label="Search"
+        onChange={(e) =>
+          debouncedSearch(
+            e.target.value,
+            setSearchParams,
+            navigate,
+            location,
+            pageSize,
+          )
+        }
+        defaultValue={searchQuery ? searchQuery : ""}
+      />
+    </InputGroup>
   );
 }

@@ -3,22 +3,18 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
 import Col from "react-bootstrap/esm/Col";
 
-import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Row from "react-bootstrap/esm/Row";
-import NavDropdown from "react-bootstrap/NavDropdown";
 
 import useLocalStorage from "../../utils/useLocalStorage";
 import { HamburgerMenu } from "./HamburgerMenu";
 import { HeaderLinklist } from "./HeaderLinkList";
 import { SearchBox } from "./SearchBox";
+import { SettingsDropdown } from "./SettingsDropdown";
 
 function Header() {
-  const { logout, isAuthenticated, loginWithPopup } = useAuth0();
-
   const defaultDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [theme, setTheme] = useLocalStorage(
     "theme",
@@ -64,65 +60,12 @@ function Header() {
             >
               <Navbar.Toggle aria-controls="header" className="mx-1" />
             </Col>
+
             <Col
               xs="auto"
               className=" d-none d-xl-inline-flex  align-items-center nav-text"
             >
-              <NavDropdown
-                title="Settings"
-                id="settings"
-                align="end"
-                className="nav-drop me-1"
-              >
-                {isAuthenticated ? (
-                  <NavDropdown.Item href="/profile" className="nav-drop">
-                    Profile{" "}
-                  </NavDropdown.Item>
-                ) : (
-                  ""
-                )}
-
-                <NavDropdown.Item
-                  className="d-flex align-items-center justify-content-between nav-drop"
-                  onClick={() => {
-                    switchTheme();
-                  }}
-                >
-                  {" "}
-                  <DarkModeIcon />
-                  Dark Mode
-                  <input
-                    className="ms-1"
-                    type="checkbox"
-                    id="theme-switcher"
-                    onChange={(e) => e.preventDefault()}
-                    checked={theme === "dark" ? true : false}
-                  />
-                </NavDropdown.Item>
-
-                <hr />
-                {isAuthenticated ? (
-                  <NavDropdown.Item
-                    className="nav-drop mt-0 pt-0"
-                    onClick={() =>
-                      logout({
-                        logoutParams: {
-                          returnTo: window.location.origin,
-                        },
-                      })
-                    }
-                  >
-                    Log Out
-                  </NavDropdown.Item>
-                ) : (
-                  <NavDropdown.Item
-                    className="nav-drop mt-0 pt-0"
-                    onClick={loginWithPopup}
-                  >
-                    Log In
-                  </NavDropdown.Item>
-                )}
-              </NavDropdown>
+              <SettingsDropdown theme={theme} switchTheme={switchTheme} />
             </Col>
           </Nav>
         </Row>
