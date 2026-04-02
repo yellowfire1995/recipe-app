@@ -21,6 +21,7 @@ export function MultiRecipeViewer({
   const search = searchParams.get("search");
   const pageSize = searchParams.get("pageSize");
   const sort = searchParams.get("sort");
+  const category = searchParams.get("category");
   const [isListView, setIsListView] = useState(listViewDefault);
 
   const previousPageParams = {
@@ -34,13 +35,14 @@ export function MultiRecipeViewer({
   };
 
   const { isLoading, refetch, data, isError, isFetched } = useQuery({
-    queryKey: [queryKey, page, search, pageSize, sort],
+    queryKey: [queryKey, page, search, pageSize, sort, category],
     queryFn: async () =>
       await query({
-        page: page,
-        search: search,
-        pageSize: pageSize,
-        sort: sort,
+        page,
+        search,
+        pageSize,
+        sort,
+        category,
         queryParams,
       }),
   });

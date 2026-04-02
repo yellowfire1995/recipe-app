@@ -1,3 +1,4 @@
+import { DeleteForever } from "@mui/icons-material";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
@@ -30,7 +31,12 @@ export default function DeleteCollectionModal(props) {
 
   return (
     <>
-      <Button onClick={handleShow}>Delete</Button>
+      <DeleteForever
+        fontSize="large"
+        className="my-auto icon-interactive"
+        onClick={handleShow}
+        data-testid="DeleteForeverIcon"
+      />
 
       <Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>

@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery } from "@tanstack/react-query";
 import { Accordion, ListGroup, ListGroupItem } from "react-bootstrap";
 import Col from "react-bootstrap/esm/Col.js";
@@ -5,15 +6,19 @@ import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import { Link } from "react-router-dom";
 import { getCollectionNames } from "../../db/queries";
+import { roles } from "../../env/env";
 import DeleteCollectionModal from "../Components/Collections/DeleteCollectionModal";
+import MakePublicIcon from "../Components/Collections/MakePublicIcon";
 import Loading from "../Components/Loading";
-import logger from "../utils/logger";
 
 export default function MyCollections() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["Collections"],
     queryFn: () => getCollectionNames(),
   });
+
+  const { user } = useAuth0();
+  const isAdmin = user[roles].includes("Admin");
 
   if (isError) {
     return <div>Recipe not found</div>;
@@ -24,7 +29,6 @@ export default function MyCollections() {
   }
 
   if (!isLoading && !isError && data) {
-    logger.log(data);
     return (
       <>
         <title>CookbookCalc | Collections</title>
@@ -49,6 +53,10 @@ export default function MyCollections() {
                             </Link>
                           </Col>
                           <Col className="d-flex text-nowrap" xs="auto">
+                            {isAdmin && (
+                              <MakePublicIcon collection={collection} />
+                            )}
+
                             <DeleteCollectionModal collection={collection} />
                           </Col>
                         </ListGroupItem>
