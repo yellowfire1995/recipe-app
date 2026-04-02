@@ -169,7 +169,7 @@ test.describe("Collections", () => {
     // Each collection row has a Delete button from DeleteCollectionModal
     // Scope to the row containing our collection name to avoid ambiguity
     const collectionRow = page.locator("li", { hasText: collectionName });
-    await page.getByRole("button", { name: "Delete" }).click();
+    await page.getByTestId("DeleteForeverIcon").click();
 
     // Confirm in the modal
     const modal = page.locator('div[role="dialog"]');
