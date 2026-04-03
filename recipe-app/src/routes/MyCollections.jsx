@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { getCollectionNames } from "../../db/queries";
 import { roles } from "../../env/env";
 import DeleteCollectionModal from "../Components/Collections/DeleteCollectionModal";
+import { EditCollectionIcon } from "../Components/Collections/EditCollectionIcon";
 import MakePublicIcon from "../Components/Collections/MakePublicIcon";
 import Loading from "../Components/Loading";
 
@@ -53,6 +54,7 @@ export default function MyCollections() {
                             </Link>
                           </Col>
                           <Col className="d-flex text-nowrap" xs="auto">
+                            <EditCollectionIcon collection={collection} />
                             {isAdmin && (
                               <MakePublicIcon collection={collection} />
                             )}
