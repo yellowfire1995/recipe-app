@@ -20,6 +20,7 @@ export default function CategorySelector() {
         multiple
         options={isLoading ? [] : data}
         labelKey="category"
+        defaultSelected={recipe.category}
         onChange={(selected) => setRecipe({ ...recipe, category: selected })}
       />
     </FloatingLabel>
