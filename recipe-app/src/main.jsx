@@ -16,6 +16,7 @@ import {
 import RouteErrorPage from "./Components/Errors/RouteErrorPage.jsx";
 import "./index.scss";
 import AddRecipe from "./routes/AddRecipe.jsx";
+import { AdminPage } from "./routes/AdminPage.jsx";
 import AllRecipes from "./routes/AllRecipes.jsx";
 import CollectionRecipesPage from "./routes/Collections.jsx";
 import { ContactPage } from "./routes/Contact.jsx";
@@ -28,6 +29,7 @@ import MyRecipes from "./routes/MyRecipes.jsx";
 import Planner from "./routes/Planner.jsx";
 import Profile from "./routes/Profile.jsx";
 import Recipe from "./routes/Recipes.jsx";
+import AdminRoutes from "./utils/AdminRoutes.jsx";
 import PrivateRoutes from "./utils/PrivateRoutes.jsx";
 
 export const queryClient = new QueryClient();
@@ -87,6 +89,10 @@ const router = createBrowserRouter([
             path: "/profile",
           },
         ],
+      },
+      {
+        element: <AdminRoutes />,
+        children: [{ path: "admin", element: <AdminPage /> }],
       },
     ],
   },
