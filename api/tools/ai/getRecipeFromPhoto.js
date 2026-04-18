@@ -1,28 +1,38 @@
 import { GoogleGenAI } from "@google/genai";
 
 export async function getPhotoFromAi({ photoArray }) {
-  const prompt = `You are a recipe extractor. Your task is to extract ingredients and directions from a recipe image. If a title or number of servings exists extract that as well.
+  const prompt = `You are a recipe extractor. Extract ingredients, directions, and optionally a title and serving count from the provided recipe image.
 
-CRITICAL RULES:
+OUTPUT RULES — follow exactly:
+- Output ONLY a valid JSON object. No markdown, no explanation, no text outside the JSON.
+- If the image does not contain a recipe, return: {"error": "No recipe found"}
 
-    Output ONLY a JSON object - nothing else
+INGREDIENTS:
+- List each ingredient on its own entry using this format: QUANTITY UNIT INGREDIENT_NAME
+  Example: "1.5 cup all-purpose flour" or "3 large eggs" or "2 tbsp olive oil"
+- Use imperial/US units only (oz, lb, cup, tbsp, tsp, fl oz, etc.)
+- If both metric and imperial are shown (e.g. "250g / 9 oz"), use only the imperial value
+- For whole fruits/vegetables with no specific measurement, omit the unit: "2 apples"
+- Preserve brand names exactly as shown (e.g. "1 can Campbell's cream of mushroom soup", "2 tbsp Worcestershire sauce")
+- Preserve any modifiers or preparation notes exactly as written (e.g. "1 cup butter, softened", "3 cloves garlic, minced", "2 eggs, divided", "1 cup milk, at room temperature")
+- For package sizes, convert to the most common US retail measurement:
+  1 pkg cream cheese = 8 oz | 1 pkg dry yeast = 2.25 tsp | 1 pkg frozen spinach = 10 oz
+  For unlisted packages, use the most common US retail size
 
-    For each ingredient, output on its own line in this format: [QUANTITY] [UNIT] [INGREDIENT NAME]
+DIRECTIONS:
+- Output each step as plain text — no numbers, no bullets, no labels
 
-    For measurements: ALWAYS use imperial/US units ONLY (oz, lb, cup, tbsp, tsp, etc.)
-
-    If you see both metric and imperial (like "250g/9 oz"), output ONLY the imperial version as a number with unit
-
-    For directions: output each step on its own line, with NO numbers or bullets
-
-    Separate multiple lines with \n character (backslash-n, not an actual line break)
-
-    Return valid JSON with keys "ingredientString" and "directionString" and if applicable "name" and "servings"
+FORMATTING:
+- Join multiple ingredient lines with the two-character sequence \n (backslash + n)
+- Join multiple direction lines the same way
+- Omit "name" and "servings" keys entirely if not visible in the image
 
 Return format:
 {
-"ingredientString": "[ingredient line 1]\n[ingredient line 2]\n[ingredient line 3]",
-"directionString": "[direction line 1]\n[direction line 2]\n[direction line 3]"
+  "name": "Recipe Title",
+  "servings": "4",
+  "ingredientString": "1 cup flour\n2 large eggs\n0.5 tsp salt",
+  "directionString": "Preheat oven to 350°F\nMix dry ingredients\nBake for 30 minutes"
 }`;
 
   const input = [{ type: "text", text: prompt }];

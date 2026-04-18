@@ -143,7 +143,6 @@ export default function Edit() {
             <Row>
               <Col className="d-flex">
                 <RecipeForm.DeleteRecipeButton
-                  recipe={recipe}
                   onSettled={() => navigate("/recipes")}
                   style={{ height: "3rem" }}
                   className="w-100 btn-danger"
