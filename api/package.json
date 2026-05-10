@@ -37,7 +37,7 @@
     "playwright-core": "^1.58.2",
     "request-filtering-agent": "^3.2.0",
     "sharp": "^0.34.5",
-    "uuid": "^13.0.0"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
