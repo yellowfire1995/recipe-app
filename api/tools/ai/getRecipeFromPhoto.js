@@ -45,7 +45,7 @@ Return format:
   });
 
   const ai = new GoogleGenAI({
-    project: "recipeapp-421500",
+    apiKey: process.env.GOOGLE_API_KEY,
   });
   const interaction = await ai.interactions.create({
     model: "gemini-3.1-flash-lite-preview",
