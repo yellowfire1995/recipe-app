@@ -48,7 +48,7 @@ Return format:
     apiKey: process.env.GOOGLE_API_KEY,
   });
   const interaction = await ai.interactions.create({
-    model: "gemini-3.1-flash-lite-preview",
+    model: "gemini-3.1-flash-lite",
 
     input: input,
   });
