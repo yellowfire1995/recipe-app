@@ -5,6 +5,7 @@
 @import "./stylesheets/buttons.scss";
 @import "./stylesheets/navbar.scss";
 @import "react-datepicker/dist/react-datepicker.css";
+@import "./stylesheets/floatingactionbutton.scss";
 
 
 [data-bs-theme=light] body{
@@ -462,6 +463,7 @@ img.recipe-list-thumbnail{
 
  
 .recipe-list{
+
   max-width: 95rem;
 }
 
@@ -674,3 +676,5 @@ fill:$primary;
     background-color: $primary;
     color: white;
 }
+
+

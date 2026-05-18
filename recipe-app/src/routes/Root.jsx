@@ -26,18 +26,16 @@ export default function App() {
     logger.log(error);
   }
 
-  if (!isLoading || !isAuthenticated) {
-    addAccessTokenInterceptor({ getAccessTokenSilently, isAuthenticated });
-    return (
-      <>
-        <Stack style={{ minHeight: "100vh" }}>
-          <Header />
-          <Outlet />
+  addAccessTokenInterceptor({ getAccessTokenSilently, isAuthenticated });
+  return (
+    <>
+      <Stack style={{ minHeight: "100vh" }}>
+        <Header />
+        <Outlet />
 
-          <Footer />
-        </Stack>
-        <ToastContainer position="bottom-right" />
-      </>
-    );
-  }
+        <Footer />
+      </Stack>
+      <ToastContainer position="bottom-right" />
+    </>
+  );
 }
