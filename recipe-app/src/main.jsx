@@ -7,12 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Root from "./routes/Root.jsx";
 
 import { Auth0Provider } from "@auth0/auth0-react";
-import {
-  auth0Audience,
-  auth0ClientId,
-  auth0Domain,
-  auth0Redirect,
-} from "../env/env.js";
+import { auth0Audience, auth0ClientId, auth0Domain } from "../env/env.js";
 import RouteErrorPage from "./Components/Errors/RouteErrorPage.jsx";
 import "./index.scss";
 import AddRecipe from "./routes/AddRecipe.jsx";
@@ -103,6 +98,10 @@ const router = createBrowserRouter([
   },
 ]);
 
+const onRedirectCallback = (appState) => {
+  window.location.replace(appState?.returnTo || "/");
+};
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <div>
     <React.StrictMode>
@@ -111,10 +110,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         clientId={auth0ClientId}
         cacheLocation="localstorage"
         authorizationParams={{
-          redirect_uri: auth0Redirect,
+          redirect_uri: window.location.origin,
           audience: auth0Audience,
           scope: "read:current_user update:current_user_metadata profile email",
         }}
+        onRedirectCallback={onRedirectCallback}
       >
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
