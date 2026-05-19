@@ -43,21 +43,15 @@ test("authenticate and save session", async ({ page }) => {
 
   await page.goto("http://localhost:5173/");
 
-  const popupPromise = page.waitForEvent("popup");
   await page.getByRole("button", { name: "Log in/Sign Up" }).click();
-  const popup = await popupPromise;
-
-  await popup.waitForLoadState("domcontentloaded");
-
-  await popup
-    .getByRole("textbox", { name: "Username or email address" })
+  await page
+    .getByText("Username or email address *")
     .fill(process.env.TEST_USER);
-  await popup
+  await page
     .getByRole("textbox", { name: "Password" })
     .fill(process.env.TEST_PASSWORD);
-  await popup.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
 
-  await popup.waitForEvent("close", { timeout: 20_000 }).catch(() => {});
   await page.waitForURL(/localhost/, { timeout: 20_000 });
 
   await page.waitForFunction(
