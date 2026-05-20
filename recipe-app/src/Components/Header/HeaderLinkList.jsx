@@ -4,7 +4,7 @@ import Nav from "react-bootstrap/Nav";
 import { CollectionsDropdown } from "./CollectionsDropdown";
 
 export function HeaderLinklist() {
-  const { isAuthenticated, loginWithPopup } = useAuth0();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
 
   if (isAuthenticated) {
     return (
@@ -35,7 +35,18 @@ export function HeaderLinklist() {
       <>
         <Nav.Link href="/recipes">All Recipes</Nav.Link>
         <CollectionsDropdown />
-        <Nav.Link onClick={loginWithPopup}>Log in/Sign Up</Nav.Link>
+        <Nav.Link
+          onClick={() => {
+            loginWithRedirect({
+              appState: { returnTo: location.pathname },
+              authorizationParams: {
+                redirect_uri: `${window.location.origin}/callback`,
+              },
+            });
+          }}
+        >
+          Log in/Sign Up
+        </Nav.Link>
       </>
     );
   }

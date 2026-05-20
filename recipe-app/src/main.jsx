@@ -7,17 +7,13 @@ import "react-toastify/dist/ReactToastify.css";
 import Root from "./routes/Root.jsx";
 
 import { Auth0Provider } from "@auth0/auth0-react";
-import {
-  auth0Audience,
-  auth0ClientId,
-  auth0Domain,
-  auth0Redirect,
-} from "../env/env.js";
+import { auth0Audience, auth0ClientId, auth0Domain } from "../env/env.js";
 import RouteErrorPage from "./Components/Errors/RouteErrorPage.jsx";
 import "./index.scss";
 import AddRecipe from "./routes/AddRecipe.jsx";
 import { AdminPage } from "./routes/AdminPage.jsx";
 import AllRecipes from "./routes/AllRecipes.jsx";
+import { Callback } from "./routes/Callback.jsx";
 import CollectionRecipesPage from "./routes/Collections.jsx";
 import { ContactPage } from "./routes/Contact.jsx";
 import Edit from "./routes/Edit.jsx";
@@ -52,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "recipes",
         element: <AllRecipes />,
+      },
+      {
+        path: "callback",
+        element: <Callback />,
       },
       {
         path: "collections/:collectionId",
@@ -110,8 +110,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         domain={auth0Domain}
         clientId={auth0ClientId}
         cacheLocation="localstorage"
+        skipRedirectCallback={window.location.pathname === "/callback"}
         authorizationParams={{
-          redirect_uri: auth0Redirect,
+          redirect_uri: `${window.location.origin}/callback`,
           audience: auth0Audience,
           scope: "read:current_user update:current_user_metadata profile email",
         }}

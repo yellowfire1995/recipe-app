@@ -1,0 +1,79 @@
+.fab {
+  position: fixed;
+  bottom: 3rem;
+  right: 1rem;
+  z-index: 1000;
+
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0;
+  border: none;
+  cursor: pointer;
+
+  background-color: transparent;
+  color: $primary;
+  box-shadow: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+
+  // Centering — grid places a single child dead center with no line-height interference
+  display: grid;
+  place-items: center;
+
+  svg, .fab__icon {
+    display: block;
+    pointer-events: none;
+    font-size: 3rem;
+  }
+
+  &__label {
+    position: absolute;
+    right: calc(100% + 0.75rem);
+    top: 50%;
+    transform: translateY(-50%) translateX(0.5rem);
+    white-space: nowrap;
+    background-color: $primary;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.375rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: scale(1.08);
+    background-color: transparent;
+    box-shadow: none;
+
+    .fab__label {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+  }
+
+  &:active {
+    transform: scale(0.96);
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba($primary, 0.5);
+    outline-offset: 3px;
+  }
+
+  [data-bs-theme=dark] & {
+    color: $primary;
+  }
+
+  @media (max-width: 767px) {
+    bottom: 1.25rem;
+    right: 1.25rem;
+
+    .fab__label {
+      display: none;
+    }
+  }
+}
