@@ -13,7 +13,7 @@ export function FloatingActionButton() {
       // loginWithRedirect({ appState: { returnTo: "/newrecipe" } });
       loginWithRedirect({
         authorizationParams: {
-          redirect_uri: "https://cbcdev.wfhomelocal.com/newrecipe",
+          redirect_uri: `${window.location.origin}/newrecipe`,
         },
       });
     }
