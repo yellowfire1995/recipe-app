@@ -36,11 +36,14 @@ export function HeaderLinklist() {
         <Nav.Link href="/recipes">All Recipes</Nav.Link>
         <CollectionsDropdown />
         <Nav.Link
-          onClick={() =>
+          onClick={() => {
             loginWithRedirect({
               appState: { returnTo: location.pathname },
-            })
-          }
+              authorizationParams: {
+                redirect_uri: `${window.location.origin}/callback`,
+              },
+            });
+          }}
         >
           Log in/Sign Up
         </Nav.Link>

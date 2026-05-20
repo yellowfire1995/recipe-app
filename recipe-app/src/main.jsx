@@ -13,6 +13,7 @@ import "./index.scss";
 import AddRecipe from "./routes/AddRecipe.jsx";
 import { AdminPage } from "./routes/AdminPage.jsx";
 import AllRecipes from "./routes/AllRecipes.jsx";
+import { Callback } from "./routes/Callback.jsx";
 import CollectionRecipesPage from "./routes/Collections.jsx";
 import { ContactPage } from "./routes/Contact.jsx";
 import Edit from "./routes/Edit.jsx";
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "recipes",
         element: <AllRecipes />,
+      },
+      {
+        path: "callback",
+        element: <Callback />,
       },
       {
         path: "collections/:collectionId",
@@ -98,10 +103,6 @@ const router = createBrowserRouter([
   },
 ]);
 
-const onRedirectCallback = (appState) => {
-  window.location.replace(appState?.returnTo || "/");
-};
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <div>
     <React.StrictMode>
@@ -109,12 +110,12 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         domain={auth0Domain}
         clientId={auth0ClientId}
         cacheLocation="localstorage"
+        skipRedirectCallback={window.location.pathname === "/callback"}
         authorizationParams={{
-          redirect_uri: window.location.origin,
+          redirect_uri: `${window.location.origin}/callback`,
           audience: auth0Audience,
           scope: "read:current_user update:current_user_metadata profile email",
         }}
-        onRedirectCallback={onRedirectCallback}
       >
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />

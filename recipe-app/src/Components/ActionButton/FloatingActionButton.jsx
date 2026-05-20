@@ -10,13 +10,18 @@ export function FloatingActionButton() {
     if (isAuthenticated) {
       navigate("/newrecipe");
     } else {
-      loginWithRedirect({ appState: { returnTo: "/newrecipe" } });
+      // loginWithRedirect({ appState: { returnTo: "/newrecipe" } });
+      loginWithRedirect({
+        authorizationParams: {
+          redirect_uri: "https://cbcdev.wfhomelocal.com/newrecipe",
+        },
+      });
     }
   };
 
   return (
     <button
-      className="fab d-xl-none  "
+      className="fab d-xl-none "
       onClick={handleClick}
       aria-label="Add recipe"
     >
