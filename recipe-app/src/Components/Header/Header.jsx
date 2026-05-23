@@ -8,6 +8,7 @@ import Col from "react-bootstrap/esm/Col";
 
 import Row from "react-bootstrap/esm/Row";
 
+import { Link } from "react-router-dom";
 import useLocalStorage from "../../utils/useLocalStorage";
 import { HamburgerMenu } from "./HamburgerMenu";
 import { HeaderLinklist } from "./HeaderLinkList";
@@ -30,13 +31,18 @@ function Header() {
   }, [theme]);
 
   return (
-    <Navbar expand="xl" sticky="top" className="bg-nav p-0 w-100">
+    <Navbar
+      expand="xl"
+      sticky="top"
+      className="bg-nav p-0 w-100"
+      collapseOnSelect
+    >
       <Container fluid className="px-0 justify-content-center">
         <HamburgerMenu theme={theme} switchTheme={switchTheme} />
         <Row className="w-100 p-0">
           <Nav className="flex-row w-100 p-0">
             <Col className="d-flex align-items-center p-0" xs="auto">
-              <Navbar.Brand href="/" className="ps-1">
+              <Navbar.Brand as={Link} to="/" className="ps-1">
                 <img src="/calculator.svg" style={{ height: "4rem" }} />
               </Navbar.Brand>
             </Col>

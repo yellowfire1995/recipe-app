@@ -10,10 +10,10 @@ export function HeaderLinklist() {
   if (isAuthenticated) {
     return (
       <>
-        <Nav.Link as={Link} to="/recipes">
+        <Nav.Link as={Link} to="/recipes" eventKey="recipes">
           All Recipes
         </Nav.Link>
-        <Nav.Link as={Link} to="/newrecipe">
+        <Nav.Link as={Link} to="/newrecipe" eventKey="newrecipe">
           Add Recipe
         </Nav.Link>
         <CollectionsDropdown />
@@ -23,13 +23,28 @@ export function HeaderLinklist() {
           align="end"
           className="me-1 nav-drop"
         >
-          <NavDropdown.Item as={Link} to="/myrecipes" className="nav-drop">
+          <NavDropdown.Item
+            as={Link}
+            to="/myrecipes"
+            eventKey="myrecipes"
+            className="nav-drop"
+          >
             Recipes
           </NavDropdown.Item>
-          <NavDropdown.Item as={Link} to="/planner" className="nav-drop">
+          <NavDropdown.Item
+            as={Link}
+            to="/planner"
+            eventKey="planner"
+            className="nav-drop"
+          >
             Plans
           </NavDropdown.Item>
-          <NavDropdown.Item as={Link} to="/collections" className="nav-drop">
+          <NavDropdown.Item
+            as={Link}
+            to="/collections"
+            eventKey="collections"
+            className="nav-drop"
+          >
             Collections
           </NavDropdown.Item>
         </NavDropdown>
@@ -38,9 +53,12 @@ export function HeaderLinklist() {
   } else {
     return (
       <>
-        <Nav.Link href="/recipes">All Recipes</Nav.Link>
+        <Nav.Link as={Link} to="/recipes" eventKey="recipes">
+          All Recipes
+        </Nav.Link>
         <CollectionsDropdown />
         <Nav.Link
+          eventKey="login"
           onClick={() => {
             loginWithRedirect({
               appState: { returnTo: location.pathname },
