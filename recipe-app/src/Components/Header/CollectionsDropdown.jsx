@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { NavDropdown } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { getPublicCollections } from "../../../db/queries";
 
 export function CollectionsDropdown() {
@@ -19,8 +20,10 @@ export function CollectionsDropdown() {
         {data?.map((collection) => {
           return (
             <NavDropdown.Item
+              as={Link}
               key={collection.id}
-              href={`/collections/${collection.id}`}
+              eventKey={collection.id}
+              to={`/collections/${collection.id}`}
               className="nav-drop"
             >
               {collection.name}
