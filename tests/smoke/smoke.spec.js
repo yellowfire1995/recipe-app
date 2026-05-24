@@ -37,23 +37,16 @@ test.describe("Smoke: Public pages", () => {
 
 test.describe("Smoke: Authenticated pages", () => {
   test("smoke test authenticated pages", async ({ page }) => {
-    await page.goto("https://cookbookcalc.com/");
-
-    const popupPromise = page.waitForEvent("popup");
+    await page.goto("https://cookbookcalc.com/recipes");
     await page.getByRole("button", { name: "Log in/Sign Up" }).click();
-    const popup = await popupPromise;
-
-    await popup.waitForLoadState("domcontentloaded");
-
-    await popup
+    await page
       .getByRole("textbox", { name: "Username or email address" })
       .fill(process.env.COOKBOOKCALC_USER);
-    await popup
+    await page
       .getByRole("textbox", { name: "Password" })
       .fill(process.env.COOKBOOKCALC_PASSWORD);
-    await popup.getByRole("button", { name: "Continue", exact: true }).click();
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
 
-    await popup.waitForEvent("close", { timeout: 20_000 }).catch(() => {});
     await page.waitForURL(/cookbookcalc.com/, { timeout: 20_000 });
     await page.waitForFunction(
       () => {
