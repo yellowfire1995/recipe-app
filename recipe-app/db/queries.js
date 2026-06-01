@@ -370,7 +370,6 @@ export async function deleteCollectionRecipe(arrayOfRecipes) {
 export async function scrapeRecipe({ url, html }) {
   try {
     if (url) {
-      // Send URL as JSON
       const recipe = await httpClient.post(
         `${server}/import/scrape`,
         { url },
@@ -384,12 +383,10 @@ export async function scrapeRecipe({ url, html }) {
     }
 
     if (html) {
-      // Compress HTML
       const encoder = new TextEncoder();
-      const uint8Array = encoder.encode(html); // Don't JSON.stringify!
+      const uint8Array = encoder.encode(html);
       const compressed = pako.deflate(uint8Array);
 
-      // Send as FormData (bypasses JSON body-parser limit)
       const formData = new FormData();
       const blob = new Blob([compressed], { type: "application/octet-stream" });
       formData.append("compressedHtml", blob, "html.gz");
