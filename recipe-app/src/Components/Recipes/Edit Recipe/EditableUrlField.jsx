@@ -35,11 +35,15 @@ async function handleImport({ scrapedData, recipe, setRecipe, url }) {
     }
   }
 
+  const imgUrl = Array.isArray(scrapedData.image)
+    ? scrapedData.image[scrapedData.image.length - 1]
+    : (scrapedData.image?.url ?? scrapedData.image);
+
   setRecipe({
     ...recipe,
     url: url,
     directions: directions,
-    imgUrl: scrapedData.image?.url,
+    imgUrl: imgUrl,
     name: scrapedData.name ? scrapedData.name : "",
     ingredients: choices.map((choice) => {
       return { ...choice[0], searchArray: choice };
