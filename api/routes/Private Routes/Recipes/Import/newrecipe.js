@@ -7,6 +7,7 @@ import {
   uploadFileToS3,
 } from "../../../../tools/aws/aws.js";
 import { tryCatch } from "../../../../tools/error/tryCatch.js";
+import { downloadImage } from "../../../../tools/webscraping/recipes/downloadimage.js";
 const router = express.Router();
 
 const storage = multer.memoryStorage();
@@ -20,10 +21,16 @@ router.post(
     let recipe = JSON.parse(req.body.updatedRecipe);
     let key = null;
     let thumbnailKey = null;
+    let photoFile = req.file || null;
 
-    if (req.file) {
-      key = await uploadFileToS3(req.file);
-      thumbnailKey = await resizeAndUploadFileToS3(req.file);
+    if (recipe.imgUrl && !photoFile) {
+      const imgUrl = recipe.imgUrl;
+      photoFile = await downloadImage(imgUrl);
+    }
+
+    if (photoFile) {
+      key = await uploadFileToS3(photoFile);
+      thumbnailKey = await resizeAndUploadFileToS3(photoFile);
     }
 
     if (recipe.ingredients) {
