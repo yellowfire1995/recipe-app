@@ -29,7 +29,7 @@
     "https-proxy-agent": "^9.0.0",
     "image-type": "^6.1.0",
     "multer": "^2.0.2",
-    "nodemailer": "^8.0.1",
+    "nodemailer": "^9.0.0",
     "pako": "^2.1.0",
     "parse-ingredient": "^2.1.0",
     "pg": "^8.18.0",
