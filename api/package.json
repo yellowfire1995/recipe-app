@@ -31,7 +31,7 @@
     "multer": "^2.0.2",
     "nodemailer": "^9.0.0",
     "pako": "^2.1.0",
-    "parse-ingredient": "^2.1.0",
+    "parse-ingredient": "^3.0.0",
     "pg": "^8.18.0",
     "pg-format": "^1.0.4",
     "pg-pool": "^3.11.0",
